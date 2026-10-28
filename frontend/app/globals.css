@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ tokens */
+@theme {
+  --color-void: #091321;
+  --color-surface: #101e30;
+  --color-elevated: #14283b;
+  --color-line: #294157;
+  --color-teal: #48e1cd;
+  --color-cyan: #4ca8d8;
+  --color-mint: #69e8c3;
+  --color-ink: #f0f8ff;
+  --color-muted: #9bb3c6;
+  --color-amber: #e8b56b;
+  --color-rose: #ef8a9a;
+  --color-violet: #b49cf5;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-panel: 14px;
+  --shadow-glow: 0 0 0 1px rgb(72 225 205 / 0.35), 0 0 24px -6px rgb(72 225 205 / 0.35);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-void);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(1200px 600px at 85% -10%, rgb(72 225 205 / 0.07), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgb(76 168 216 / 0.06), transparent 60%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgb(72 225 205 / 0.3);
+}
+
+/* thin scrollbars that match the panels */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #294157 transparent;
+}
+
+/* ------------------------------------------------------------- utilities */
+@utility panel {
+  background: linear-gradient(180deg, rgb(20 40 59 / 0.78), rgb(16 30 48 / 0.72));
+  border: 1px solid rgb(41 65 87 / 0.9);
+  border-radius: var(--radius-panel);
+  backdrop-filter: blur(10px);
+  min-width: 0; /* let wide tables scroll inside grid cells instead of widening the page */
+}
+
+@utility glow-ring {
+  box-shadow: var(--shadow-glow);
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(rgb(41 65 87 / 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(41 65 87 / 0.25) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

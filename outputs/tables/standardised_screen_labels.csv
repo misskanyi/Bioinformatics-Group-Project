@@ -1,0 +1,26 @@
+protein_id,protein_name,pet_label,n_positive_assays,n_negative_assays,dois
+33,Est1,PET-active,114,0,10.1038/s41467-022-35237-x
+35,Est119,PET-active (condition-dependent),82,32,10.1038/s41467-022-35237-x
+132,101,PET-active (condition-dependent),4,26,10.1038/s41467-022-35237-x
+133,102,PET-active (condition-dependent),20,46,10.1038/s41467-022-35237-x
+134,202,PET-active (condition-dependent),24,22,10.1038/s41467-022-35237-x
+135,204,PET-active (condition-dependent),85,29,10.1038/s41467-022-35237-x
+136,211,PET-active (condition-dependent),83,47,10.1038/s41467-022-35237-x
+137,214,PET-active (condition-dependent),34,80,10.1038/s41467-022-35237-x
+138,301,PET-active (condition-dependent),34,80,10.1038/s41467-022-35237-x
+139,305,PET-active (condition-dependent),7,23,10.1038/s41467-022-35237-x
+140,307,PET-active (condition-dependent),42,88,10.1038/s41467-022-35237-x
+141,403,PET-active (condition-dependent),13,17,10.1038/s41467-022-35237-x
+142,405,PET-active (condition-dependent),40,74,10.1038/s41467-022-35237-x
+143,406,PET-active (condition-dependent),5,25,10.1038/s41467-022-35237-x
+144,407,PET-active,46,0,10.1038/s41467-022-35237-x
+145,409,PET-active (condition-dependent),16,14,10.1038/s41467-022-35237-x
+146,412,PET-active (condition-dependent),2,28,10.1038/s41467-022-35237-x
+147,503,PET-active (condition-dependent),88,26,10.1038/s41467-022-35237-x
+148,CtPl,PET-active (condition-dependent),113,17,10.1038/s41467-022-35237-x
+149,606,PET-active (condition-dependent),42,20,10.1038/s41467-022-35237-x
+150,607-Nsp,PET-active (condition-dependent),1,29,10.1038/s41467-022-35237-x
+151,611,PET-active (condition-dependent),138,20,10.1038/s41467-022-35237-x
+152,701,PET-active (condition-dependent),128,1,10.1038/s41467-022-35237-x
+153,702,PET-active (condition-dependent),45,5,10.1038/s41467-022-35237-x
+154,711,PET-active (condition-dependent),89,25,10.1038/s41467-022-35237-x

@@ -1,0 +1,99 @@
+                                                       file  records  unique_ids  duplicate_sequences  missing_values
+                                pazy_proteins_sequences.csv      301         301                  0.0             0.0
+                                pazy_polymer_assays.json.gz      579         462                  NaN             NaN
+                                        pazy_proteins.fasta      301         301                  0.0             0.0
+                                            PlasticDB.fasta      329         329                 18.0            44.0
+                                         degraders_list.tsv     2535         933                214.0         17800.0
+uniprotkb_accession_E9LVH8_OR_accession_2026_10_27.fasta.gz        3           3                  0.0             0.0
+
+substrate  assay_records  unique_proteins
+      PET           5058              311
+       PA            564               68
+      PLA            429               57
+      PHA            340               39
+      PBS            195               28
+      PEF            146                7
+      PUR            128               34
+     PBAT            124               24
+       NR            124                8
+       PC             87               10
+
+                                                          metric       value
+                              Total protein sequences (PAZy CSV)         301
+                           PAZy FASTA sequences identical to CSV         301
+                         Proteins in assay JSON (all substrates)         462
+                     Protein x publication records in assay JSON         579
+                            Total assay records (all substrates)        7195
+                                 Total PET-related assay records        5058
+             PET assays excluded (non-PET material or time-zero)          79
+                                PET assays: degradation detected        3432
+                                    PET assays: nothing detected        1451
+                                             PET assays: unclear          96
+                         Unique proteins with PET-related assays         311
+                             PET-tested proteins with a sequence         301
+              PET-tested proteins WITHOUT a sequence (unmatched)          10
+                      PET assays belonging to unmatched proteins          81
+                              Assay proteins never tested on PET         151
+              Unique PET-active proteins (all evidence positive)         165
+                Unique PET-active proteins (condition-dependent)         139
+                Unique PET-inactive proteins (tested conditions)           4
+                                        of which high confidence           1
+                                  Proteins with unclear evidence           2
+                        Proteins with conflicting evidence (all)         140
+                             of which conflicting across studies           1
+              Proteins with usable sequences and reliable labels         298
+                                                   usable active         298
+                                                 usable inactive           0
+               Sequences with non-standard amino acid characters           0
+                                       Exact duplicate sequences           0
+            Highly similar pairs >=95% identity (all PET-tested)          40
+            Highly similar pairs >=90% identity (all PET-tested)         231
+            Highly similar pairs >=70% identity (all PET-tested)        1206
+                       Proteins with a >=90% identical neighbour          95
+                                 Usable-set pairs >=90% identity         216
+     Usable inactive proteins >=70% identical to a usable active           0
+Independent clusters at 40% identity (active / inactive / mixed)  36 / 0 / 0
+Independent clusters at 70% identity (active / inactive / mixed) 110 / 0 / 0
+         Standardised-screen proteins (one study, same protocol)          25
+                     screen: active / cond.-dependent / inactive  2 / 23 / 0
+                          PlasticDB sequences annotated with PET         186
+                         PlasticDB PET sequences not in PAZy CSV         123
+                          PAZy proteins tested on >=2 substrates          71
+       PET-tested proteins with organism found in provided files          57
+
+ identity_threshold  clusters_total  clusters_with_active  clusters_with_inactive  mixed_clusters  active_only_clusters  inactive_only_clusters
+               0.30              11                    11                       0               0                    11                       0
+               0.40              36                    36                       0               0                    36                       0
+               0.50              47                    47                       0               0                    47                       0
+               0.60              68                    68                       0               0                    68                       0
+               0.70             110                   110                       0               0                   110                       0
+               0.80             177                   177                       0               0                   177                       0
+               0.90             228                   228                       0               0                   228                       0
+               0.95             276                   276                       0               0                   276                       0
+               1.00             298                   298                       0               0                   298                       0
+
+label_confidence                  high  low  medium  none
+pet_label                                                
+Conflicting (across studies)         0    1       0     0
+PET-active                         154    0      11     0
+PET-active (condition-dependent)   139    0       0     0
+PET-inactive (tested conditions)     1    0       3     0
+Unclear                              0    0       0     2
+
+Outcome reasons:
+ outcome_reason
+product_concentration > 0              2310
+product_concentration = 0               788
+specific_activity = 0                   630
+specific_activity > 0                   477
+product_release_rate > 0                283
+product_amount > 0                      148
+mass_loss_percent > 0                   134
+time-zero sample                         72
+indirect metric 'relative_activity'      36
+categorical 'positive'                   32
+other rate/release > 0                   24
+indirect metric 'absorbance'             22
+categorical 'negative'                   22
+~0 digitised from a figure               22
+categorical 'detected'                   11

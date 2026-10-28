@@ -1,0 +1,299 @@
+id,protein_name,sequence_length,pet_label,label_confidence,cluster,identity_group_70,organism,taxonomy_id,organism_evidence,temperatures_tested_c,temperatures_with_activity_c,degree
+1,ISPETase,290,PET-active (condition-dependent),high,G1,9,Ideonella sakaiensis,1547922,exact_sequence,20; 25; 30; 35; 37; 40; 45; 50; 55; 60; 72,20; 25; 30; 35; 37; 40; 45; 50; 55; 60; 72,147
+2,PET5,310,PET-active,high,G1,106,Moraxella sp.; Oleispira antarctica,188908; 479,exact_sequence,25; 50,25; 50,139
+3,PET6,298,PET-active,medium,G1,58,Vibrio gazogenes,687,exact_sequence,50,50,116
+4,PET12,298,PET-active,high,G1,64,Polyangium brachysporum,413882,exact_sequence,30; 40; 50,30; 40; 50,148
+5,PLE628,307,PET-active,high,G1,5,Marinobacter sp.,50741,exact_sequence,30,30,129
+6,PLE629,316,PET-active (condition-dependent),high,G1,5,Marinobacter sp.,50741,exact_sequence,30,30,138
+7,PpCutA,302,PET-active,high,G1,5,Pseudomonas oleovorans,301,exact_sequence,30,30,146
+9,PE-H,304,PET-active (condition-dependent),high,G1,5,Pseudomonas aestusnigri,857252,exact_sequence,30,30,140
+10,PmC,258,PET-active (condition-dependent),high,G1,66,Pseudomonas mendocina,300,exact_sequence,30; 40; 45; 50; 55; 60,30; 40; 45; 50; 55; 60,6
+11,Mors1,319,PET-active,high,G1,50,Moraxella sp.; Oleispira antarctica; Olespira antarctica,188908; 479,exact_sequence,25; 30,25; 30,77
+13,MG8,307,PET-active,high,G1,5,Uncultured bacterium,77133,exact_sequence,30; 37; 45; 55; 65,30; 37; 45; 55; 65,137
+14,EstB,218,PET-active,medium,G5,32,Pseudomonas sp.,306,exact_sequence,40,40,0
+15,RgPETase,292,PET-active,high,G1,9,Rhizobacter gummiphilus,946333,exact_sequence,30; 40,30; 40,140
+16,LCC,293,PET-active,high,G1,13,Uncultured bacterium,77133,exact_sequence,50; 60; 65; 70; 72; 75; 80,50; 60; 65; 70; 72; 75; 80,156
+17,BhrPETase,293,PET-active,high,G1,13,Uncultured bacterium,77133,exact_sequence,30; 40; 50; 60; 70; 80,30; 40; 50; 60; 70; 80,155
+18,Cut190,304,PET-active,medium,G1,2,Saccharomonospora viridis,1852,exact_sequence,50,50,157
+19,TfH,301,PET-active (condition-dependent),high,G1,3,Thermobifida fusca; Thermobifida fusca (strain YX),2021; 269800,exact_sequence,50; 55; 60; 65,50; 55; 60; 65,157
+20,BTA-2,301,PET-active (condition-dependent),high,G1,3,Thermobifida fusca,2021,exact_sequence,55; 60; 65,55; 60; 65,157
+21,Thf42_Cut1,262,PET-active,high,G1,3,Thermobifida fusca,2021,exact_sequence,50,50,156
+23,Tfu_0882,319,PET-active (condition-dependent),high,G1,3,Thermobifida fusca,2021,exact_sequence,50; 55; 60; 65,50; 55; 60; 65,157
+25,TfCut2,262,PET-active (condition-dependent),high,G1,3,Thermobifida fusca,2021,contained_sequence,40; 50; 55; 60; 65; 70; 75,40; 50; 55; 60; 65; 70; 75,156
+30,Tcur_1278,289,PET-active,high,G1,2,Thermomonospora curvata,2020,exact_sequence,50; 55; 60,50; 55; 60,157
+31,Tcur0390,292,PET-active (condition-dependent),high,G1,2,Thermomonospora curvata,2020,exact_sequence,50; 55; 60,50,157
+32,Thh_Est,262,PET-active,high,G1,3,Thermobifida halotolerans,483545,exact_sequence,50,50,156
+33,Est1,296,PET-active,high,G1,3,Thermobifida alba,53522,exact_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,157
+35,Est119,300,PET-active (condition-dependent),high,G1,3,Thermobifida alba,53522,exact_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,158
+36,BsEstB,489,PET-active,high,G4,37,Bacillus subtilis,1423,exact_sequence,,,1
+37,PHL-7,259,PET-active (condition-dependent),high,G1,2,Thermoanaerobacter sp.; Uncultured bacterium,1755; 77133,contained_sequence,40; 50; 55; 60; 65; 70; 72; 75; 80; 85,40; 50; 55; 60; 65; 70; 72; 75; 80; 85,154
+38,PET27,364,PET-active (condition-dependent),high,G1,43,Aequorivita sp.,1872390,exact_sequence,4; 30,30,1
+39,PET30,366,PET-active,high,G1,44,Kaistella jeonii,266749,exact_sequence,4; 30,4; 30,1
+40,PET2,308,PET-active,high,G1,96,Uncultured bacterium,77133,exact_sequence,26; 30; 50; 60; 65; 70; 75; 80,26; 30; 50; 60; 65; 70; 75; 80,132
+41,PET46,262,PET-active (condition-dependent),high,G2,93,Candidatus bathyarchaeota,928852,exact_sequence,30; 50; 60,30; 50; 60,1
+42,CalB,342,PET-active,high,G6,101,Moesziomyces antarcticus,84753,exact_sequence,37; 50; 60,37; 50; 60,0
+43,FsC,230,PET-active (condition-dependent),high,G3,27,Fusarium solani,169388,exact_sequence,30; 37; 40; 45; 50; 55; 60,30; 40; 45; 50; 55,5
+44,HiC,194,PET-active (condition-dependent),high,G3,29,Humicola insolens,34413,exact_sequence,30; 37; 40; 50; 55; 60; 65; 70; 75; 80; 85; 90,30; 37; 40; 50; 55; 60; 65; 70; 75; 80; 85,5
+116,PBATHRf,216,PET-active,high,G3,81,Rhodococcus fascians; Rhodococcus sp.,1002526; 1828,exact_sequence,30,30,1
+120,Cbotu_EstA,452,PET-active,medium,G5,82,Clostridium botulinum,1491,contained_sequence,50,50,1
+132,101,302,PET-active (condition-dependent),high,G4,83,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,70,0
+133,102,297,PET-active (condition-dependent),high,G4,84,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,50; 60; 70,0
+134,202,380,PET-active (condition-dependent),high,G2,28,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,50; 60; 70,0
+135,204,242,PET-active (condition-dependent),high,G2,85,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,0
+136,211,264,PET-active (condition-dependent),high,G2,88,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,1
+137,214,240,PET-active (condition-dependent),high,G2,28,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,40; 50; 60; 70,0
+138,301,211,PET-active (condition-dependent),high,G1,30,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,60; 70,0
+139,305,232,PET-active (condition-dependent),high,G1,72,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,50; 70,0
+140,307,178,PET-active (condition-dependent),high,G2,89,Uncultured bacterium,77133,contained_sequence,30; 40; 50; 60; 70,30; 50; 60; 70,0
+141,403,284,PET-active (condition-dependent),high,G1,18,Ketobacter sp.,2083498,contained_sequence,30; 40; 50; 60; 70,30; 50; 60; 70,147
+142,405,275,PET-active (condition-dependent),high,G1,87,Actinomycetota bacterium,2900548,contained_sequence,30; 40; 50; 60; 70,30; 40; 60; 70,157
+143,406,305,PET-active (condition-dependent),high,G1,86,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,70,145
+144,407,393,PET-active,high,G1,1,Micromonosporaceae bacterium,1873464,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,52
+145,409,269,PET-active (condition-dependent),high,G1,24,Ketobacter sp.,2083498,contained_sequence,30; 40; 50; 60; 70,40; 50; 60; 70,1
+146,412,283,PET-active (condition-dependent),high,G1,24,Ketobacter alkanivorans,1917421,contained_sequence,30; 40; 50; 60; 70,60; 70,1
+147,503,259,PET-active (condition-dependent),high,G1,23,Nocardioidaceae bacterium,1871072,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,153
+148,CtPl,270,PET-active (condition-dependent),high,G1,22,Caldimonas taiwanensis,307483,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,150
+149,606,263,PET-active (condition-dependent),high,G1,2,Marinactinospora thermotolerans,531310,contained_sequence,30; 35; 40; 45; 50; 60; 70,30; 35; 40; 45; 50; 60; 70,155
+150,607-Nsp,310,PET-active (condition-dependent),high,G1,2,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,50,157
+151,611,261,PET-active (condition-dependent),high,G1,11,Saccharopolyspora flava,95161,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,156
+152,701,262,PET-active (condition-dependent),high,G1,3,Thermobifida fusca,2021,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,156
+153,702,263,PET-active (condition-dependent),high,G1,3,Thermobifida fusca,2021,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,156
+154,711,261,PET-active (condition-dependent),high,G1,3,Thermobifida cellulosilytica,144786,contained_sequence,30; 40; 50; 60; 70,30; 40; 50; 60; 70,156
+171,PHL-2,260,PET-active,medium,G1,2,Uncultured bacterium,77133,exact_sequence,40; 45; 50; 55; 60; 65; 70; 75; 80; 85,40; 45; 50; 55; 60; 65; 70; 75; 80; 85,155
+172,PHL-1,260,PET-active,medium,G1,2,Uncultured bacterium,77133,exact_sequence,40; 45; 50; 55; 60; 65; 70; 75; 80; 85,40; 45; 50; 55; 60; 65; 70; 75; 80; 85,155
+173,PHL-3,259,PET-active,medium,G1,2,Uncultured bacterium,77133,exact_sequence,50; 55; 60; 65; 70; 75; 80; 85,50; 55; 60; 65; 70; 75; 80; 85,155
+174,PHL-4,257,PET-active,medium,G1,12,Uncultured bacterium,77133,exact_sequence,45; 50; 55; 60; 65,45; 50; 55; 60; 65,154
+175,PHL-5,257,PET-active,medium,G1,12,Uncultured bacterium,77133,exact_sequence,40; 45; 50; 55; 60; 65; 75,40; 45; 50; 55; 60; 65; 75,155
+176,PHL-6,257,PET-active,medium,G1,12,Uncultured bacterium,77133,exact_sequence,45; 50; 55; 60; 65,45; 50; 55; 60; 65,154
+177,Sub1,186,PET-active,high,G3,80,Unknown — insufficient evidence,,none,37; 50,37; 50,1
+178,RgCut-2,279,PET-active,high,G1,9,Unknown — insufficient evidence,,none,40,40,145
+179,PsCut,302,PET-active,high,G1,5,Unknown — insufficient evidence,,none,30,30,143
+180,PbauzCut,302,PET-active,high,G1,5,Unknown — insufficient evidence,,none,30,30,142
+182,FoCut5a,230,PET-active,high,G3,27,Unknown — insufficient evidence,,none,30,30,5
+183,MRCUT1,203,PET-active,medium,G3,79,Moniliophthora roreri,221103,exact_sequence,37,37,0
+184,PET1,315,PET-active,high,G1,78,Unknown — insufficient evidence,,none,50,50,157
+185,SM14est,284,PET-active,high,G1,19,Streptomyces sp.,1931,exact_sequence,10; 28; 37; 45,45,147
+195,BurPL,426,PET-active,high,G1,77,Unknown — insufficient evidence,,none,25; 30; 35; 40; 45; 50,25; 30; 35; 40; 45; 50,4
+196,PET40,263,PET-active,high,G1,2,Amycolatopsis sp.,37632,exact_sequence,40,40,156
+197,PbsA,304,PET-active,high,G1,9,Acidovorax delafieldii,47920,exact_sequence,30,30,141
+200,Hfor_PE-H,304,PET-active (condition-dependent),high,G1,5,Halopseudomonas formosensis,1002526,exact_sequence,30,30,139
+201,PaCut,298,PET-active,high,G1,10,Unknown — insufficient evidence,,none,30,30,126
+209,Lip4_120,417,PET-active,high,G5,76,Unknown — insufficient evidence,,none,,,1
+210,Est8_89,266,PET-active,high,G2,75,Unknown — insufficient evidence,,none,,,0
+211,Est11_32,256,PET-active,high,G2,74,Unknown — insufficient evidence,,none,,,0
+212,Est18_23,491,PET-active,high,G4,73,Unknown — insufficient evidence,,none,,,1
+213,Ces19_14,240,PET-active,high,G2,90,Unknown — insufficient evidence,,none,,,0
+214,Ces39_5,249,PET-active,high,G2,91,Unknown — insufficient evidence,,none,,,0
+215,CaPETase,299,PET-active (condition-dependent),high,G1,92,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,145
+223,HG-2,259,PET-active (condition-dependent),high,G2,102,Unknown — insufficient evidence,,none,37,37,0
+224,HG-3,270,PET-active,high,G2,109,Unknown — insufficient evidence,,none,37,37,0
+225,HG-4,254,PET-active (condition-dependent),high,G2,108,Unknown — insufficient evidence,,none,37,37,0
+226,HG-5,313,PET-active (condition-dependent),high,G1,107,Unknown — insufficient evidence,,none,37,37,0
+227,jmPE13,273,PET-active,high,G1,10,Unknown — insufficient evidence,,none,30,30,123
+228,jmPE14,271,PET-active,high,G1,10,Unknown — insufficient evidence,,none,30,30,138
+230,TaC,228,PET-active,high,G3,110,Unknown — insufficient evidence,,none,50; 60,50,5
+231,DmC,238,PET-active,high,G3,105,Unknown — insufficient evidence,,none,50,50,5
+232,RtC,231,PET-active,high,G3,29,Unknown — insufficient evidence,,none,50,50,5
+235,LipMRD9,215,PET-active,high,G5,104,Unknown — insufficient evidence,,none,30; 40,30; 40,0
+236,dsPETase01,287,PET-active,high,G1,103,Unknown — insufficient evidence,,none,25; 30; 35; 37; 40; 45; 50; 55; 60; 65; 70; 75,25; 30; 35; 37; 40; 45; 50; 55; 60; 65,155
+237,dsPETase05,301,PET-active,high,G1,25,Unknown — insufficient evidence,,none,25; 30; 35; 37; 40; 45; 50; 55; 60; 65; 70; 75,25; 30; 35; 37; 40; 45; 50; 55; 60; 65; 70,5
+238,dsPETase06,292,PET-active,high,G1,16,Unknown — insufficient evidence,,none,25; 30; 35; 37; 40; 45; 50; 55; 60; 65; 70; 75,25; 30; 35; 37; 40; 45; 50; 55,1
+240,Dkca1,462,PET-active,high,G4,100,Unknown — insufficient evidence,,none,37,37,0
+241,PpPETase,298,PET-active,high,G1,10,Unknown — insufficient evidence,,none,30; 50,30; 50,138
+242,ScPETase,300,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30; 50,30; 50,157
+243,HGMP01,275,PET-active,high,G1,99,Unknown — insufficient evidence,,none,25; 30; 35; 37; 40; 45,25; 30; 35; 37; 40; 45,0
+244,PD3,352,PET-active,high,G1,98,Unknown — insufficient evidence,,none,30,30,0
+256,APET-5,278,PET-active,high,G1,97,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,0
+257,KbPETase,254,PET-active,high,G1,4,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60; 65,30; 40; 50; 55; 60; 65,115
+258,APET-15,259,PET-active,high,G1,95,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,151
+259,APET-17,263,PET-active,high,G1,9,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,151
+260,APET-19,254,PET-active,high,G1,94,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,143
+261,APET-20,267,PET-active,high,G1,70,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,96
+262,APET-23,326,PET-active,high,G1,71,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,0
+263,APET-24,248,PET-active,high,G1,61,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,6
+264,APET-25,256,PET-active,high,G1,69,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,6
+265,APET-26,242,PET-active,high,G1,48,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,5
+266,APET-27,253,PET-active,high,G1,25,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,6
+267,APET-28,244,PET-active,high,G1,47,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,6
+268,APET-29,276,PET-active,high,G1,46,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,0
+269,APET-32,263,PET-active,high,G1,16,Unknown — insufficient evidence,,none,30; 40; 50; 55; 60,30; 40; 50; 55; 60,1
+270,Mipa-P,294,PET-active,high,G1,45,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,135
+271,1628,463,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,69
+272,1611,465,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,73
+273,1625,468,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,73
+274,1603,465,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,68
+275,1663,289,PET-active,high,G1,4,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,106
+276,Kubu-P,288,PET-active,high,G1,4,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70,30; 40; 50; 60; 70,123
+277,1538,472,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,69
+278,1465,415,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,82
+279,1621,465,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,75
+280,1617,465,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,69
+281,1534,469,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,73
+282,1489,447,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,69
+283,1521,443,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,64
+284,1525,444,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,68
+285,1468,444,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,74
+286,1507,275,PET-active,high,G1,4,Unknown — insufficient evidence,,none,30,30,125
+287,1491,455,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,74
+288,1821,378,PET-active,high,G1,14,Unknown — insufficient evidence,,none,30,30,3
+289,1477,315,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,125
+290,1482,413,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,65
+291,1522,276,PET-active,high,G1,4,Unknown — insufficient evidence,,none,30,30,125
+292,1546,448,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,72
+293,385,272,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,156
+294,1642,465,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,75
+295,917,297,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,156
+296,1537,425,PET-active,high,G1,8,Unknown — insufficient evidence,,none,30,30,77
+297,1519,426,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,85
+298,1678,424,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,72
+299,1496,304,PET-active,high,G1,8,Unknown — insufficient evidence,,none,30,30,131
+300,1169,276,PET-active,high,G1,42,Unknown — insufficient evidence,,none,30,30,150
+301,1637,462,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,74
+302,1463,265,PET-active,high,G1,4,Unknown — insufficient evidence,,none,30,30,145
+303,1545,467,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,72
+304,554,309,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,158
+305,1573,422,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,75
+306,1654,418,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,77
+307,1555,348,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,136
+308,1591,463,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,73
+309,1620,461,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,76
+310,1240,303,PET-active,high,G1,41,Unknown — insufficient evidence,,none,30,30,150
+311,1594,463,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,70
+312,1457,302,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,133
+313,247,288,PET-active,high,G1,39,Unknown — insufficient evidence,,none,30,30,156
+314,1641,460,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,73
+315,1309,286,PET-active,high,G1,23,Unknown — insufficient evidence,,none,30,30,148
+316,414,289,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,157
+317,1506,436,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,79
+318,1493,454,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,68
+319,1395,288,PET-active,high,G1,31,Unknown — insufficient evidence,,none,30,30,145
+320,1478,331,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,135
+321,1571,329,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,158
+322,169,308,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,157
+323,1638,277,PET-active,high,G1,38,Unknown — insufficient evidence,,none,30,30,121
+324,1868,436,PET-active,high,G1,7,Unknown — insufficient evidence,,none,30,30,78
+325,1718,337,PET-active,high,G1,36,Unknown — insufficient evidence,,none,30,30,127
+326,401,296,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,156
+327,1392,287,PET-active,high,G1,35,Unknown — insufficient evidence,,none,30,30,149
+328,486,300,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,157
+329,1424,316,PET-active,high,G1,34,Unknown — insufficient evidence,,none,30,30,149
+330,1475,375,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,56
+331,282,299,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,156
+332,1635,487,PET-active,high,G1,1,Unknown — insufficient evidence,,none,30,30,68
+333,1228,281,PET-active,high,G1,33,Unknown — insufficient evidence,,none,30,30,140
+334,1876,423,PET-active,high,G1,14,Unknown — insufficient evidence,,none,30,30,1
+335,1340,298,PET-active,high,G1,17,Unknown — insufficient evidence,,none,30,30,149
+336,191,316,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30,30,157
+337,PC3,292,PET-active (condition-dependent),high,G1,2,Unknown — insufficient evidence,,none,30; 40; 50; 60,30; 40; 50; 60,156
+338,PC4,309,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30; 40; 50; 60,30; 40; 50; 60,157
+339,PC5,307,PET-active,high,G1,2,Unknown — insufficient evidence,,none,30; 40; 50; 60,30; 40; 50; 60,156
+340,PC6,300,PET-active,high,G1,3,Unknown — insufficient evidence,,none,30; 40; 50; 60,30; 40; 50; 60,157
+341,PC8,303,PET-active (condition-dependent),high,G1,18,Unknown — insufficient evidence,,none,30; 40; 50; 60,30; 40; 50; 60,137
+381,DP003,259,PET-active (condition-dependent),high,G1,19,Jonesia denitrificans,43674,contained_sequence,40; 60,40,148
+382,DP006,263,PET-active (condition-dependent),high,G1,49,Actinokineospora alba,504798,contained_sequence,40,40,148
+383,DP007,266,PET-active (condition-dependent),high,G1,40,Actinokineospora spheciospongiae,909613,contained_sequence,40,40,150
+384,DP008,264,PET-active (condition-dependent),high,G1,51,Herbihabitans rhizosphaerae,1872711,contained_sequence,40; 60,40; 60,153
+385,DP016,280,PET-active (condition-dependent),high,G1,21,Actinomadura physcomitrii,2650748,contained_sequence,40; 60,40; 60,155
+386,DP017,257,PET-active,high,G1,68,Actinokineospora xionganensis,2684470,contained_sequence,40,40,155
+387,DP021,395,PET-active (condition-dependent),high,G1,67,Dactylosporangium sp.,60453,contained_sequence,40; 60,40,50
+388,DP038,266,PET-active (condition-dependent),high,G1,20,Piscinibacter gummiphilus; Rhizobacter sp.,1909292; 946333,contained_sequence,40; 60,40,154
+389,DP039,267,PET-active (condition-dependent),high,G1,22,Unknown — insufficient evidence,,none,40; 60,40,147
+390,DP040,269,PET-active (condition-dependent),high,G1,65,Actinokineospora spheciospongiae,909613,contained_sequence,40,40,149
+391,DP043,269,PET-active,high,G1,6,Actinoplanes sp.; Actinoplanes sp. DH11,2857011,contained_sequence,40; 60,40; 60,141
+392,DP054,261,PET-active (condition-dependent),high,G1,63,Actinomadura rayongensis,1429076,contained_sequence,40,40,144
+393,DP056,263,PET-active (condition-dependent),high,G1,2,Actinomycetes bacterium,1883427,contained_sequence,40,40,155
+394,DP057,287,PET-active (condition-dependent),high,G1,2,Acidimicrobiales bacterium,2201156,contained_sequence,40,40,164
+395,DP059,392,PET-active (condition-dependent),high,G1,1,Micromonosporales bacterium,2201156,contained_sequence,40; 60,40; 60,63
+396,DP061,404,PET-active (condition-dependent),high,G1,1,Paractinoplanes polyasparticus,2201156,contained_sequence,40; 60,40,72
+397,DP068,420,PET-active (condition-dependent),high,G1,1,Micromonosporales bacterium,2201156,exact_sequence,40; 60,40; 60,54
+398,DP078,273,PET-active,high,G1,10,Pseudomonas fluvialis,1793966,contained_sequence,40,40,128
+399,DP080,259,PET-active (condition-dependent),high,G1,62,Thermoleophilaceae bacterium,2732252,contained_sequence,40; 60,40,151
+400,DP081,425,PET-active (condition-dependent),high,G1,60,Micromonosporales bacterium,2732252,exact_sequence,40; 60,40,67
+401,DP082,259,PET-active (condition-dependent),high,G1,52,Paractinoplanes durhamensis,2732252,contained_sequence,40; 60,40; 60,155
+402,DP084,257,PET-active (condition-dependent),high,G1,2,Hamadaea sp.,2024425,contained_sequence,40; 60,40,156
+403,DP089,257,PET-active (condition-dependent),high,G1,59,Promicromonospora panici,2219658,contained_sequence,40,40,150
+404,DP090,268,PET-active (condition-dependent),high,G1,2,Streptomyces sp.,1931,contained_sequence,40; 60,40; 60,156
+405,DP092,417,PET-active (condition-dependent),high,G1,7,Microbispora catharanthi,1712871,contained_sequence,40; 60,40,77
+406,ESM006,405,PET-active (condition-dependent),high,G1,1,Saccharothrix sp.,1873460,exact_sequence,40; 60,40,58
+407,ESM010,423,PET-active (condition-dependent),high,G1,7,Microbispora,2005,contained_sequence,40; 60,40,79
+408,ESM012,401,PET-active (condition-dependent),high,G1,1,Solwaraspora sp.,1912063,contained_sequence,40; 60,40,49
+409,ESM021,398,PET-active (condition-dependent),high,G1,7,Microbispora oryzae,2806554,contained_sequence,40; 60,40,78
+410,ESM024,432,PET-active (condition-dependent),high,G1,7,Microbispora triticiradicis,2200763,exact_sequence,40,40,78
+411,ESM026,416,PET-active (condition-dependent),high,G1,7,Microbispora sp.,1898321,contained_sequence,40; 60,40,78
+412,ESM033,380,PET-active (condition-dependent),high,G1,1,Phytohabitans rumicis,1076125,contained_sequence,40; 60,40,68
+413,ESM035,382,PET-active (condition-dependent),high,G1,1,Saccharothrix deserti,2593674,contained_sequence,40; 60,40,85
+414,ESM038,417,PET-active (condition-dependent),high,G1,7,Microbispora sp.,1898321,contained_sequence,40; 60,40; 60,78
+415,ESM043,402,PET-active (condition-dependent),high,G1,1,Streptomyces sp.,1931,contained_sequence,40,40,81
+416,ESM045,256,PET-active,high,G1,9,Rhizobacter sp.,1909292,contained_sequence,40,40,150
+417,ESM050,244,PET-active (condition-dependent),high,G1,15,Acidimicrobiales bacterium,2201156,contained_sequence,40; 60,40; 60,150
+418,ESM052,417,PET-active (condition-dependent),high,G1,1,Paractinoplanes deccanensis,2201156,exact_sequence,40; 60,40; 60,80
+419,ESM058,412,PET-active (condition-dependent),high,G1,1,Phytohabitans houttuyneae,1076126,contained_sequence,40; 60,40,73
+420,ESM059,409,PET-active (condition-dependent),high,G1,1,Micromonospora craterilacus,1655439,contained_sequence,40; 60,40; 60,70
+421,ESM060,381,PET-active (condition-dependent),high,G1,6,Paractinoplanes rishiriensis,1655439,contained_sequence,40; 60,40; 60,84
+422,ESM061,293,PET-active (condition-dependent),high,G1,1,Plantactinospora alkalitolerans,2789879,contained_sequence,40; 60,40,156
+423,ESM062,412,PET-active (condition-dependent),high,G1,1,Micromonospora taraxaci,1316803,contained_sequence,40; 60,40; 60,74
+424,ESM064,374,PET-active (condition-dependent),high,G1,6,Phytohabitans aurantiacus,1316803,contained_sequence,40,40,83
+425,ESM065,270,PET-active (condition-dependent),high,G1,1,Micromonospora qiuiae,502268,contained_sequence,40; 60,40; 60,152
+426,ESM069,408,PET-active (condition-dependent),high,G1,1,Micromonospora saelicesensis,285676,contained_sequence,40; 60,40; 60,73
+427,ESM070,400,PET-active (condition-dependent),high,G1,8,Micromonospora sp.,1876,contained_sequence,40; 60,40,79
+428,ESM080,419,PET-active,high,G1,1,Micromonospora rifamycinica,291594,contained_sequence,40,40,73
+429,ESM081,375,PET-active,high,G1,6,Micromonospora sp.,1876,contained_sequence,40,40,75
+430,ESM082,251,PET-active (condition-dependent),high,G1,4,Dactylosporangium vinaceum,53362,contained_sequence,40; 60,40; 60,145
+431,ESM084,375,PET-active (condition-dependent),high,G1,1,Actinoallomurus spadix,79912,contained_sequence,40; 60,40,69
+432,ESM090,251,PET-active (condition-dependent),high,G1,4,Dactylosporangium sucinum,1424081,contained_sequence,40; 60,40; 60,139
+433,ESM093,251,PET-active (condition-dependent),high,G1,4,Dactylosporangium siamense,685454,contained_sequence,40; 60,40; 60,143
+434,ESM096,273,PET-active (condition-dependent),high,G1,10,Pseudomonas subflava,2952933,contained_sequence,40,40,139
+435,ESM097,400,PET-active (condition-dependent),high,G1,8,Dactylosporangium matsuzakiense,53360,contained_sequence,40,40,77
+436,ESM101,420,PET-active (condition-dependent),high,G1,1,Micromonospora sp.,1876,contained_sequence,40; 60,40,75
+437,ESM121,337,PET-active (condition-dependent),high,G1,1,Micromonospora sp.,1876,exact_sequence,40; 60,40,208
+438,ESM128,256,PET-active (condition-dependent),high,G1,6,Verrucosispora sp.,1871626,contained_sequence,40; 60,40; 60,144
+439,ESM130,416,PET-active (condition-dependent),high,G1,1,Micromonospora sp.,1876,contained_sequence,40; 60,40,72
+440,ESM136,397,PET-active (condition-dependent),high,G1,1,Actinoplanes ianthinogenes,122358,contained_sequence,40; 60,40,75
+441,ESM139,313,PET-active (condition-dependent),high,G1,7,Amycolatopsis sp.,37632,contained_sequence,40; 60,40,190
+442,ESM140,260,PET-active (condition-dependent),high,G1,2,Amycolatopsis sp.,37632,contained_sequence,40; 60,40; 60,155
+443,ESM144,251,PET-active (condition-dependent),high,G1,4,Catellatospora bangladeshensis,310355,contained_sequence,40; 60,40,140
+444,ESM156,262,PET-active (condition-dependent),high,G1,2,Paractinoplanes tereljensis,310355,contained_sequence,40; 60,40,155
+445,ESM157,275,PET-active (condition-dependent),high,G1,6,Micromonospora acroterricola,2202421,contained_sequence,40; 60,40; 60,145
+446,ESM159,257,PET-active (condition-dependent),high,G1,6,Rhizocola hellebori,1392758,contained_sequence,40; 60,40; 60,141
+447,ESM160,256,PET-active (condition-dependent),high,G1,6,Asanoa hainanensis,560556,contained_sequence,40; 60,40; 60,141
+448,ESM167,260,PET-active (condition-dependent),high,G1,2,Amycolatopsis tolypomycina,208445,contained_sequence,40; 60,40; 60,155
+449,ESM169,266,PET-active (condition-dependent),high,G1,20,Rhizobacter sp.,1909292,contained_sequence,40; 60,40; 60,156
+450,ESM173,414,PET-active (condition-dependent),high,G1,1,Micromonospora sp.,1876,contained_sequence,40; 60,40,73
+451,ESM177,251,PET-active (condition-dependent),high,G1,4,Catellatospora methionotrophica,121620,contained_sequence,40; 60,40; 60,129
+452,ESM186,277,PET-active (condition-dependent),high,G1,5,Halopseudomonas yangmingensis,1720063,contained_sequence,40,40,128
+453,TEP010,409,PET-active (condition-dependent),high,G1,1,Unknown — insufficient evidence,,none,40; 60,40; 60,68
+454,TEP014,261,PET-active (condition-dependent),high,G1,3,Thermobifida cellulosilytica,144786,exact_sequence,40; 60,40,156
+455,TEP024,402,PET-active (condition-dependent),high,G1,8,Streptomyces sp.,1931,contained_sequence,40; 60,40,75
+456,TEP037,259,PET-active (condition-dependent),high,G1,11,Actinomycetes bacterium,1883427,exact_sequence,40; 60,40,156
+457,TEP041,266,PET-active (condition-dependent),high,G1,1,Crossiella sp.,1911417,exact_sequence,40; 60,40,138
+458,TEP054,421,PET-active (condition-dependent),high,G1,1,Dactylosporangium aurantiacum,35754,contained_sequence,40; 60,40; 60,74
+459,TEP061,256,PET-active (condition-dependent),high,G1,2,Microbispora rosea; Microbispora rosea subsp. Aerata,147065; 58117,contained_sequence,40; 60,40,156
+460,TEP067,279,PET-active (condition-dependent),high,G1,21,Actinomadura sp.,1989,contained_sequence,40,40,154
+461,TEP083,291,PET-active (condition-dependent),high,G1,1,Micromonosporaceae bacterium,1873464,contained_sequence,40; 60,40,152
+462,TEP091,255,PET-active (condition-dependent),high,G1,2,Unknown — insufficient evidence,,none,40,40,155
+463,TEP092,414,PET-active (condition-dependent),high,G1,1,Plantactinospora endophytica,673535,contained_sequence,40; 60,40,72
+464,TEP097,402,PET-active (condition-dependent),high,G1,8,Streptomyces swartbergensis,487165,contained_sequence,40; 60,40; 60,77
+465,TEP101,272,PET-active (condition-dependent),high,G1,17,Actinomadura atramentaria,1990,contained_sequence,40; 60,40; 60,156
+466,TEP102,402,PET-active (condition-dependent),high,G1,8,Unknown — insufficient evidence,,none,40; 60,40,74
+467,TEP103,248,PET-active,high,G1,4,Kutzneria sp.,1930788,contained_sequence,40,40,127
+468,TEP105,261,PET-active (condition-dependent),high,G1,11,Saccharopolyspora hirsuta,1837,contained_sequence,40; 60,40; 60,156
+469,TEP109,261,PET-active (condition-dependent),high,G1,1,Unknown — insufficient evidence,,none,40; 60,40; 60,145
+470,TEP111,411,PET-active (condition-dependent),high,G1,1,Unknown — insufficient evidence,,none,40; 60,40; 60,72
+471,TEP114,377,PET-active (condition-dependent),high,G1,1,Unknown — insufficient evidence,,none,40; 60,40; 60,73
+472,TEP163,392,PET-active (condition-dependent),high,G1,1,Streptomyces sp.,1931,contained_sequence,40; 60,40; 60,74
+473,TEP164,403,PET-active (condition-dependent),high,G1,1,Crossiella sp.,1911417,exact_sequence,40; 60,40,76
+474,TEP165,391,PET-active (condition-dependent),high,G1,1,Micromonospora sp.,1876,contained_sequence,40; 60,40; 60,69
+475,TEP168,414,PET-active (condition-dependent),high,G1,1,Micromonospora lutea,419825,contained_sequence,40; 60,40,73
+476,TEP178,257,PET-active (condition-dependent),high,G1,2,Hamadaea flava,1742688,contained_sequence,40; 60,40; 60,156
+477,TEP181,412,PET-active (condition-dependent),high,G1,1,Unknown — insufficient evidence,,none,40; 60,40,75
+478,TEP189,242,PET-active (condition-dependent),high,G1,15,Acidimicrobiales bacterium,2201156,exact_sequence,40; 60,40; 60,132
+479,TEP194,261,PET-active (condition-dependent),high,G1,2,Sphaerisporangium fuscum,2835868,contained_sequence,40; 60,40; 60,155
+480,KaPETase,286,PET-active,high,G1,2,Unknown — insufficient evidence,,none,25; 80,25; 80,156
+481,Sis,282,PET-active,high,G1,57,Unknown — insufficient evidence,,none,30; 50; 70,30; 50; 70,128
+483,DIEGO,293,PET-active,high,G1,13,Unknown — insufficient evidence,,none,60,60,156
+484,TA21,352,PET-active,high,G7,56,Unknown — insufficient evidence,,none,30; 60; 70,60; 70,0
+485,TA26,321,PET-active,high,G2,55,Unknown — insufficient evidence,,none,30; 60; 70,60; 70,0
+486,TA29,296,PET-active,high,G2,54,Unknown — insufficient evidence,,none,30; 60; 70,60; 70,0
+489,GuaPA,299,PET-active (condition-dependent),high,G1,53,Unknown — insufficient evidence,,none,30; 40; 50; 60; 70; 80,40; 50; 60; 70; 80,0
+495,PET93,434,PET-active,high,G1,26,Unknown — insufficient evidence,,none,37,37,1
+496,PET94,408,PET-active,high,G1,26,Unknown — insufficient evidence,,none,37,37,1

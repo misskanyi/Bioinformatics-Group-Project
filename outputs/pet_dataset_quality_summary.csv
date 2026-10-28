@@ -1,0 +1,42 @@
+metric,value,how_calculated
+Total protein sequences (PAZy CSV),301,Rows in pazy_proteins_sequences.csv (all have unique protein_id).
+PAZy FASTA sequences identical to CSV,301,FASTA header ID -> same sequence string as CSV.
+Proteins in assay JSON (all substrates),462,Unique protein_id in pazy_polymer_assays.json.gz.
+Protein x publication records in assay JSON,579,Top-level JSON entries.
+Total assay records (all substrates),7195,Sum of assays[] across records.
+Total PET-related assay records,5058,Assays with substrate == 'PET'.
+PET assays excluded (non-PET material or time-zero),79,"PET-G / unspecified polyester material, or duration = 0."
+PET assays: degradation detected,3432,Any direct metric > 0 or categorical detected/positive.
+PET assays: nothing detected,1451,"Direct metric exactly 0 (not digitised) or categorical not_detected/negative, and no positive measurement."
+PET assays: unclear,96,"Only indirect metrics, '<' values, '~0' digitised values or missing values."
+Unique proteins with PET-related assays,311,Unique protein_id among PET assays.
+PET-tested proteins with a sequence,301,protein_id present in CSV.
+PET-tested proteins WITHOUT a sequence (unmatched),10,ApLip-Ec; RmL; TmFae-PETase; Nepenthesin-1; Lipozyme TL; GlacPETase; PpEst; PFL1; Cbotu_EstB; BaCut1
+PET assays belonging to unmatched proteins,81,Assays whose protein_id is not in the CSV.
+Assay proteins never tested on PET,151,"In JSON, no PET assay; NOT treated as inactive."
+Unique PET-active proteins (all evidence positive),165,POS assays only.
+Unique PET-active proteins (condition-dependent),139,"POS and NEG assays, but every NEG comes from a paper that also reports activity."
+Unique PET-inactive proteins (tested conditions),4,"NEG assays only, no POS."
+  of which high confidence,1,">=3 NEG assays, >=2 distinct conditions, all purified."
+Proteins with unclear evidence,2,No POS and no NEG assay.
+Proteins with conflicting evidence (all),140,Both POS and NEG findings under different conditions (user definition).
+  of which conflicting across studies,1,A paper reports only NEG while another paper reports POS.
+Proteins with usable sequences and reliable labels,298,Valid sequence + label active/cond.-dependent/inactive with high or medium confidence.
+  usable active,298,
+  usable inactive,0,
+Sequences with non-standard amino acid characters,0,Regex ^[ACDEFGHIKLMNPQRSTVWY]+$.
+Exact duplicate sequences,0,Identical sequence strings among PET-tested proteins.
+Highly similar pairs >=95% identity (all PET-tested),40,Semi-global BLOSUM62 alignment; identities / shorter length.
+Highly similar pairs >=90% identity (all PET-tested),231,
+Highly similar pairs >=70% identity (all PET-tested),1206,
+Proteins with a >=90% identical neighbour,95,
+Usable-set pairs >=90% identity,216,
+Usable inactive proteins >=70% identical to a usable active,0,Leakage / hard-negative indicator.
+Independent clusters at 40% identity (active / inactive / mixed),36 / 0 / 0,Single-linkage clustering of usable proteins.
+Independent clusters at 70% identity (active / inactive / mixed),110 / 0 / 0,
+"Standardised-screen proteins (one study, same protocol)",25,experiment_context mentions 'Source Data Table D*'.
+  screen: active / cond.-dependent / inactive,2 / 23 / 0,
+PlasticDB sequences annotated with PET,186,Positive associations only.
+PlasticDB PET sequences not in PAZy CSV,123,Extra positives; no matching negatives.
+PAZy proteins tested on >=2 substrates,71,Basis for substrate-profile tasks.
+PET-tested proteins with organism found in provided files,57,Exact sequence match to PlasticDB / degraders_list / UniProt.

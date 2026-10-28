@@ -1,0 +1,10 @@
+identity_threshold,clusters_total,clusters_with_active,clusters_with_inactive,mixed_clusters,active_only_clusters,inactive_only_clusters
+0.3,11,11,0,0,11,0
+0.4,36,36,0,0,36,0
+0.5,47,47,0,0,47,0
+0.6,68,68,0,0,68,0
+0.7,110,110,0,0,110,0
+0.8,177,177,0,0,177,0
+0.9,228,228,0,0,228,0
+0.95,276,276,0,0,276,0
+1.0,298,298,0,0,298,0

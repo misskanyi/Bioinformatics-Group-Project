@@ -1,0 +1,7 @@
+check,value,passed
+Proteins selected (usable PET-active),298,True
+Sequences identical to raw PAZy CSV,298,True
+Sequences with only standard amino acids,298,True
+Unique protein IDs,298,True
+Unique sequences,298,True
+Recorded length equals sequence length,298,True

@@ -1,0 +1,39 @@
+{
+  "final_method": "hierarchical_average_alignment",
+  "final_parameter": 7.0,
+  "ari_final_vs_kmeans_same_k": 0.08,
+  "ari_final_vs_dbscan_eps0.5": 0.581,
+  "ari_final_vs_identity_group_70": 0.046,
+  "n_identity_groups_70": 110,
+  "pca_variance_explained": [
+    0.212,
+    0.126
+  ],
+  "mds_variance_explained": [
+    0.141,
+    0.093
+  ],
+  "selected_row": {
+    "method": "hierarchical_average_alignment",
+    "parameter": 7.0,
+    "n_clusters": 7,
+    "noise_points": 0,
+    "singletons": 2,
+    "largest_cluster_fraction": 0.883,
+    "silhouette_alignment": 0.344,
+    "silhouette_features": 0.061,
+    "stability_ari_mean": 0.987,
+    "stability_ari_sd": 0.025,
+    "mean_within_identity": 0.436,
+    "within_pairs_ge40pct": 0.667
+  },
+  "g1_subgroup_selected": {
+    "method": "kmeans_on_mds",
+    "k": 2,
+    "silhouette_alignment": 0.156,
+    "stability_ari_mean": 1.0,
+    "largest_subgroup_fraction": 0.627,
+    "singletons": 0,
+    "mean_within_identity": 0.472
+  }
+}
