@@ -56,7 +56,7 @@ export function HitList({
             transition={{ delay: i * 0.05 }}
             onClick={() => onSelect(h.rank)}
             className={cn(
-              "group relative w-full rounded-xl border p-3.5 text-left transition",
+              "group relative w-full rounded-xl border p-3.5 text-left transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/50",
               active ? "border-teal/50 bg-elevated glow-ring" : "border-line/70 bg-void/40 hover:border-line hover:bg-elevated/50",
             )}
           >

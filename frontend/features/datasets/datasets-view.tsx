@@ -56,7 +56,7 @@ export function DatasetsView() {
   if (!d)
     return (
       <div className="flex flex-col gap-6">
-        <Skeleton className="h-56 rounded-[14px]" />
+        <Skeleton label="Loading dataset inventory" className="h-56 rounded-[14px]" />
         <Skeleton className="h-96 rounded-[14px]" />
       </div>
     );
@@ -88,7 +88,7 @@ export function DatasetsView() {
               </thead>
               <tbody>
                 {d.inventory.map((r) => (
-                  <tr key={r.file} className="border-b border-line/40 align-top">
+                  <tr key={r.file} className="border-b border-line/40 align-top transition-colors duration-150 hover:bg-elevated/40">
                     <td className="max-w-[180px] break-all px-5 py-2.5 font-mono text-ink">{r.file}</td>
                     <td className="px-5 py-2.5 text-muted">{r.format}</td>
                     <td className="tabular px-5 py-2.5 font-mono">{num(r.records)}</td>
@@ -187,7 +187,7 @@ export function DatasetsView() {
             <table className="w-full min-w-[640px] text-left text-xs">
               <tbody>
                 {d.quality.map((q) => (
-                  <tr key={q.metric} className="border-b border-line/40 align-top">
+                  <tr key={q.metric} className="border-b border-line/40 align-top transition-colors duration-150 hover:bg-elevated/40">
                     <td className="px-5 py-2 text-ink">{q.metric}</td>
                     <td className="tabular px-5 py-2 font-mono text-teal">{q.value}</td>
                     <td className="max-w-md px-5 py-2 text-muted">{q.how_calculated}</td>

@@ -1,0 +1,7 @@
+model,kind,roc_auc_mean,roc_auc_sd,balanced_accuracy_mean,balanced_accuracy_sd
+majority class,baseline,0.5,0.0,0.5,0.0
+random scores,baseline,0.468,0.127,0.491,0.103
+cluster label only,baseline,0.528,0.058,0.533,0.057
+logistic regression (features),model,0.556,0.091,0.501,0.055
+random forest (features),model,0.556,0.094,0.552,0.068
+5-NN on alignment identity,model,0.517,0.089,0.508,0.042

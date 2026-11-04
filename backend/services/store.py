@@ -5,8 +5,10 @@ comes from a table written by `python -m pet_explorer.pipeline` or
 `analyze_pet_dataset.py`. Tables are loaded once and cached in memory.
 """
 
+import json
 from functools import lru_cache
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -135,6 +137,50 @@ def qc_checks() -> pd.DataFrame:
 @lru_cache
 def leave_one_out() -> pd.DataFrame:
     return _read(C.MATCHING / "leave_one_out_nearest_neighbour.csv")
+
+
+AUDIT = C.ROOT / "outputs" / "dataset_audit"
+
+
+def optional(path: Path, **kw) -> Optional[pd.DataFrame]:
+    """Like _read, but for stage-5 / audit outputs the API can run without."""
+    return pd.read_csv(path, **kw) if path.exists() else None
+
+
+@lru_cache
+def model_comparison():
+    return optional(C.PREDICTION / "model_comparison.csv")
+
+
+@lru_cache
+def permutation_test():
+    return optional(C.PREDICTION / "permutation_test.csv")
+
+
+@lru_cache
+def feature_importance():
+    return optional(C.PREDICTION / "feature_importance.csv")
+
+
+@lru_cache
+def prediction_dataset():
+    return optional(C.PREDICTION / "prediction_dataset.csv")
+
+
+@lru_cache
+def statistical_tests():
+    return optional(C.TEMPERATURE / "statistical_tests.csv")
+
+
+@lru_cache
+def null_baseline():
+    return optional(C.CLUSTERING / "null_baseline.csv")
+
+
+@lru_cache
+def audit_statistics() -> Optional[dict]:
+    path = AUDIT / "audit_statistics.json"
+    return json.loads(path.read_text()) if path.exists() else None
 
 
 @lru_cache

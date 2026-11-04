@@ -323,3 +323,86 @@ export interface Datasets {
   limitations: string[];
   downloads: { key: string; file: string; description: string; available: boolean }[];
 }
+
+/* ------------------------------------------------- Model validation (/api/modelling) */
+
+export interface ModelRow {
+  model: string;
+  kind: "baseline" | "model";
+  roc_auc_mean: number;
+  roc_auc_sd: number;
+  balanced_accuracy_mean: number;
+  balanced_accuracy_sd: number;
+}
+
+export interface Modelling {
+  available: boolean;
+  target: { label: string; definition: string; why: string; features: string; splitting: string; metrics: string };
+  dataset: {
+    n_proteins: number;
+    n_positive: number;
+    n_negative: number;
+    n_identity_groups: number;
+    by_subcluster: { subcluster: string; n: number; positive: number }[];
+    group_sizes: number[];
+  } | null;
+  comparison: ModelRow[] | null;
+  best_model: ModelRow | null;
+  permutation_test: {
+    model: string;
+    observed_roc_auc: number;
+    null_mean: number;
+    null_95th_percentile: number;
+    n_permutations: number;
+    empirical_p: number;
+  } | null;
+  feature_importance: { feature: string; logistic_coefficient_std: number; random_forest_importance: number }[] | null;
+  statistical_tests:
+    | {
+        dataset: string;
+        test: string;
+        comparison: string;
+        statistic: number;
+        p_value: number;
+        detail: string;
+        q_value_bh: number;
+        "significant_q<0.05": boolean;
+      }[]
+    | null;
+  clustering_null:
+    | { null_model: string; metric: string; observed: number; null_mean: number; null_sd: number; null_max: number; n_draws: number; empirical_p: number }[]
+    | null;
+  limitations: { title: string; detail: string }[];
+  candidates: { available: boolean; reason: string; pool: number | null; pool_source: string };
+  notes: string[];
+}
+
+/* ------------------------------------------------- Dataset audit (/api/audit) */
+
+export interface Audit {
+  available: boolean;
+  pazy?: {
+    assay_rows: number;
+    rows_with_positive_measurement: number;
+    rows_all_zero_or_nondetect: number;
+    proteins_with_positive: number;
+    proteins_with_only_zero: number;
+    top_units: [string, number][];
+    top_metric_types: [string, number][];
+    temperature: { n: number; min: number; max: number; median: number; distribution: Record<string, number> };
+  };
+  screen_labels?: {
+    n_enzymes_assayed: number;
+    ever_positive: number;
+    never_positive: number;
+    never_positive_with_ge8_conditions: number;
+    never_positive_with_lt8_conditions: number;
+    library_size_total: number;
+    library_never_assayed: number;
+  };
+  condition_labels?: { cond: string; n: number; pos: number; zero: number; pos_rate: number }[];
+  replicates?: { sample_condition_pairs: number; pairs_with_replicates: number; pairs_disagreeing: number; pairs_all_zero: number; pairs_all_positive: number };
+  overlap?: Record<string, { n_query: number; ge_99: number; ge_95: number; ge_90: number; ge_70: number; median_best_identity: number } | unknown>;
+  library?: { rows: number; unique_seq_aa: number; by_dataset: Record<string, number>; tm_1_measured: number; seq_len: { min: number; median: number; max: number } };
+  assay_table?: { rows: number; substrates: Record<string, number>; temperatures: Record<string, number>; pH: Record<string, number>; controls: Record<string, number> };
+}

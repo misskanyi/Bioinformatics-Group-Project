@@ -1,14 +1,7 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { NetworksView } from "@/features/networks/networks-view";
-
-export const metadata: Metadata = { title: "Protein Networks" };
-
-export default function Page() {
-  return (
-    <Suspense>
-      <NetworksView />
-    </Suspense>
-  );
+// Deep links such as /networks?protein=12 keep working.
+export default async function Page({ searchParams }: { searchParams: Promise<{ protein?: string }> }) {
+  const { protein } = await searchParams;
+  redirect(`/data?section=network${protein ? `&protein=${protein}` : ""}`);
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionConfig, motion } from "motion/react";
+import { MotionConfig } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -18,6 +18,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
+    // hydrated: lift the boot screen and release the page entrance animations
+    document.documentElement.dataset.ready = "";
     try {
       setCollapsed(localStorage.getItem(KEY) === "1");
     } catch {
@@ -41,15 +43,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Sidebar collapsed={collapsed} onToggle={toggle} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
         <div className={cn("min-h-screen transition-[padding] duration-300", collapsed ? "lg:pl-[72px]" : "lg:pl-64")}>
           <Topbar onOpenMobile={() => setMobileOpen(true)} />
-          <motion.main
-            key={pathname}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-auto w-full max-w-[1600px] px-4 pb-16 pt-6 sm:px-6 lg:px-8"
-          >
+          {/* keyed per route: only the page content remounts, so its staggered entrance (globals.css) plays once per visit */}
+          <main key={pathname} className="page-stage mx-auto w-full max-w-[1600px] px-4 pb-16 pt-6 sm:px-6 lg:px-8">
             {children}
-          </motion.main>
+          </main>
         </div>
       </TooltipProvider>
     </MotionConfig>

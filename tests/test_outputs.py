@@ -68,3 +68,37 @@ def test_organisms_never_expression_hosts():
     unknown = o[o.organism_evidence == "none"]
     assert (unknown.organism == UNKNOWN).all()
     assert (o.loc[o.organism != UNKNOWN, "organism_evidence"] != "none").all()
+
+
+def test_bh_fdr_matches_hand_computation():
+    from pet_explorer.temperature import bh_fdr
+    q = bh_fdr([0.01, 0.04, 0.03, 0.20])
+    assert list(q.round(4)) == [0.04, 0.0533, 0.0533, 0.2]
+
+
+def test_statistical_tests_are_fdr_corrected():
+    t = pd.read_csv(C.TEMPERATURE / "statistical_tests.csv")
+    assert (t.q_value_bh >= t.p_value).all()
+    assert t.q_value_bh.between(0, 1).all()
+    assert {"all PAZy assays", "standardised screen"} <= set(t.dataset)
+
+
+def test_clusters_beat_null_baselines():
+    b = pd.read_csv(C.CLUSTERING / "null_baseline.csv")
+    assert set(b.null_model) == {"random_labels_same_sizes", "average_linkage_on_shuffled_distances"}
+    assert (b.observed > b.null_max).all()
+
+
+def test_prediction_includes_baselines():
+    m = pd.read_csv(C.PREDICTION / "model_comparison.csv")
+    assert {"majority class", "random scores", "cluster label only"} <= set(m.model)
+    assert m.loc[m.model == "majority class", "roc_auc_mean"].item() == 0.5
+    d = pd.read_csv(C.PREDICTION / "prediction_dataset.csv")
+    assert d.protein_id.is_unique and set(d.detected_at_60c) == {0, 1}
+
+
+def test_domain_annotation_covers_every_protein():
+    f = pd.read_csv(C.ANNOTATION / "uniparc_domain_matches.csv")
+    assert f.protein_id.nunique() == 298
+    g = pd.read_csv(C.ANNOTATION / "domains_by_group.csv")
+    assert (g.n_in_uniparc <= g.n_proteins).all() and g.n_proteins.sum() == 298

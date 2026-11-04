@@ -100,7 +100,7 @@ function Sizes({ data }: { data: Clustering }) {
           </thead>
           <tbody>
             {data.summary.map((s) => (
-              <tr key={s.subcluster} className="border-b border-line/40 align-top">
+              <tr key={s.subcluster} className="border-b border-line/40 align-top transition-colors duration-150 hover:bg-elevated/40">
                 <td className="px-2 py-2 font-mono" style={{ color: clusterColor(s.subcluster) }}>
                   {s.subcluster}
                 </td>

@@ -1,0 +1,5 @@
+null_model,metric,observed,null_mean,null_sd,null_max,n_draws,empirical_p
+random_labels_same_sizes,silhouette_alignment,0.344,-0.183,0.05,-0.018,200,0.005
+random_labels_same_sizes,mean_within_identity,0.436,0.358,0.005,0.373,200,0.005
+average_linkage_on_shuffled_distances,silhouette_alignment,0.344,0.021,0.007,0.034,200,0.005
+average_linkage_on_shuffled_distances,mean_within_identity,0.436,0.398,0.004,0.407,200,0.005

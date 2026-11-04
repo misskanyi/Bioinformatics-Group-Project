@@ -1,0 +1,11 @@
+source_a,source_b,unique_seqs_a,unique_seqs_b,exact_shared_sequences
+PETML(sequences.fasta),SI2025(Rounds),498,477,0
+PETML(sequences.fasta),PAZy,498,301,16
+PETML(sequences.fasta),PlasticDB,498,311,16
+PETML(sequences.fasta),UniProt,498,3,0
+SI2025(Rounds),PAZy,477,301,102
+SI2025(Rounds),PlasticDB,477,311,12
+SI2025(Rounds),UniProt,477,3,0
+PAZy,PlasticDB,301,311,57
+PAZy,UniProt,301,3,1
+PlasticDB,UniProt,311,3,3

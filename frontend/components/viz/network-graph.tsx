@@ -188,7 +188,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, Props>(function Netwo
   return (
     <div
       ref={container}
-      className={cn("h-full w-full", className)}
+      className={cn("reveal h-full w-full", className)}
       role="img"
       aria-label={`Protein sequence-similarity network: ${data.nodes.length} proteins and ${data.edges.length} similarity edges`}
     />

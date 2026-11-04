@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
-from .api import conditions, datasets, network, organisms, overview, sequence
+from .api import conditions, datasets, modelling, network, organisms, overview, sequence
 from .services import layout, matching, store
 
 
@@ -42,5 +42,5 @@ def health():
             "organism_table": len(store.organisms()) > 0, "matcher_ready": matching.matcher() is not None}
 
 
-for module in (overview, sequence, network, conditions, organisms, datasets):
+for module in (overview, sequence, network, conditions, organisms, datasets, modelling):
     app.include_router(module.router, prefix="/api")

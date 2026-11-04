@@ -198,6 +198,40 @@ def select_subgroups(table, min_stability=0.95, max_largest=0.9):
                           ascending=[False, False, True]).iloc[0]
 
 
+def null_baseline(dist, sim, labels, n=200, seed=SEED):
+    """Is the selected partition better than chance? Two null models, n draws each:
+    1. random labels with the same cluster sizes - would ANY grouping of these
+       sizes score as well on the same distances?
+    2. the same method (average linkage, same k) on a distance matrix whose
+       values are shuffled between protein pairs - keeps the distance
+       distribution but destroys the homology structure.
+    Empirical p = (1 + draws >= observed) / (n + 1)."""
+    rng = np.random.default_rng(seed)
+    k = len(set(labels))
+    iu = np.triu_indices(len(dist), 1)
+    observed = {"silhouette_alignment": _silhouette(dist, labels, "precomputed"),
+                "mean_within_identity": _coherence(sim, labels)[0]}
+    draws = {"random_labels_same_sizes": [], "average_linkage_on_shuffled_distances": []}
+    for _ in range(n):
+        lab = rng.permutation(labels)
+        draws["random_labels_same_sizes"].append((_silhouette(dist, lab, "precomputed"), _coherence(sim, lab)[0]))
+        d = np.zeros_like(dist)
+        d[iu] = rng.permutation(dist[iu])
+        d += d.T
+        lab = hierarchical(d, k)
+        draws["average_linkage_on_shuffled_distances"].append((_silhouette(d, lab, "precomputed"),
+                                                               _coherence(1 - d, lab)[0]))
+    rows = []
+    for name, v in draws.items():
+        v = np.array(v, dtype=float)
+        for j, metric in enumerate(observed):
+            rows.append({"null_model": name, "metric": metric, "observed": round(observed[metric], 3),
+                         "null_mean": round(np.nanmean(v[:, j]), 3), "null_sd": round(np.nanstd(v[:, j]), 3),
+                         "null_max": round(np.nanmax(v[:, j]), 3), "n_draws": n,
+                         "empirical_p": round((1 + (v[:, j] >= observed[metric]).sum()) / (n + 1), 4)})
+    return pd.DataFrame(rows)
+
+
 def single_linkage_groups(pairs, ids, threshold, column="identity_shorter"):
     """Connected components of pairs with similarity >= threshold."""
     parent = {i: i for i in ids}

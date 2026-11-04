@@ -48,7 +48,7 @@ function DatasetStatus() {
     <Tip content={tip} side="bottom">
       <div
         role="status"
-        className="flex h-8 items-center gap-2 rounded-full border px-3 font-mono text-[11px]"
+        className="flex h-8 items-center gap-2 rounded-full border px-3 font-mono text-[11px] transition-colors duration-300"
         style={{ borderColor: `${color}40`, color, background: `${color}0f` }}
       >
         <span className="relative flex size-2">
@@ -79,8 +79,8 @@ function HelpDialog() {
             </Dialog.Close>
           </div>
           <Dialog.Description className="mt-2 text-sm leading-relaxed text-muted">
-            PET Enzyme Explorer is an evidence browser, not a prediction model. It compares a sequence with 298 experimentally
-            characterised PET-active proteins and shows what has been reported about them.
+            PET Enzyme Explorer compares a sequence with 298 experimentally characterised PET-active proteins and shows what has been
+            reported about them. Predictions are shown only where a model has been validated; see Model Validation.
           </Dialog.Description>
           <div className="mt-5 space-y-3">
             {Object.values(EVIDENCE).map((e) => (
@@ -101,7 +101,7 @@ function HelpDialog() {
             ))}
           </div>
           <p className="mt-5 text-xs text-muted">
-            See <Link href="/about#documentation" className="text-teal hover:underline">research documentation</Link> for methods.
+            See <Link href="/conclusions#methods" className="text-teal hover:underline">methods</Link> on the conclusions page.
           </p>
         </Dialog.Content>
       </Dialog.Portal>
@@ -119,7 +119,7 @@ export function Topbar({ onOpenMobile, className }: { onOpenMobile: () => void; 
       </Button>
       <div className="min-w-0">
         <nav aria-label="Breadcrumb" className="flex items-center gap-1 font-mono text-[11px] text-muted">
-          <Link href="/dashboard" className="shrink-0 whitespace-nowrap hover:text-teal">
+          <Link href="/overview" className="shrink-0 whitespace-nowrap hover:text-teal">
             PET Explorer
           </Link>
           {item && (

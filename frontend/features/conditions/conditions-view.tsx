@@ -125,7 +125,7 @@ export function ConditionsView() {
   if (!res.data)
     return (
       <div className="flex flex-col gap-6">
-        <Skeleton className="h-28 rounded-[14px]" />
+        <Skeleton label="Loading assay conditions" className="h-28 rounded-[14px]" />
         <div className="grid gap-6 xl:grid-cols-2">
           <Skeleton className="h-96 rounded-[14px]" />
           <Skeleton className="h-96 rounded-[14px]" />

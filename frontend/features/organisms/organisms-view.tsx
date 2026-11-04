@@ -8,6 +8,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge, EmptyState, ErrorState, Input, Panel, PanelHeader, Select, Skeleton } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
+import { networkHref } from "@/lib/nav";
 import { clusterColor, ORGANISM_EVIDENCE } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 import type { OrganismCard, OrganismEvidence, Organisms } from "@/types/api";
@@ -104,7 +105,7 @@ function Card({ o, i }: { o: OrganismCard; i: number }) {
           {o.proteins.slice(0, 12).map((p) => (
             <Link
               key={p.protein_id}
-              href={`/networks?protein=${p.protein_id}`}
+              href={networkHref(p.protein_id)}
               className="rounded-md border border-line/70 bg-void/50 px-2 py-0.5 font-mono text-[11px] transition hover:border-teal/50 hover:text-teal"
               title={`${ORGANISM_EVIDENCE[p.evidence].label} · ${p.confidence} confidence`}
             >
@@ -171,7 +172,7 @@ export function OrganismsView() {
   if (!res.data)
     return (
       <div className="flex flex-col gap-6">
-        <Skeleton className="h-52 rounded-[14px]" />
+        <Skeleton label="Loading source organisms" className="h-52 rounded-[14px]" />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-64 rounded-[14px]" />
@@ -258,9 +259,9 @@ export function OrganismsView() {
               </thead>
               <tbody>
                 {unknown.map((u) => (
-                  <tr key={u.protein_id} className="border-b border-line/40">
+                  <tr key={u.protein_id} className="border-b border-line/40 transition-colors duration-150 hover:bg-elevated/40">
                     <td className="px-5 py-2 font-mono">
-                      <Link href={`/networks?protein=${u.protein_id}`} className="hover:text-teal">
+                      <Link href={networkHref(u.protein_id)} className="hover:text-teal">
                         {u.protein_name}
                       </Link>
                     </td>

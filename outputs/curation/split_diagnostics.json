@@ -1,0 +1,45 @@
+{
+  "groups_spanning_both_sides": 0,
+  "n_train": 159,
+  "n_test": 49,
+  "train_positive": 93,
+  "train_negative": 66,
+  "test_positive": 17,
+  "test_negative": 32,
+  "train_groups": 43,
+  "test_groups": 14,
+  "max_cross_split_identity": 0.695,
+  "n_cross_split_pairs_above_70pct": 0,
+  "cv_folds": {
+    "0": {
+      "n": 85,
+      "positive": 52,
+      "negative": 33,
+      "groups": 1
+    },
+    "1": {
+      "n": 31,
+      "positive": 10,
+      "negative": 21,
+      "groups": 2
+    },
+    "2": {
+      "n": 31,
+      "positive": 15,
+      "negative": 16,
+      "groups": 18
+    },
+    "3": {
+      "n": 31,
+      "positive": 16,
+      "negative": 15,
+      "groups": 18
+    },
+    "4": {
+      "n": 30,
+      "positive": 17,
+      "negative": 13,
+      "groups": 18
+    }
+  }
+}

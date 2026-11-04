@@ -1,0 +1,41 @@
+source_a,source_b,metric,value,note
+PETML,SI2025_library,exact shared sequences,0.0,
+PETML,SI2025_assayed,exact shared sequences,0.0,
+PETML,PAZy,exact shared sequences,16.0,
+PETML,PlasticDB,exact shared sequences,16.0,
+PETML,UniProt,exact shared sequences,0.0,
+SI2025_library,SI2025_assayed,exact shared sequences,213.0,
+SI2025_library,PAZy,exact shared sequences,102.0,
+SI2025_library,PlasticDB,exact shared sequences,12.0,
+SI2025_library,UniProt,exact shared sequences,0.0,
+SI2025_assayed,PAZy,exact shared sequences,100.0,
+SI2025_assayed,PlasticDB,exact shared sequences,12.0,
+SI2025_assayed,UniProt,exact shared sequences,0.0,
+PAZy,PlasticDB,exact shared sequences,57.0,
+PAZy,UniProt,exact shared sequences,1.0,
+PlasticDB,UniProt,exact shared sequences,3.0,
+SI2025_assayed,PETML,best-hit identity: median,0.6328,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PETML,best-hit identity: ge99,0.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PETML,best-hit identity: ge95,2.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PETML,best-hit identity: ge90,4.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PETML,best-hit identity: ge70,56.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PAZy,best-hit identity: median,1.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PAZy,best-hit identity: ge99,128.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PAZy,best-hit identity: ge95,131.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PAZy,best-hit identity: ge90,137.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_assayed,PAZy,best-hit identity: ge70,182.0,"local BLOSUM62, identity over shorter sequence"
+PETML,PAZy,best-hit identity: median,0.9961,"local BLOSUM62, identity over shorter sequence"
+PETML,PAZy,best-hit identity: ge99,329.0,"local BLOSUM62, identity over shorter sequence"
+PETML,PAZy,best-hit identity: ge95,490.0,"local BLOSUM62, identity over shorter sequence"
+PETML,PAZy,best-hit identity: ge90,494.0,"local BLOSUM62, identity over shorter sequence"
+PETML,PAZy,best-hit identity: ge70,500.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_unassayed,PAZy,best-hit identity: median,0.6832,"local BLOSUM62, identity over shorter sequence"
+SI2025_unassayed,PAZy,best-hit identity: ge99,8.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_unassayed,PAZy,best-hit identity: ge95,12.0,"local BLOSUM62, identity over shorter sequence"
+SI2025_unassayed,PAZy,best-hit identity: ge70,114.0,"local BLOSUM62, identity over shorter sequence"
+OLD (PAZy+PlasticDB+UniProt+degraders),-,unique sequences,557.0,
+NEW (PETML+SI2025),-,unique sequences,974.0,
+NEW,OLD,new sequences not in old,854.0,153.3% growth in unique sequences
+ALL,-,unique sequences after dedup,1411.0,never sum sources; this is the deduplicated union
+PAZy,2025 paper (10.1021/acscatal.5c03460),proteins PAZy ingested from the 2025 paper,99.0,ALL 99 are positives; PAZy ingested ZERO of the 84 all-zero enzymes
+degraders_list.tsv,2025 paper,rows citing the 2025 DOI,99.0,PlasticDB/degraders already absorbed the 2025 study - leakage trap

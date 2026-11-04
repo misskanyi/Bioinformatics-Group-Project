@@ -16,7 +16,7 @@ import { SequenceEditor } from "./sequence-editor";
 function Loading({ length }: { length: number }) {
   return (
     <Panel className="overflow-hidden p-8">
-      <div className="flex flex-col items-center gap-4 text-center">
+      <div role="status" className="flex flex-col items-center gap-4 text-center">
         <div className="relative h-10 w-full max-w-md overflow-hidden rounded-md border border-line/70 bg-void/60 font-mono text-[11px] leading-10 text-teal/70">
           <motion.div
             className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-teal/25 to-transparent"

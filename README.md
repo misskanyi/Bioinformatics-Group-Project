@@ -30,9 +30,11 @@ From the project root:
 # 1. Feasibility analysis (labels every PET assay/protein) - ~15 s
 .venv/bin/python analyze_pet_dataset.py
 
-# 2. Explorer analysis: clean set, alignments, clustering, temperature, organisms, network - ~1 min
+# 2. Explorer analysis: clean set, alignments, clustering, temperature + tests, organisms, network,
+#    then stage 5: null baselines, supervised model, domain annotation - ~5 min
 .venv/bin/python -m pet_explorer.pipeline          # all stages
 .venv/bin/python -m pet_explorer.pipeline --stage 3   # one stage (needs earlier outputs)
+.venv/bin/python -m pet_explorer.pipeline --stage 5 --refresh-annotation   # re-query UniParc
 
 # 3. Dashboard (reads cached outputs only)
 .venv/bin/streamlit run app/streamlit_app.py
@@ -41,9 +43,22 @@ From the project root:
 .venv/bin/python notebooks/build_notebook.py
 cd notebooks && ../.venv/bin/jupyter nbconvert --to notebook --execute --inplace pet_enzyme_explorer.ipynb
 
-# 5. Tests (25: input validation, matching, outputs, dashboard pages)
+# 5. Tests (30: input validation, matching, outputs, statistics, baselines, dashboard pages)
 .venv/bin/python -m pytest -q tests
 ```
+
+## Google Colab
+
+Open `notebooks/pet_enzyme_explorer.ipynb` in Colab (File → Open notebook → GitHub) and choose *Runtime → Run all*.
+The first cell clones this repository (raw data and cached outputs) and installs Biopython; nothing else is needed.
+The repository must be public, or Colab must be authorised to read it.
+
+## Notebook structure (follows the project brief)
+
+1. Question, objectives (O1–O4), hypotheses (H1–H3) · 2. Data acquisition and data dictionary · 3. Pre-processing and
+QC · 4. EDA · 5. Core analysis: alignment, clustering, motifs, temperature, statistical tests with FDR ·
+6. Biological interpretation: Pfam domains, literature, similarity network, organisms · 7. Machine learning: clustering
+vs null baselines, supervised 60 °C model vs baselines, sequence matcher · 8. Conclusions per objective.
 
 ## Layout
 
@@ -51,15 +66,17 @@ cd notebooks && ../.venv/bin/jupyter nbconvert --to notebook --execute --inplace
 |---|---|
 | `data/` | Six original downloads (PAZy, PlasticDB, UniProt). **Never modified.** |
 | `analyze_pet_dataset.py` | Feasibility analysis and assay/protein activity labelling |
-| `pet_explorer/` | Reusable modules: `preprocess`, `sequence_matching`, `similarity`, `features`, `clustering`, `network`, `temperature`, `organisms`, `plots`, `pipeline`, `config` |
+| `pet_explorer/` | Reusable modules: `preprocess`, `sequence_matching`, `similarity`, `features`, `clustering`, `network`, `temperature`, `organisms`, `annotation`, `prediction`, `plots`, `pipeline`, `config` |
 | `app/streamlit_app.py` | Dashboard: Protein Search, Protein Clusters, Temperature Analysis, Dataset Overview |
 | `notebooks/pet_enzyme_explorer.ipynb` | Reproducible scientific analysis with interpretations |
 | `tests/` | pytest suite |
 | `outputs/` | Feasibility outputs (`pet_dataset_feasibility_report.md`, …) |
 | `outputs/explorer/clean/` | Cleaned 298-protein set (CSV + FASTA), QC checks |
-| `outputs/explorer/clustering/` | Pairwise alignments, features, method comparison, assignments, summaries |
-| `outputs/explorer/network/` | **Cytoscape files** `ssn_nodes.csv`, `ssn_edges.csv`, threshold sensitivity, layout |
-| `outputs/explorer/temperature/` | Assay- and measurement-level temperature datasets, comparable series, per-protein summary |
+| `outputs/explorer/clustering/` | Pairwise alignments, features, method comparison, assignments, summaries, null baselines |
+| `outputs/explorer/network/` | **Cytoscape files** `ssn_nodes.csv`, `ssn_edges.csv`, threshold sensitivity, layout, centrality |
+| `outputs/explorer/temperature/` | Assay- and measurement-level temperature datasets, comparable series, per-protein summary, statistical tests (BH-FDR) |
+| `outputs/explorer/annotation/` | Pfam/InterPro matches from UniParc (cached), domains per group, literature comparison |
+| `outputs/explorer/prediction/` | Supervised 60 °C model: dataset, model vs baseline comparison, permutation test, feature importance |
 | `outputs/explorer/organisms/` | Per-protein organism table and per-source evidence links |
 | `outputs/explorer/figures/` | Static figures used in the notebook |
 | `outputs/explorer/FINDINGS.md` | Summary of findings and features needing more data |

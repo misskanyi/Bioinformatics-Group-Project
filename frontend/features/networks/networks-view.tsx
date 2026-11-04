@@ -1,7 +1,7 @@
 "use client";
 
 import { Download, Maximize2, RotateCcw, Search, ZoomIn, ZoomOut } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -25,9 +25,10 @@ function downloadCsv(name: string, rows: (string | number | null)[][]) {
   URL.revokeObjectURL(url);
 }
 
-export function NetworksView() {
+export function NetworksView({ showClusterAnalysis = true }: { showClusterAnalysis?: boolean } = {}) {
   const params = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const graph = useRef<NetworkGraphHandle>(null);
   const [identity, setIdentity] = useState(DEFAULT.identity);
   const [coverage, setCoverage] = useState(DEFAULT.coverage);
@@ -38,7 +39,7 @@ export function NetworksView() {
   const selected = params.get("protein") ? Number(params.get("protein")) : null;
 
   const net = useApi<NetworkData>(`/network?min_identity=${applied.identity}&min_coverage=${applied.coverage}`);
-  const clustering = useApi<Clustering>("/clustering");
+  const clustering = useApi<Clustering>(showClusterAnalysis ? "/clustering" : null);
   const [shown, setShown] = useState<NetworkData>();
   useEffect(() => {
     if (net.data) setShown(net.data); // keep the previous graph visible while a new threshold loads
@@ -56,7 +57,7 @@ export function NetworksView() {
     const sp = new URLSearchParams(params.toString());
     if (id == null) sp.delete("protein");
     else sp.set("protein", String(id));
-    router.replace(`/networks${sp.size ? `?${sp}` : ""}`, { scroll: false });
+    router.replace(`${pathname}${sp.size ? `?${sp}` : ""}`, { scroll: false });
   };
 
   useEffect(() => {
@@ -191,7 +192,7 @@ export function NetworksView() {
             ) : shown ? (
               <NetworkGraph ref={graph} data={shown} selectedId={selected} hiddenClusters={hidden} onSelect={select} />
             ) : (
-              <Skeleton className="h-full w-full" />
+              <Skeleton label="Loading similarity network" className="h-full w-full" />
             )}
             {net.loading && shown && (
               <div className="absolute right-3 top-3 rounded-full border border-teal/40 bg-void/80 px-3 py-1 font-mono text-[11px] text-teal">Updating edges…</div>
@@ -245,14 +246,14 @@ export function NetworksView() {
         </div>
       </div>
 
-      {clustering.error ? (
+      {!showClusterAnalysis ? null : clustering.error ? (
         <Panel>
           <ErrorState message={clustering.error.message} onRetry={clustering.retry} />
         </Panel>
       ) : clustering.data ? (
         <ClusterCharts data={clustering.data} />
       ) : (
-        <Skeleton className="h-[520px] rounded-[14px]" />
+        <Skeleton label="Loading similarity network" className="h-[520px] rounded-[14px]" />
       )}
     </div>
   );

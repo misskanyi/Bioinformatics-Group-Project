@@ -3,7 +3,7 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { AlertTriangle, Info, RotateCw, SearchX } from "lucide-react";
+import { AlertTriangle, Hourglass, Info, RotateCw, SearchX } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -76,10 +76,27 @@ export function Badge({
 }
 
 /* ---------------------------------------------------------------- Skeleton */
-export function Skeleton({ className }: { className?: string }) {
+/** Placeholder block. Pass `label` on the main skeleton of a region so screen readers hear what is loading. */
+export function Skeleton({ className, label }: { className?: string; label?: string }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-md bg-elevated/70", className)}>
-      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+    <div
+      className={cn("reveal relative overflow-hidden rounded-md bg-elevated/70", className)}
+      {...(label ? { role: "status", "aria-label": label } : { "aria-hidden": true })}
+    >
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-teal/[0.06] to-transparent" />
+    </div>
+  );
+}
+
+/** Labelled loading indicator for work that takes noticeable time (analysis, model outputs). */
+export function LoadingState({ title, children, className }: { title: string; children?: React.ReactNode; className?: string }) {
+  return (
+    <div role="status" className={cn("reveal flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
+      <div className="relative h-1 w-40 overflow-hidden rounded-full bg-line/70" aria-hidden>
+        <div className="absolute inset-y-0 left-0 w-2/5 animate-[boot-sweep_1.4s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-transparent via-teal to-transparent" />
+      </div>
+      <p className="font-medium text-ink">{title}</p>
+      {children && <div className="max-w-md text-sm leading-relaxed text-muted">{children}</div>}
     </div>
   );
 }
@@ -147,7 +164,7 @@ export function TabsTrigger({ className, ...props }: React.ComponentProps<typeof
   return (
     <TabsPrimitive.Trigger
       className={cn(
-        "rounded-md px-3 py-1.5 text-xs font-medium text-muted transition hover:text-ink",
+        "rounded-md px-3 py-1.5 text-xs font-medium text-muted transition duration-200 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/50",
         "data-[state=active]:bg-elevated data-[state=active]:text-teal data-[state=active]:shadow-[inset_0_0_0_1px_rgb(72_225_205/0.35)]",
         className,
       )}
@@ -209,7 +226,7 @@ export function Select({
 /* ---------------------------------------------------------------- States */
 export function ErrorState({ message, onRetry, className }: { message: string; onRetry?: () => void; className?: string }) {
   return (
-    <div role="alert" className={cn("flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
+    <div role="alert" className={cn("reveal flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
       <div className="grid size-11 place-items-center rounded-full border border-amber/40 bg-amber/10 text-amber">
         <AlertTriangle className="size-5" />
       </div>
@@ -226,21 +243,33 @@ export function ErrorState({ message, onRetry, className }: { message: string; o
   );
 }
 
+/**
+ * `empty`: the request worked but returned nothing.
+ * `unavailable`: the output has not been generated or is withheld on purpose (dashed amber ring).
+ */
 export function EmptyState({
   title,
   children,
   icon,
   className,
+  variant = "empty",
 }: {
   title: string;
   children?: React.ReactNode;
   icon?: React.ReactNode;
   className?: string;
+  variant?: "empty" | "unavailable";
 }) {
+  const unavailable = variant === "unavailable";
   return (
-    <div className={cn("flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
-      <div className="grid size-11 place-items-center rounded-full border border-line bg-elevated text-muted">
-        {icon ?? <SearchX className="size-5" />}
+    <div className={cn("reveal flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
+      <div
+        className={cn(
+          "grid size-11 place-items-center rounded-full border",
+          unavailable ? "border-dashed border-amber/50 bg-amber/[0.06] text-amber/90" : "border-line bg-elevated text-muted",
+        )}
+      >
+        {icon ?? (unavailable ? <Hourglass className="size-5" /> : <SearchX className="size-5" />)}
       </div>
       <p className="font-medium text-ink">{title}</p>
       {children && <div className="max-w-md text-sm leading-relaxed text-muted">{children}</div>}

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Tip } from "@/components/ui/primitives";
-import { FOOTER_NAV, MAIN_NAV, type NavItem } from "@/lib/nav";
+import { MAIN_NAV, type NavItem } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
 import { LogoMark } from "./logo";
@@ -19,7 +19,8 @@ function NavLink({ item, collapsed, active, onNavigate }: { item: NavItem; colla
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex h-10 items-center gap-3 rounded-lg px-3 text-sm transition-colors",
+        "group relative flex h-10 items-center gap-3 rounded-lg px-3 text-sm transition-colors duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/50",
         active ? "text-ink" : "text-muted hover:bg-elevated/60 hover:text-ink",
         collapsed && "justify-center px-0",
       )}
@@ -33,7 +34,12 @@ function NavLink({ item, collapsed, active, onNavigate }: { item: NavItem; colla
           <span className="absolute inset-y-2 left-0 w-[3px] rounded-r-full bg-teal shadow-[0_0_12px_#48E1CD]" />
         </motion.span>
       )}
-      <Icon className={cn("relative size-[18px] shrink-0", active ? "text-teal" : "group-hover:text-ink")} />
+      <Icon
+        className={cn(
+          "relative size-[18px] shrink-0 transition-[color,transform] duration-200",
+          active ? "text-teal" : "group-hover:text-ink motion-safe:group-hover:scale-110",
+        )}
+      />
       {!collapsed && <span className="relative truncate">{item.label}</span>}
     </Link>
   );
@@ -65,7 +71,7 @@ export function Sidebar({
     return (
       <div className="flex h-full flex-col">
         <div className={cn("flex h-16 items-center gap-3 px-4", c && "justify-center px-0")}>
-          <Link href="/dashboard" className="flex min-w-0 items-center gap-3" onClick={mobile ? onCloseMobile : undefined}>
+          <Link href="/overview" className="flex min-w-0 items-center gap-3" onClick={mobile ? onCloseMobile : undefined}>
             <LogoMark className="size-9 shrink-0" />
             {!c && (
               <div className="min-w-0 leading-tight">
@@ -89,9 +95,6 @@ export function Sidebar({
         </nav>
 
         <div className="mt-auto flex flex-col gap-1 border-t border-line/70 px-3 py-3">
-          {FOOTER_NAV.map((item) => (
-            <NavLink key={item.href} item={item} collapsed={c} active={false} onNavigate={mobile ? onCloseMobile : undefined} />
-          ))}
           {!mobile && (
             <button
               onClick={onToggle}

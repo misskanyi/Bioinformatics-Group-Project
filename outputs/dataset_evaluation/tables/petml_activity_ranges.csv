@@ -1,0 +1,29 @@
+workbook,n,min,max,median,range_span
+"Bell et al, 2022.xlsx",6,0.01,1.1,0.175,1.09
+"Cui et al, 2021 (NanoPET).xlsx",86,0.0,1.25,0.5,1.25
+"Cui et al, 2021 (PET film).xlsx",66,0.01,1.4,0.275,1.39
+"Li Z. et al, 2022.xlsx",7,0.193,4.269,0.778,4.076
+"Joo et al, 2018.xlsx",15,0.1,6.2,1.0,6.1
+"Xi et al, 2021.xlsx",3,2.25,6.25,5.75,4.0
+"Ma et al, 2018.xlsx",9,1.0,6.3,2.3,5.3
+"Li Q. et al, 2022.xlsx",8,0.25,11.0,5.5,10.75
+"Furukawa et al, 2019.xlsx",11,0.1,15.0,5.3,14.9
+"Nakamura et al, 2021.xlsx",24,1.2,15.6,5.1,14.4
+"Lu et al, 2022.xlsx",6,0.25,15.66,9.39,15.41
+"Wei et al, 2016.xlsx",12,7.0,19.0,17.5,12.0
+"Then et al, 2016.xlsx",9,0.2,25.2,22.6,25.0
+"Liu et al, 2018.xlsx",18,0.139,54.363,7.131,54.224
+"Sonnendecker et al, 2021.xlsx",8,0.0,75.0,2.5,75.0
+"Tournier et al, 2020 (Naturals).xlsx",4,0.011,93.756,2.48,93.745
+"Han et al, 2017.xlsx",12,0.0,100.0,9.525,100.0
+"Pfaff et al, 2022.xlsx",30,1.93,102.09,60.565,100.16
+"Tournier et al, 2020.xlsx",18,15.4,104.4,81.7,89.0
+"Son et al, 2019.xlsx",17,1.7,120.9,8.7,119.2
+"Wang et al, 2022.xlsx",13,0.0,163.6,71.3,163.6
+"Brott et al, 2021.xlsx",9,10.0,400.0,70.0,390.0
+"Erickson et al, 2022 (Project74).xlsx",43,0.0,500.0,28.14,500.0
+"Zeng et al, 2022.xlsx",34,3.162,562.341,31.623,559.179
+"Guo et al, 2022.xlsx",14,0.0,717.8,26.85,717.8
+"Chen et al, 2021.xlsx",22,0.0,1440.0,24.75,1440.0
+"Sagong et al, 2022.xlsx",7,426.7,1451.6,1242.9,1024.9
+"Zhang et al, 2021.xlsx",3,15.9,4055.0,871.8,4039.1

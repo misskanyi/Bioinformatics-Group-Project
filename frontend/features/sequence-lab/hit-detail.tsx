@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Badge, Notice } from "@/components/ui/primitives";
+import { networkHref } from "@/lib/nav";
 import { clusterColor, EVIDENCE, ORGANISM_EVIDENCE } from "@/lib/palette";
 import { doiUrl, pct } from "@/lib/utils";
 import type { Hit, MatchMethod } from "@/types/api";
@@ -65,7 +66,7 @@ export function HitDetail({ hit, method, queryLabel }: { hit: Hit; method: Match
           </div>
         </div>
         <Button asChild size="sm" variant="outline">
-          <Link href={`/networks?protein=${r.protein_id}`}>
+          <Link href={networkHref(r.protein_id)}>
             <Share2 /> View in network
           </Link>
         </Button>

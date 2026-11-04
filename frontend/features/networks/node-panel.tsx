@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge, EmptyState, ErrorState, Skeleton } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
+import { sequenceHref } from "@/lib/nav";
 import { clusterColor, ORGANISM_EVIDENCE } from "@/lib/palette";
 import { fmtTemps, pct } from "@/lib/utils";
 import type { NetworkNode, ProteinDetail } from "@/types/api";
@@ -101,7 +102,7 @@ export function NodePanel({ node, onClose, onSelect }: { node: NetworkNode | nul
         </>
       )}
       <Button asChild variant="primary" size="sm" className="mt-5 w-full">
-        <Link href={`/sequence-lab?protein=${node.id}`}>
+        <Link href={sequenceHref(node.id)}>
           <Dna /> Analyse in Sequence Laboratory
         </Link>
       </Button>

@@ -83,6 +83,244 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Subtle border/background response for non-clickable research cards. */
+@utility hover-card {
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+  &:hover {
+    border-color: rgb(72 225 205 / 0.32);
+    background-color: rgb(20 40 59 / 0.45);
+  }
+}
+
+/* One-off fade for charts, canvases and late-arriving content. */
+@utility reveal {
+  animation: enter-fade 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Grow a bar from its left edge; width stays in layout, so nothing shifts. */
+@utility grow-x {
+  transform-origin: left center;
+  animation: grow-x 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Gentle stagger for the direct children of a card grid. */
+@utility stagger {
+  & > * {
+    animation: enter-rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  & > :nth-child(2) { animation-delay: 40ms; }
+  & > :nth-child(3) { animation-delay: 80ms; }
+  & > :nth-child(4) { animation-delay: 120ms; }
+  & > :nth-child(5) { animation-delay: 160ms; }
+  & > :nth-child(6) { animation-delay: 200ms; }
+  & > :nth-child(n + 7) { animation-delay: 240ms; }
+}
+
+/* ------------------------------------------------------------- motion */
+/*
+ * Page entrance. <main class="page-stage"> is remounted per route, so each
+ * top-level section of the page fades up once, staggered. Rerenders never
+ * replay it; only a newly mounted section (e.g. data replacing a skeleton,
+ * or a new ?section= tab) animates. Ends on `transform: none` so sticky and
+ * fixed descendants behave normally afterwards.
+ */
+.page-stage > * > * {
+  animation: enter-rise 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.page-stage > * > :nth-child(2) { animation-delay: 50ms; }
+.page-stage > * > :nth-child(3) { animation-delay: 100ms; }
+.page-stage > * > :nth-child(4) { animation-delay: 150ms; }
+.page-stage > * > :nth-child(5) { animation-delay: 200ms; }
+.page-stage > * > :nth-child(n + 6) { animation-delay: 250ms; }
+
+/* Hold entrances until hydration so they play as the boot screen lifts. */
+html:not([data-ready]) .page-stage > * > *,
+html:not([data-ready]) .stagger > * {
+  animation-play-state: paused;
+}
+
+/* Every Recharts chart fades in once its container has measured itself. */
+.recharts-responsive-container {
+  animation: enter-fade 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------- boot screen */
+/*
+ * Server-rendered overlay shown only while the JavaScript bundle loads.
+ * It fades in after 200 ms, so a fast load never shows it, and lifts as
+ * soon as the app shell hydrates and sets html[data-ready].
+ */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(700px 400px at 50% 40%, rgb(72 225 205 / 0.08), transparent 70%),
+    var(--color-void);
+  animation: enter-fade 350ms ease 200ms backwards;
+  transition:
+    opacity 400ms ease,
+    visibility 0s linear 400ms;
+}
+
+html[data-ready] .boot-screen {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  animation: none;
+}
+
+.boot-helix {
+  position: relative;
+  display: flex;
+  height: 72px;
+  align-items: center;
+  gap: 10px;
+}
+
+.boot-bp {
+  position: relative;
+  width: 8px;
+  height: 100%;
+}
+
+.boot-bp > span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  animation-duration: 2.2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-delay: calc(var(--i) * -0.18s);
+}
+
+.boot-bp > .boot-a,
+.boot-bp > .boot-b {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 9999px;
+}
+
+.boot-bp > .boot-a {
+  background: var(--color-teal);
+  box-shadow: 0 0 10px rgb(72 225 205 / 0.7);
+  animation-name: strand-a;
+}
+
+.boot-bp > .boot-b {
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px rgb(76 168 216 / 0.6);
+  animation-name: strand-b;
+}
+
+.boot-bp > .boot-r {
+  width: 1px;
+  height: 56px;
+  margin: -28px 0 0 -0.5px;
+  background: linear-gradient(var(--color-teal), var(--color-cyan));
+  opacity: 0.35;
+  animation-name: rung;
+}
+
+@keyframes strand-a {
+  0%,
+  100% {
+    transform: translateY(-28px) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(28px) scale(0.55);
+    opacity: 0.4;
+  }
+}
+
+@keyframes strand-b {
+  0%,
+  100% {
+    transform: translateY(28px) scale(0.55);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-28px) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rung {
+  0%,
+  50%,
+  100% {
+    transform: scaleY(1);
+  }
+  25%,
+  75% {
+    transform: scaleY(0.04);
+  }
+}
+
+.boot-progress {
+  position: relative;
+  height: 2px;
+  width: 180px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgb(41 65 87 / 0.8);
+}
+
+.boot-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, var(--color-teal), transparent);
+  animation: boot-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes boot-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -90,6 +328,34 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* No staggered pop-in either: content is simply there. */
+  .page-stage > * > *,
+  .stagger > *,
+  .reveal,
+  .grow-x,
+  .recharts-responsive-container {
+    animation: none !important;
+  }
+
+  /* Static helix and progress bar. */
+  .boot-bp > span,
+  .boot-progress::after {
+    animation: none !important;
+  }
+  .boot-bp:nth-child(odd) > .boot-a,
+  .boot-bp:nth-child(even) > .boot-b {
+    transform: translateY(-28px);
+  }
+  .boot-bp:nth-child(odd) > .boot-b,
+  .boot-bp:nth-child(even) > .boot-a {
+    transform: translateY(28px);
+    opacity: 0.5;
+  }
+  .boot-progress::after {
+    width: 100%;
+    opacity: 0.6;
   }
 }
 

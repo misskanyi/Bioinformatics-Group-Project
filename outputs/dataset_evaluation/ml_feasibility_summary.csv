@@ -1,0 +1,18 @@
+aspect,value,basis,caveat
+Training data: positive class,128,"product detected in >=1 condition, one protocol","18 of 128 are marginal (max <=0.05 mM, within 2 steps of the 0.03 detection floor); 14 are positive in a single observation only."
+Training data: negative class,56,no product across >=8 conditions,"Condition-qualified only. Means 'below detection in the conditions tested', never 'cannot degrade PET'."
+Training data: uncertain,28,no product but only 4 conditions tested,"Must be excluded from training, not relabelled as negative."
+Non-enzyme control negative,1 (RFP),zero product in all 48 rows / 18 conditions,"A true biological negative; use as a sanity anchor, it adds no training mass."
+Nominal sample size (best condition),212,"cryPow, 40 C, pH 6.5: 114 pos / 98 neg",Near-balanced - this is what makes supervised learning possible at all.
+EFFECTIVE independent sample size,69,identity groups at <=70%,"The largest group holds 85 enzymes = 40% of the data. This, not 212, bounds what can be claimed."
+Families containing positives,33,of 69,
+Families containing negatives,24,of 69,
+Families containing BOTH,3,of 69,Only 3 families are label-mixed; 30 are pure-positive and 21 pure-negative. The label is largely a family property.
+Family-membership-only baseline,0.692,leave-one-out accuracy using the enzyme's own family rate,"vs 0.538 majority class. Any sequence model must beat this, not 0.5."
+Published ceiling on this data (paper's own models),0.78-0.93 AUROC,fig5a: 44 model x condition results,cryPow conditions ~0.78; best aFilm 0.93. A zero-shot HMM reaches 0.83-0.87 - much of the signal is plain homology.
+Current project model,"0.556 AUROC, p=0.32",outputs/explorer/prediction/,Indistinguishable from shuffled labels on the present 78-protein target. The new data is what could change this.
+Leakage risk: SI vs PAZy,128 of 212 >=99% identical,median best identity 1.000,"PAZy cannot be used as training if the SI screen is the test set, and vice versa."
+Clean train/test boundary,PETML vs SI2025,"0 exact matches, 2 of 212 above 95%, median 0.6328",The only defensible independent split in the repository.
+Adaptive design confound,RND1 56.6% / RND2 50.7% / RND3 70.9% positive,round perfectly confounded with dataset family (DP/TEP/ESM),"RND3 was selected BY the paper's own model, so the pooled positive rate is not a natural base rate. 58 of 69 families sit in a single round."
+Candidate discovery pool,263,SI library sequences never assayed,"NOT free candidates: median expression 0.044 vs 0.568 mg/mL for assayed. They failed protein production, which is why they were not assayed."
+Cross-study pooling (PETML),NOT POSSIBLE,"28 workbooks with Activity, 0 with units",Ranges span 0.01-1.1 up to 15.9-4055; 5 workbooks contain an exact 1.0 and 4 an exact 100 (different reference enzymes). Rank-within-study only.

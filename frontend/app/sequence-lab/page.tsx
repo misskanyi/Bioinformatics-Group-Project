@@ -1,14 +1,6 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { SequenceLabView } from "@/features/sequence-lab/sequence-lab-view";
-
-export const metadata: Metadata = { title: "Sequence Laboratory" };
-
-export default function Page() {
-  return (
-    <Suspense>
-      <SequenceLabView />
-    </Suspense>
-  );
+export default async function Page({ searchParams }: { searchParams: Promise<{ protein?: string }> }) {
+  const { protein } = await searchParams;
+  redirect(`/discovery${protein ? `?protein=${protein}` : ""}`);
 }

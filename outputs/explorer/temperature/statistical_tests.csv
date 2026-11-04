@@ -1,0 +1,12 @@
+dataset,test,comparison,statistic,p_value,detail,q_value_bh,significant_q<0.05
+all PAZy assays,Kruskal-Wallis,G1a vs G1b vs G2 vs G3,21.3,8.98e-05,"G1a median 40 °C, mean 42.9 °C (n=165); G1b median 40 °C, mean 37.3 °C (n=98); G2 median 60 °C, mean 54.6 °C (n=11); G3 median 40 °C, mean 43.8 °C (n=9)",0.000494,True
+all PAZy assays,Mann-Whitney U,G1a vs G1b,10100.0,0.000471,"G1a median 40 °C, mean 42.9 °C (n=165); G1b median 40 °C, mean 37.3 °C (n=98)",0.0013,True
+all PAZy assays,Mann-Whitney U,G1a vs G2,489.0,0.00914,"G1a median 40 °C, mean 42.9 °C (n=165); G2 median 60 °C, mean 54.6 °C (n=11)",0.0201,True
+all PAZy assays,Mann-Whitney U,G1a vs G3,740.0,0.992,"G1a median 40 °C, mean 42.9 °C (n=165); G3 median 40 °C, mean 43.8 °C (n=9)",0.992,False
+all PAZy assays,Mann-Whitney U,G1b vs G2,196.0,0.000195,"G1b median 40 °C, mean 37.3 °C (n=98); G2 median 60 °C, mean 54.6 °C (n=11)",0.000714,True
+all PAZy assays,Mann-Whitney U,G1b vs G3,332.0,0.182,"G1b median 40 °C, mean 37.3 °C (n=98); G3 median 40 °C, mean 43.8 °C (n=9)",0.223,False
+all PAZy assays,Mann-Whitney U,G2 vs G3,71.0,0.104,"G2 median 60 °C, mean 54.6 °C (n=11); G3 median 40 °C, mean 43.8 °C (n=9)",0.164,False
+standardised screen,Wilcoxon signed-rank,40 vs 60 °C,182.0,1.34e-11,median conversion 0.67% vs 0.04% (n=78 paired),1.47e-10,True
+standardised screen,Mann-Whitney U,G1a vs G1b at 40 °C,1180.0,0.885,median 0.56% (n=42) vs 0.61% (n=57),0.973,False
+standardised screen,Mann-Whitney U,G1a vs G1b at 60 °C,868.0,0.0439,median 0.19% (n=27) vs 0.00% (n=51),0.0804,False
+standardised screen,Fisher exact,"G1a vs G1b, conversion detected at 60 °C",2.24,0.153,G1a: 17/27 detected; G1b: 22/51 detected,0.21,False

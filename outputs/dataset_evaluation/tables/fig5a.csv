@@ -1,0 +1,45 @@
+Unnamed: 0,target,auroc,model,pH,T,substrate,condition,precision
+43,activity_at_7.5_60_aFilm,0.931506849315068,lit. supervised,7.5,60,aFilm,"aFilm, 60¬∞C, pH 7.5",
+32,activity_at_7.5_60_aFilm,0.910958904109589,supervised,7.5,60,aFilm,"aFilm, 60¬∞C, pH 7.5",
+38,activity_at_6.5_40_aFilm,0.8743961352657,lit. supervised,6.5,40,aFilm,"aFilm, 40¬∞C, pH 6.5",
+7,activity_at_7.5_60_aFilm,0.871232876712328,starting HMM,7.5,60,aFilm,"aFilm, 60¬∞C, pH 7.5",
+5,activity_at_7.5_40_aFilm,0.85829307568438,starting HMM,7.5,40,aFilm,"aFilm, 40¬∞C, pH 7.5",
+19,activity_at_7.5_60_aFilm,0.852054794520547,tuned HMM,7.5,60,aFilm,"aFilm, 60¬∞C, pH 7.5",
+2,activity_at_6.5_40_aFilm,0.826086956521739,starting HMM,6.5,40,aFilm,"aFilm, 40¬∞C, pH 6.5",
+41,activity_at_7.5_40_aFilm,0.818035426731078,lit. supervised,7.5,40,aFilm,"aFilm, 40¬∞C, pH 7.5",
+17,activity_at_7.5_40_aFilm,0.805152979066022,tuned HMM,7.5,40,aFilm,"aFilm, 40¬∞C, pH 7.5",
+23,activity_at_5.5_40_cryPow,0.78704044117647,supervised,5.5,40,cryPow,"cryPow, 40¬∞C, pH 5.5",0.75
+28,activity_at_6.5_40_cryPow,0.783537125642388,supervised,6.5,40,cryPow,"cryPow, 40¬∞C, pH 6.5",0.735632183908046
+33,activity_at_7.5_60_cryPow,0.780106530801296,supervised,7.5,60,cryPow,"cryPow, 60¬∞C, pH 7.5",0.769230769230769
+14,activity_at_6.5_40_aFilm,0.777777777777777,tuned HMM,6.5,40,aFilm,"aFilm, 40¬∞C, pH 6.5",
+35,activity_at_4.5_40_cryPow,0.767085714285714,supervised,4.5,40,cryPow,"cryPow, 40¬∞C, pH 4.5",0.785714285714285
+30,activity_at_7.5_40_aFilm,0.752818035426731,supervised,7.5,40,aFilm,"aFilm, 40¬∞C, pH 7.5",
+31,activity_at_7.5_40_cryPow,0.745609318996415,supervised,7.5,40,cryPow,"cryPow, 40¬∞C, pH 7.5",0.693333333333333
+22,activity_at_4.5_40_cryPow,0.735085714285714,tuned HMM,4.5,40,cryPow,"cryPow, 40¬∞C, pH 4.5",
+8,activity_at_7.5_60_cryPow,0.71723019916628,starting HMM,7.5,60,cryPow,"cryPow, 60¬∞C, pH 7.5",
+11,activity_at_5.5_40_cryPow,0.703676470588235,tuned HMM,5.5,40,cryPow,"cryPow, 40¬∞C, pH 5.5",
+37,activity_at_5.5_60_cryPow,0.693734793187347,lit. supervised,5.5,60,cryPow,"cryPow, 60¬∞C, pH 5.5",
+27,activity_at_6.5_40_aFilm,0.678743961352657,supervised,6.5,40,aFilm,"aFilm, 40¬∞C, pH 6.5",
+29,activity_at_6.5_60_cryPow,0.675388818831441,supervised,6.5,60,cryPow,"cryPow, 60¬∞C, pH 6.5",0.692307692307692
+15,activity_at_6.5_40_cryPow,0.668350168350168,tuned HMM,6.5,40,cryPow,"cryPow, 40¬∞C, pH 6.5",
+4,activity_at_6.5_60_cryPow,0.666246321984026,starting HMM,6.5,60,cryPow,"cryPow, 60¬∞C, pH 6.5",
+1,activity_at_5.5_60_cryPow,0.656630170316301,starting HMM,5.5,60,cryPow,"cryPow, 60¬∞C, pH 5.5",
+44,activity_at_7.5_60_cryPow,0.656322371468272,lit. supervised,7.5,60,cryPow,"cryPow, 60¬∞C, pH 7.5",
+40,activity_at_6.5_60_cryPow,0.636401849516603,lit. supervised,6.5,60,cryPow,"cryPow, 60¬∞C, pH 6.5",
+26,activity_at_5.5_60_cryPow,0.614355231143552,supervised,5.5,60,cryPow,"cryPow, 60¬∞C, pH 5.5",0.5
+18,activity_at_7.5_40_cryPow,0.600716845878136,tuned HMM,7.5,40,cryPow,"cryPow, 40¬∞C, pH 7.5",
+46,activity_at_4.5_40_cryPow,0.5888,lit. supervised,4.5,40,cryPow,"cryPow, 40¬∞C, pH 4.5",
+6,activity_at_7.5_40_cryPow,0.553494623655914,starting HMM,7.5,40,cryPow,"cryPow, 40¬∞C, pH 7.5",
+42,activity_at_7.5_40_cryPow,0.548297491039426,lit. supervised,7.5,40,cryPow,"cryPow, 40¬∞C, pH 7.5",
+39,activity_at_6.5_40_cryPow,0.533670033670033,lit. supervised,6.5,40,cryPow,"cryPow, 40¬∞C, pH 6.5",
+20,activity_at_7.5_60_cryPow,0.528716998610467,tuned HMM,7.5,60,cryPow,"cryPow, 60¬∞C, pH 7.5",
+13,activity_at_5.5_60_cryPow,0.516423357664233,tuned HMM,5.5,60,cryPow,"cryPow, 60¬∞C, pH 5.5",
+3,activity_at_6.5_40_cryPow,0.511075668970405,starting HMM,6.5,40,cryPow,"cryPow, 40¬∞C, pH 6.5",
+36,activity_at_5.5_40_cryPow,0.509466911764705,lit. supervised,5.5,40,cryPow,"cryPow, 40¬∞C, pH 5.5",
+0,activity_at_5.5_40_cryPow,0.470036764705882,starting HMM,5.5,40,cryPow,"cryPow, 40¬∞C, pH 5.5",
+34,activity_at_8.5_40_cryPow,0.461038961038961,supervised,8.5,40,cryPow,"cryPow, 40¬∞C, pH 8.5",0.333333333333333
+9,activity_at_8.5_40_cryPow,0.458874458874458,starting HMM,8.5,40,cryPow,"cryPow, 40¬∞C, pH 8.5",
+16,activity_at_6.5_60_cryPow,0.449348465741908,tuned HMM,6.5,60,cryPow,"cryPow, 60¬∞C, pH 6.5",
+10,activity_at_4.5_40_cryPow,0.448,starting HMM,4.5,40,cryPow,"cryPow, 40¬∞C, pH 4.5",
+21,activity_at_8.5_40_cryPow,0.430014430014429,tuned HMM,8.5,40,cryPow,"cryPow, 40¬∞C, pH 8.5",
+45,activity_at_8.5_40_cryPow,0.411255411255411,lit. supervised,8.5,40,cryPow,"cryPow, 40¬∞C, pH 8.5",
