@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
-from .api import conditions, datasets, modelling, network, organisms, overview, sequence
+from .api import batch, conditions, datasets, modelling, network, organisms, overview, sequence
 from .services import layout, matching, store
 
 
@@ -31,7 +31,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.environ.get("PET_EXPLORER_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(","),
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -42,5 +42,5 @@ def health():
             "organism_table": len(store.organisms()) > 0, "matcher_ready": matching.matcher() is not None}
 
 
-for module in (overview, sequence, network, conditions, organisms, datasets, modelling):
+for module in (overview, sequence, batch, network, conditions, organisms, datasets, modelling):
     app.include_router(module.router, prefix="/api")

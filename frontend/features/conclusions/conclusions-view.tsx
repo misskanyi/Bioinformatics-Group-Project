@@ -13,9 +13,9 @@ const REPO = "https://github.com/misskanyi/Bioinformatics-Group-Project";
 type Status = "achieved" | "partial" | "not";
 
 const STATUS_STYLE: Record<Status, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  achieved: { label: "Achieved", color: "#69E8C3", icon: CheckCircle2 },
-  partial: { label: "Partially achieved", color: "#E8B56B", icon: CircleDashed },
-  not: { label: "Not achieved", color: "#EF8A9A", icon: CircleSlash },
+  achieved: { label: "Achieved", color: "var(--color-mint)", icon: CheckCircle2 },
+  partial: { label: "Partially achieved", color: "var(--color-amber)", icon: CircleDashed },
+  not: { label: "Not achieved", color: "var(--color-rose)", icon: CircleSlash },
 };
 
 const METHODS = [
@@ -120,25 +120,25 @@ function KeyFindings() {
       area: "Data preparation",
       headline: `${num(s.proteins)} curated PET-active proteins, and no usable negative class`,
       detail: `${num(s.pet_assays)} PET assay records passed classification. Every PAZy protein has at least one positive measurement, so the curated set supplies no protein-level negatives${a?.screen_labels ? `; the only defensible negatives are the ${a.screen_labels.never_positive_with_ge8_conditions} screening enzymes with no detected product across eight or more conditions` : ""}.`,
-      tone: "#4CA8D8",
+      tone: "var(--color-sky)",
     },
     {
       area: "Sequence analysis",
       headline: "Verified PET hydrolases form one dominant motif-sharing lineage",
       detail: `${s.clusters} clusters emerged from alignment distances, with 263 of 298 proteins in one lineage and 296 of 298 carrying the G-x-S-x-G catalytic motif. H1 is supported.`,
-      tone: "#48E1CD",
+      tone: "var(--color-aqua)",
     },
     {
       area: "Clustering validity",
       headline: "The grouping is stronger than any null model tested",
       detail: "Silhouette 0.344 against at most −0.02 for random labels of the same sizes and 0.03 for average linkage on shuffled distances (200 draws each, p = 0.005). Composition features alone do not recover these families (ARI 0.08).",
-      tone: "#69E8C3",
+      tone: "var(--color-mint)",
     },
     {
       area: "Conditions",
       headline: "Apparent temperature differences between groups are a sampling artefact",
       detail: "Across all PAZy assays, groups differ strongly in assay temperature (q = 0.0005). Inside the one standardised screen the same comparison is not significant after correction. H2 is not confirmed.",
-      tone: "#E8B56B",
+      tone: "var(--color-amber)",
     },
     {
       area: "Machine learning",
@@ -146,13 +146,13 @@ function KeyFindings() {
       detail: best
         ? `Best model ROC AUC ${best.roc_auc_mean.toFixed(3)} ± ${best.roc_auc_sd.toFixed(3)} under homology-grouped cross-validation, against a 0.50 majority-class baseline${perm ? `, with a permutation-test p of ${perm.empirical_p}` : ""}. H3 is not supported.`
         : "Model outputs have not been generated.",
-      tone: "#EF8A9A",
+      tone: "var(--color-rose)",
     },
     {
       area: "Candidate discovery",
       headline: "Candidates are identified by measured similarity, not by a model score",
       detail: `${m?.candidates.pool != null ? `${num(m.candidates.pool)} untested library sequences are available as a candidate pool, but ` : ""}no ranking is published, because the classifier does not clear its null. Sequence matching against characterised enzymes remains the usable shortlisting tool.`,
-      tone: "#B49CF5",
+      tone: "var(--color-violet)",
     },
   ];
 

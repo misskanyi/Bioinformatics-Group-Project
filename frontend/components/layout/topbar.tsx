@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Tip } from "@/components/ui/primitives";
 import { api } from "@/lib/api";
 import { navFor } from "@/lib/nav";
-import { EVIDENCE } from "@/lib/palette";
+import { C, EVIDENCE, tint } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 import type { Health } from "@/types/api";
+
+import { ThemeToggle } from "./theme-toggle";
 
 type Status = { state: "checking" } | { state: "ready"; health: Health } | { state: "offline"; message: string };
 
@@ -34,7 +36,7 @@ function DatasetStatus() {
     };
   }, []);
 
-  const color = status.state === "ready" ? "#69E8C3" : status.state === "offline" ? "#E8B56B" : "#9BB3C6";
+  const color = status.state === "ready" ? C.mint : status.state === "offline" ? C.amber : C.muted;
   const label =
     status.state === "ready" ? `Dataset ready · ${status.health.proteins} proteins` : status.state === "offline" ? "Backend offline" : "Checking backend…";
   const tip =
@@ -49,7 +51,7 @@ function DatasetStatus() {
       <div
         role="status"
         className="flex h-8 items-center gap-2 rounded-full border px-3 font-mono text-[11px] transition-colors duration-300"
-        style={{ borderColor: `${color}40`, color, background: `${color}0f` }}
+        style={{ borderColor: tint(color, 25), color, background: tint(color, 6) }}
       >
         <span className="relative flex size-2">
           {status.state === "ready" && <span className="absolute inset-0 animate-ping rounded-full opacity-60" style={{ background: color }} />}
@@ -113,7 +115,7 @@ export function Topbar({ onOpenMobile, className }: { onOpenMobile: () => void; 
   const pathname = usePathname();
   const item = navFor(pathname);
   return (
-    <header className={cn("sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line/60 bg-void/75 px-4 backdrop-blur-xl sm:px-6", className)}>
+    <header className={cn("sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line/60 bg-surface/90 px-4 shadow-[0_1px_0_0_var(--edge-glow)] sm:px-6", className)}>
       <Button variant="ghost" size="icon" className="lg:hidden" onClick={onOpenMobile} aria-label="Open navigation">
         <Menu />
       </Button>
@@ -133,6 +135,7 @@ export function Topbar({ onOpenMobile, className }: { onOpenMobile: () => void; 
       </div>
       <div className="ml-auto flex items-center gap-2">
         <DatasetStatus />
+        <ThemeToggle />
         <HelpDialog />
       </div>
     </header>

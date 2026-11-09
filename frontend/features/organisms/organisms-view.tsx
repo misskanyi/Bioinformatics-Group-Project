@@ -97,8 +97,8 @@ function Card({ o, i }: { o: OrganismCard; i: number }) {
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           <Badge color={ev.color}>{ev.short}</Badge>
-          {o.uncultured && <Badge color="#E8B56B">Uncultured / unspecified taxon</Badge>}
-          {disagree && <Badge color="#E8B56B">Sources disagree</Badge>}
+          {o.uncultured && <Badge color="var(--color-amber)">Uncultured / unspecified taxon</Badge>}
+          {disagree && <Badge color="var(--color-amber)">Sources disagree</Badge>}
         </div>
 
         <div className="mt-4 flex flex-wrap gap-1.5">
@@ -284,7 +284,7 @@ export function OrganismsView() {
           {[
             { c: ORGANISM_EVIDENCE.exact_sequence.color, t: "Directly documented", d: "A UniProt, PlasticDB or degraders-list record has exactly the same sequence and names its organism." },
             { c: ORGANISM_EVIDENCE.contained_sequence.color, t: "Reliable database match", d: "The sequence overlaps a record as its precursor or mature form (one contains the other over ≥ 100 residues)." },
-            { c: "#4CA8D8", t: "Similar protein elsewhere", d: "Shown only as context in the table above. A similar sequence from organism X does not mean the protein comes from X." },
+            { c: "var(--color-sky)", t: "Similar protein elsewhere", d: "Shown only as context in the table above. A similar sequence from organism X does not mean the protein comes from X." },
             { c: ORGANISM_EVIDENCE.none.color, t: "Unknown", d: "No record of the same sequence. Isolation sources are never guessed: missing values read “Not documented”." },
           ].map((r) => (
             <div key={r.t} className="rounded-lg border border-line/60 bg-void/40 p-4">

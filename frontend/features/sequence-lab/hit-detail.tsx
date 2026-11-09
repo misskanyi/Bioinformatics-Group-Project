@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge, Notice } from "@/components/ui/primitives";
 import { networkHref } from "@/lib/nav";
-import { clusterColor, EVIDENCE, ORGANISM_EVIDENCE } from "@/lib/palette";
+import { clusterColor, EVIDENCE, ORGANISM_EVIDENCE, tint } from "@/lib/palette";
 import { doiUrl, pct } from "@/lib/utils";
 import type { Hit, MatchMethod } from "@/types/api";
 
@@ -32,13 +32,13 @@ function TempChips({ temps, active, inactive }: { temps: number[]; active: numbe
       {temps.map((t) => {
         const a = active.includes(t);
         const n = inactive.includes(t);
-        const color = a ? "#69E8C3" : n ? "#EF8A9A" : "#9BB3C6";
+        const color = a ? "var(--color-mint)" : n ? "var(--color-rose)" : "var(--color-muted)";
         return (
           <span
             key={t}
             title={a ? "PET breakdown detected at this temperature" : n ? "Tested; no breakdown detected by the reported method" : "Tested; outcome unclear"}
             className="tabular rounded-md border px-2 py-0.5 font-mono text-xs"
-            style={{ color, borderColor: `${color}55`, background: `${color}10` }}
+            style={{ color, borderColor: tint(color, 33), background: tint(color, 6) }}
           >
             {t} °C
           </span>
@@ -81,9 +81,9 @@ export function HitDetail({ hit, method, queryLabel }: { hit: Hit; method: Match
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { l: "Identity", v: pct(hit.identity), c: bc },
-          { l: "Query coverage", v: pct(hit.query_coverage), c: "#4CA8D8" },
-          { l: "Ref coverage", v: pct(hit.target_coverage), c: "#69E8C3" },
-          { l: "Shuffle z-score", v: hit.shuffled_z.toFixed(1), c: "#B49CF5" },
+          { l: "Query coverage", v: pct(hit.query_coverage), c: "var(--color-sky)" },
+          { l: "Ref coverage", v: pct(hit.target_coverage), c: "var(--color-mint)" },
+          { l: "Shuffle z-score", v: hit.shuffled_z.toFixed(1), c: "var(--color-violet)" },
         ].map((m) => (
           <div key={m.l} className="rounded-lg border border-line/70 bg-void/40 p-3">
             <div className="eyebrow text-[10px]">{m.l}</div>

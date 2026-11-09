@@ -9,7 +9,7 @@ import type { Hit, MatchMethod } from "@/types/api";
 
 export function bandColor(label: string, method: MatchMethod) {
   const i = method.bands.findIndex((b) => b.label === label);
-  return ["#48E1CD", "#4CA8D8", "#E8B56B"][i] ?? "#9BB3C6";
+  return ["var(--color-aqua)", "var(--color-sky)", "var(--color-amber)"][i] ?? "var(--color-muted)";
 }
 
 function Bar({ value, color, label }: { value: number; color: string; label: string }) {
@@ -83,8 +83,8 @@ export function HitList({
               </div>
             </div>
             <div className="mt-3 flex flex-col gap-1.5">
-              <Bar label="Query" value={h.query_coverage} color="#4CA8D8" />
-              <Bar label="Ref" value={h.target_coverage} color="#69E8C3" />
+              <Bar label="Query" value={h.query_coverage} color="var(--color-sky)" />
+              <Bar label="Ref" value={h.target_coverage} color="var(--color-mint)" />
             </div>
             <div className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] text-muted">
               <span>
@@ -109,10 +109,10 @@ export function HitList({
 
 export function MatchComparison({ hits, method }: { hits: Hit[]; method: MatchMethod }) {
   const metrics = [
-    { key: "identity", label: "Identity", color: "#48E1CD", tip: method.identity_definition },
-    { key: "query_coverage", label: "Query coverage", color: "#4CA8D8", tip: "Share of your sequence inside the aligned region." },
-    { key: "target_coverage", label: "Reference coverage", color: "#69E8C3", tip: "Share of the reference protein inside the aligned region." },
-    { key: "normalised_score", label: "Normalised score", color: "#B49CF5", tip: method.ranking },
+    { key: "identity", label: "Identity", color: "var(--color-aqua)", tip: method.identity_definition },
+    { key: "query_coverage", label: "Query coverage", color: "var(--color-sky)", tip: "Share of your sequence inside the aligned region." },
+    { key: "target_coverage", label: "Reference coverage", color: "var(--color-mint)", tip: "Share of the reference protein inside the aligned region." },
+    { key: "normalised_score", label: "Normalised score", color: "var(--color-violet)", tip: method.ranking },
   ] as const;
   return (
     <div className="overflow-x-auto">

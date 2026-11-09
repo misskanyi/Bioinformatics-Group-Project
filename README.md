@@ -15,14 +15,49 @@ The system keeps **experimental findings** (PAZy assay records) separate from **
 **Research question:** Do experimentally verified PET-hydrolysing enzymes form distinct groups based on their
 amino-acid sequence features, and do these groups relate to the temperatures at which PET degradation was observed?
 
-## Setup
+## Quick start: run the web app
+
+Requirements: Python 3.9+, Node.js 18.18+ and npm.
+
+```bash
+# 1. One-time setup (repository root)
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt -r backend/requirements.txt
+cd frontend && npm install && cd ..
+
+# 2. Generate analysis outputs (skip if outputs/explorer/ already exists) - ~5 min
+.venv/bin/python analyze_pet_dataset.py
+.venv/bin/python -m pet_explorer.pipeline
+
+# 3. Terminal 1 - start the API (repository root)
+.venv/bin/uvicorn backend.main:app --port 8000      # health check: http://127.0.0.1:8000/api/health
+
+# 4. Terminal 2 - start the front end
+cd frontend && npm run dev                          # open http://localhost:3000
+```
+
+Both servers must be running. The front end proxies `/api/*` to the backend at `BACKEND_URL`
+(default `http://127.0.0.1:8000`); if the API runs elsewhere, start the front end with
+`BACKEND_URL=http://host:port npm run dev`. If the front end is served from a different origin, add it to the
+backend's allowed origins with `PET_EXPLORER_ORIGINS` (comma-separated, default `http://localhost:3000,http://127.0.0.1:3000`).
+
+Production build: `cd frontend && npm run build && npm run start` (stop `npm run dev` first; both use `.next/`).
+
+**Troubleshooting**
+
+- Top bar shows the backend as offline → check terminal 1 is running and `/api/health` responds.
+- API errors about missing files → run step 2; the API only reads cached files in `outputs/explorer/`.
+- Port in use → `uvicorn ... --port 8001` and `BACKEND_URL=http://127.0.0.1:8001 npm run dev`, or `npm run dev -- -p 3001`
+  (then add `http://localhost:3001` to `PET_EXPLORER_ORIGINS`).
+
+## Setup (analysis only)
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-## Run
+## Run the analysis pipeline and tests
 
 From the project root:
 
@@ -36,15 +71,16 @@ From the project root:
 .venv/bin/python -m pet_explorer.pipeline --stage 3   # one stage (needs earlier outputs)
 .venv/bin/python -m pet_explorer.pipeline --stage 5 --refresh-annotation   # re-query UniParc
 
-# 3. Dashboard (reads cached outputs only)
-.venv/bin/streamlit run app/streamlit_app.py
-
-# 4. Notebook (rebuild + execute)
+# 3. Notebook (rebuild + execute)
 .venv/bin/python notebooks/build_notebook.py
 cd notebooks && ../.venv/bin/jupyter nbconvert --to notebook --execute --inplace pet_enzyme_explorer.ipynb
 
-# 5. Tests (30: input validation, matching, outputs, statistics, baselines, dashboard pages)
+# 4. Tests (input validation, matching, outputs, statistics, baselines)
 .venv/bin/python -m pytest -q tests
+.venv/bin/python -m pytest -q backend/tests      # API tests (needs backend/requirements.txt)
+
+# 5. Front-end lint
+cd frontend && npm run lint
 ```
 
 ## Google Colab
@@ -67,8 +103,9 @@ vs null baselines, supervised 60 °C model vs baselines, sequence matcher · 8. 
 | `data/` | Six original downloads (PAZy, PlasticDB, UniProt). **Never modified.** |
 | `analyze_pet_dataset.py` | Feasibility analysis and assay/protein activity labelling |
 | `pet_explorer/` | Reusable modules: `preprocess`, `sequence_matching`, `similarity`, `features`, `clustering`, `network`, `temperature`, `organisms`, `annotation`, `prediction`, `plots`, `pipeline`, `config` |
-| `app/streamlit_app.py` | Dashboard: Protein Search, Protein Clusters, Temperature Analysis, Dataset Overview |
 | `notebooks/pet_enzyme_explorer.ipynb` | Reproducible scientific analysis with interpretations |
+| `backend/` | FastAPI service: serves cached outputs and live sequence matching |
+| `frontend/` | Next.js web app (the project's user interface) |
 | `tests/` | pytest suite |
 | `outputs/` | Feasibility outputs (`pet_dataset_feasibility_report.md`, …) |
 | `outputs/explorer/clean/` | Cleaned 298-protein set (CSV + FASTA), QC checks |
@@ -81,9 +118,8 @@ vs null baselines, supervised 60 °C model vs baselines, sequence matcher · 8. 
 | `outputs/explorer/figures/` | Static figures used in the notebook |
 | `outputs/explorer/FINDINGS.md` | Summary of findings and features needing more data |
 
-`backend/` (FastAPI) and `frontend/` (Next.js) contain a separate web app built in a parallel session. It is a
-read-only consumer of `outputs/explorer/`, so run the pipeline first. Run commands are in
-[backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md). Its Python dependencies are in
+The web app (`backend/` + `frontend/`) is a read-only consumer of `outputs/explorer/`, so run the pipeline first. See [Quick start](#quick-start-run-the-web-app);
+endpoint and structure details are in [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md). Its Python dependencies are in
 `backend/requirements.txt`, kept separate from the root `requirements.txt`. `backend/tests` check the API against
 the output CSVs, so renaming columns in `outputs/explorer/` will break them.
 

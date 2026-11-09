@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { TooltipProvider } from "@/components/ui/primitives";
+import { AmbientBackground } from "@/components/viz/ambient";
 import { cn } from "@/lib/utils";
 
 import { Sidebar } from "./sidebar";
@@ -40,6 +41,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
       <TooltipProvider>
+        {/* stays mounted across navigation; only its intensity changes */}
+        <AmbientBackground intensity={pathname.startsWith("/overview") ? "full" : "calm"} />
         <Sidebar collapsed={collapsed} onToggle={toggle} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
         <div className={cn("min-h-screen transition-[padding] duration-300", collapsed ? "lg:pl-[72px]" : "lg:pl-64")}>
           <Topbar onOpenMobile={() => setMobileOpen(true)} />

@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, CheckCircle2, GitBranch, Layers, Ruler, ShieldAlert, XCircle } from "lucide-react";
+import { useMemo } from "react";
 import {
   Bar,
   BarChart,
@@ -16,7 +17,7 @@ import {
 
 import { CountUp } from "@/components/ui/count-up";
 import { Badge, EmptyState, ErrorState, InfoTip, Metric, Notice, Panel, PanelHeader, Skeleton, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/primitives";
-import { axisProps, ChartTooltip, gridProps } from "@/components/viz/chart-kit";
+import { axisLabel, axisProps, ChartInView, ChartTooltip, gridProps, useChartMotion } from "@/components/viz/chart-kit";
 import { useApi } from "@/lib/api";
 import { clusterColor } from "@/lib/palette";
 import { num } from "@/lib/utils";
@@ -66,9 +67,9 @@ function Development({ m }: { m: Modelling }) {
           <div className="flex flex-col gap-5 p-5">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <Metric label="Proteins" value={<CountUp id="validation:proteins" value={d.n_proteins} format={num} />} />
-              <Metric label="Detected" value={<CountUp id="validation:positive" value={d.n_positive} format={num} />} accent="#69E8C3" />
-              <Metric label="Not detected" value={<CountUp id="validation:negative" value={d.n_negative} format={num} />} accent="#EF8A9A" />
-              <Metric label="Identity groups" value={<CountUp id="validation:groups" value={d.n_identity_groups} format={num} />} accent="#E8B56B" hint="at 70% identity" />
+              <Metric label="Detected" value={<CountUp id="validation:positive" value={d.n_positive} format={num} />} accent="var(--color-mint)" />
+              <Metric label="Not detected" value={<CountUp id="validation:negative" value={d.n_negative} format={num} />} accent="var(--color-rose)" />
+              <Metric label="Identity groups" value={<CountUp id="validation:groups" value={d.n_identity_groups} format={num} />} accent="var(--color-amber)" hint="at 70% identity" />
             </div>
             <div>
               <div className="eyebrow mb-2">Balance</div>
@@ -149,9 +150,9 @@ function Splitting({ m }: { m: Modelling }) {
                     style={{
                       width: `${Math.max(26, Math.min(64, 22 + n * 1.3))}px`,
                       height: "26px",
-                      borderColor: n > 5 ? "#E8B56B66" : "#29415799",
-                      background: n > 5 ? "#E8B56B14" : "#14283b",
-                      color: n > 5 ? "#E8B56B" : "#9BB3C6",
+                      borderColor: n > 5 ? "color-mix(in srgb, var(--color-amber) 40%, transparent)" : "color-mix(in srgb, var(--color-line) 60%, transparent)",
+                      background: n > 5 ? "color-mix(in srgb, var(--color-amber) 8%, transparent)" : "var(--color-elevated)",
+                      color: n > 5 ? "var(--color-amber)" : "var(--color-muted)",
                     }}
                   >
                     {n}
@@ -173,9 +174,8 @@ function Splitting({ m }: { m: Modelling }) {
 /* ------------------------------------------------------------------ comparison */
 
 function Comparison({ rows }: { rows: ModelRow[] }) {
-  const data = [...rows]
-    .sort((a, b) => a.roc_auc_mean - b.roc_auc_mean)
-    .map((r) => ({ ...r, err: r.roc_auc_sd }));
+  const data = useMemo(() => [...rows].sort((a, b) => a.roc_auc_mean - b.roc_auc_mean).map((r) => ({ ...r, err: r.roc_auc_sd })), [rows]);
+  const motion = useChartMotion(data, 750);
 
   return (
     <Panel>
@@ -186,7 +186,7 @@ function Comparison({ rows }: { rows: ModelRow[] }) {
         action={<InfoTip content="A baseline is a deliberately uninformative predictor. If a model cannot beat the majority class and random scores, its features carry no usable signal." />}
       />
       <div className="p-5">
-        <div className="h-[320px]">
+        <ChartInView className="chart-hl h-[320px]">
           <ResponsiveContainer>
             <BarChart data={data} layout="vertical" margin={{ top: 4, right: 32, bottom: 20, left: 150 }}>
               <CartesianGrid {...gridProps} horizontal={false} />
@@ -195,19 +195,19 @@ function Comparison({ rows }: { rows: ModelRow[] }) {
                 domain={[0.3, 0.8]}
                 ticks={[0.3, 0.4, 0.5, 0.6, 0.7, 0.8]}
                 {...axisProps}
-                label={{ value: "ROC AUC (out-of-fold mean)", position: "bottom", fill: "#9BB3C6", fontSize: 11, offset: 0 }}
+                label={{ value: "ROC AUC (out-of-fold mean)", position: "bottom", fill: "var(--color-muted)", fontSize: 11, offset: 0 }}
               />
               <YAxis type="category" dataKey="model" width={150} {...axisProps} />
-              <ReferenceLine x={0.5} stroke="#EF8A9A" strokeDasharray="4 4" label={{ value: "chance", fill: "#EF8A9A", fontSize: 10, position: "top" }} />
+              <ReferenceLine x={0.5} stroke="var(--color-rose)" strokeDasharray="4 4" label={{ value: "chance", fill: "var(--color-rose)", fontSize: 10, position: "top" }} />
               <Tooltip
-                cursor={{ fill: "rgb(72 225 205 / 0.06)" }}
+                cursor={{ fill: "var(--chart-cursor)" }}
                 content={({ payload }) => {
                   const r = payload?.[0]?.payload as (typeof data)[number] | undefined;
                   return r ? (
                     <ChartTooltip
                       title={r.model}
                       rows={[
-                        { label: "ROC AUC", value: `${r.roc_auc_mean.toFixed(3)} ± ${r.roc_auc_sd.toFixed(3)}`, color: r.kind === "model" ? "#48E1CD" : "#5F7A90" },
+                        { label: "ROC AUC", value: `${r.roc_auc_mean.toFixed(3)} ± ${r.roc_auc_sd.toFixed(3)}`, color: r.kind === "model" ? "var(--color-aqua)" : "var(--color-slate)" },
                         { label: "Balanced accuracy", value: `${r.balanced_accuracy_mean.toFixed(3)} ± ${r.balanced_accuracy_sd.toFixed(3)}` },
                         { label: "Kind", value: r.kind },
                       ]}
@@ -215,21 +215,21 @@ function Comparison({ rows }: { rows: ModelRow[] }) {
                   ) : null;
                 }}
               />
-              <Bar dataKey="roc_auc_mean" radius={[0, 4, 4, 0]} isAnimationActive={false}>
+              <Bar dataKey="roc_auc_mean" radius={[0, 4, 4, 0]} {...motion}>
                 {data.map((r) => (
-                  <Cell key={r.model} fill={r.kind === "model" ? "#48E1CD" : "#5F7A90"} />
+                  <Cell key={r.model} fill={r.kind === "model" ? "var(--color-aqua)" : "var(--color-slate)"} />
                 ))}
-                <ErrorBar dataKey="err" width={4} strokeWidth={1.5} stroke="#9BB3C6" direction="x" />
+                <ErrorBar dataKey="err" width={4} strokeWidth={1.5} stroke="var(--color-muted)" direction="x" />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </ChartInView>
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted">
           <span className="flex items-center gap-1.5">
             <span className="size-2.5 rounded-sm bg-teal" /> Models
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-sm" style={{ background: "#5F7A90" }} /> Baselines
+            <span className="size-2.5 rounded-sm" style={{ background: "var(--color-slate)" }} /> Baselines
           </span>
         </div>
         <p className="mt-3 max-w-3xl text-xs leading-relaxed text-muted">
@@ -250,8 +250,8 @@ function Metrics({ m }: { m: Modelling }) {
 
   const AVAILABLE = best
     ? [
-        { label: "ROC AUC", value: best.roc_auc_mean.toFixed(3), sd: best.roc_auc_sd.toFixed(3), color: "#48E1CD" },
-        { label: "Balanced accuracy", value: best.balanced_accuracy_mean.toFixed(3), sd: best.balanced_accuracy_sd.toFixed(3), color: "#4CA8D8" },
+        { label: "ROC AUC", value: best.roc_auc_mean.toFixed(3), sd: best.roc_auc_sd.toFixed(3), color: "var(--color-aqua)" },
+        { label: "Balanced accuracy", value: best.balanced_accuracy_mean.toFixed(3), sd: best.balanced_accuracy_sd.toFixed(3), color: "var(--color-sky)" },
       ]
     : [];
 
@@ -312,9 +312,9 @@ function Metrics({ m }: { m: Modelling }) {
           <div className="flex flex-col gap-5 p-5">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <Metric label="Observed AUC" value={perm.observed_roc_auc.toFixed(3)} />
-              <Metric label="Null mean" value={perm.null_mean.toFixed(3)} accent="#9BB3C6" />
-              <Metric label="Null 95th pct" value={perm.null_95th_percentile.toFixed(3)} accent="#E8B56B" />
-              <Metric label="Empirical p" value={perm.empirical_p.toFixed(3)} accent={beatsNull ? "#69E8C3" : "#EF8A9A"} hint={`${perm.n_permutations} permutations`} />
+              <Metric label="Null mean" value={perm.null_mean.toFixed(3)} accent="var(--color-muted)" />
+              <Metric label="Null 95th pct" value={perm.null_95th_percentile.toFixed(3)} accent="var(--color-amber)" />
+              <Metric label="Empirical p" value={perm.empirical_p.toFixed(3)} accent={beatsNull ? "var(--color-mint)" : "var(--color-rose)"} hint={`${perm.n_permutations} permutations`} />
             </div>
 
             {/* observed score against the null distribution, on a 0.3–0.9 axis */}
@@ -333,7 +333,7 @@ function Metrics({ m }: { m: Modelling }) {
                       />
                       <div className="absolute inset-y-2 w-px bg-muted" style={{ left: at(perm.null_mean) }} />
                       <div className="absolute inset-y-2 w-px bg-amber" style={{ left: at(perm.null_95th_percentile) }} />
-                      <div className="absolute inset-y-1 w-[2px] rounded bg-teal shadow-[0_0_10px_#48E1CD]" style={{ left: at(perm.observed_roc_auc) }} />
+                      <div className="absolute inset-y-1 w-[2px] rounded bg-teal shadow-[0_0_10px_var(--color-aqua)]" style={{ left: at(perm.observed_roc_auc) }} />
                     </>
                   );
                 })()}
@@ -377,7 +377,8 @@ function Metrics({ m }: { m: Modelling }) {
 /* ------------------------------------------------------------------ feature importance */
 
 function Features({ m }: { m: Modelling }) {
-  const rows = (m.feature_importance ?? []).slice(0, 12);
+  const rows = useMemo(() => [...(m.feature_importance ?? []).slice(0, 12)].reverse(), [m.feature_importance]);
+  const motion = useChartMotion(rows, 700);
   if (!rows.length) return null;
   return (
     <Panel>
@@ -392,31 +393,31 @@ function Features({ m }: { m: Modelling }) {
           Importances describe a model that does not beat chance, so they explain the fit, not biology. They are shown for completeness and should not be read
           as “instability index drives PET activity”.
         </Notice>
-        <div className="h-[340px]">
+        <ChartInView className="chart-hl h-[340px]">
           <ResponsiveContainer>
-            <BarChart data={[...rows].reverse()} layout="vertical" margin={{ top: 4, right: 20, bottom: 4, left: 110 }}>
+            <BarChart data={rows} layout="vertical" margin={{ top: 4, right: 20, bottom: 22, left: 110 }}>
               <CartesianGrid {...gridProps} horizontal={false} />
-              <XAxis type="number" {...axisProps} />
+              <XAxis type="number" {...axisProps} label={axisLabel("Random-forest impurity importance")} />
               <YAxis type="category" dataKey="feature" width={110} {...axisProps} />
               <Tooltip
-                cursor={{ fill: "rgb(72 225 205 / 0.06)" }}
+                cursor={{ fill: "var(--chart-cursor)" }}
                 content={({ payload }) => {
                   const r = payload?.[0]?.payload as (typeof rows)[number] | undefined;
                   return r ? (
                     <ChartTooltip
                       title={r.feature}
                       rows={[
-                        { label: "Random forest importance", value: r.random_forest_importance.toFixed(4), color: "#48E1CD" },
-                        { label: "Logistic coefficient (std)", value: r.logistic_coefficient_std.toFixed(3), color: "#4CA8D8" },
+                        { label: "Random forest importance", value: r.random_forest_importance.toFixed(4), color: "var(--color-aqua)" },
+                        { label: "Logistic coefficient (std)", value: r.logistic_coefficient_std.toFixed(3), color: "var(--color-sky)" },
                       ]}
                     />
                   ) : null;
                 }}
               />
-              <Bar dataKey="random_forest_importance" fill="#48E1CD" radius={[0, 3, 3, 0]} isAnimationActive={false} />
+              <Bar dataKey="random_forest_importance" fill="var(--color-aqua)" radius={[0, 3, 3, 0]} {...motion} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </ChartInView>
       </div>
     </Panel>
   );
@@ -469,7 +470,7 @@ function OtherTests({ m }: { m: Modelling }) {
                           <td className="tabular px-2 py-2 font-mono text-muted">{r.null_max}</td>
                           <td className="tabular px-2 py-2 font-mono text-muted">{r.n_draws}</td>
                           <td className="tabular px-2 py-2 font-mono">
-                            <Badge color={r.empirical_p < 0.05 ? "#69E8C3" : "#E8B56B"} dot={false}>
+                            <Badge color={r.empirical_p < 0.05 ? "var(--color-mint)" : "var(--color-amber)"} dot={false}>
                               {r.empirical_p}
                             </Badge>
                           </td>

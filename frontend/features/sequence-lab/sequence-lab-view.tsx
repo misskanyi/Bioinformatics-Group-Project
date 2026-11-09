@@ -7,11 +7,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { EmptyState, InfoTip, Notice, Panel, PanelHeader } from "@/components/ui/primitives";
 import { api, ApiError } from "@/lib/api";
-import type { MatchResult, ProteinDetail } from "@/types/api";
+import type { MatchResult, ProfileResult, ProteinDetail } from "@/types/api";
 
 import { HitDetail } from "./hit-detail";
 import { HitList, MatchComparison } from "./hit-list";
 import { SequenceEditor } from "./sequence-editor";
+import { SequenceProfilePanel } from "./sequence-profile";
 
 function Loading({ length }: { length: number }) {
   return (
@@ -40,6 +41,7 @@ export function SequenceLabView() {
   const params = useSearchParams();
   const [input, setInput] = useState("");
   const [result, setResult] = useState<MatchResult | null>(null);
+  const [profile, setProfile] = useState<ProfileResult | null>(null);
   const [selected, setSelected] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
@@ -49,13 +51,19 @@ export function SequenceLabView() {
     setLoading(true);
     setError(undefined);
     try {
-      const r = await api.post<MatchResult>("/sequence/match", { sequence: text, top_n: 5 });
+      // the server validates both requests identically, so they succeed or fail together
+      const [r, pr] = await Promise.all([
+        api.post<MatchResult>("/sequence/match", { sequence: text, top_n: 5 }),
+        api.post<ProfileResult>("/sequence/profile", { sequence: text }),
+      ]);
       setResult(r);
+      setProfile(pr);
       setSelected(1);
       requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     } catch (e) {
       setError((e as ApiError).message);
       setResult(null);
+      setProfile(null);
     } finally {
       setLoading(false);
     }
@@ -155,7 +163,7 @@ export function SequenceLabView() {
                   <div className="mt-4 grid gap-2 sm:grid-cols-3">
                     {result.method.bands.map((b, i) => (
                       <div key={b.label} className="rounded-lg border border-line/60 bg-void/40 p-3 text-xs">
-                        <div className="font-medium" style={{ color: ["#48E1CD", "#4CA8D8", "#E8B56B"][i] }}>
+                        <div className="font-medium" style={{ color: ["var(--color-aqua)", "var(--color-sky)", "var(--color-amber)"][i] }}>
                           {b.label}
                         </div>
                         <div className="mt-1 text-muted">
@@ -170,6 +178,7 @@ export function SequenceLabView() {
                   </p>
                 </div>
               </Panel>
+              {profile && <SequenceProfilePanel profile={profile} prediction={profile.prediction} />}
             </motion.div>
           ) : (
             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

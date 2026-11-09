@@ -77,8 +77,8 @@ export function NodePanel({ node, onClose, onSelect }: { node: NetworkNode | nul
       {d && (
         <>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge color="#69E8C3">{d.pet_label}</Badge>
-            <Badge color="#9BB3C6" dot={false}>
+            <Badge color="var(--color-mint)">{d.pet_label}</Badge>
+            <Badge color="var(--color-muted)" dot={false}>
               {d.n_pet_assays} assays · {d.n_publications} paper{d.n_publications === 1 ? "" : "s"}
             </Badge>
           </div>

@@ -161,7 +161,7 @@ export function SequenceEditor({
             <Eraser /> Clear
           </Button>
           <span className="hidden font-mono text-[11px] text-muted sm:inline">⌘/Ctrl + Enter</span>
-          <Badge color="#4CA8D8" className="ml-auto">
+          <Badge color="var(--color-sky)" className="ml-auto">
             Computational similarity only
           </Badge>
         </div>

@@ -1,63 +1,206 @@
 @import "tailwindcss";
 
+/* `light:` utilities apply under html[data-theme="light"] (set before first paint). */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
 /* ------------------------------------------------------------------ tokens */
-@theme {
-  --color-void: #091321;
-  --color-surface: #101e30;
-  --color-elevated: #14283b;
-  --color-line: #294157;
-  --color-teal: #48e1cd;
-  --color-cyan: #4ca8d8;
+/*
+ * Two themes, one set of names. Dark values live in @theme (Tailwind emits
+ * them on :root and every utility reads them through var()), and
+ * html[data-theme="light"] overrides the same variables. Components never
+ * hardcode a colour: they use these utilities, or var(--color-*) in inline
+ * styles and SVG attributes (see lib/palette.ts). The theme attribute is set
+ * by an inline script in <head> before first paint (lib/theme-script.ts).
+ * `static` makes Tailwind emit every variable, including data colours that
+ * no utility class uses (they are read from inline styles and SVG).
+ */
+@theme static {
+  --color-void: #070f1e; /* page background */
+  --color-surface: #0b1930; /* sidebar, topbar */
+  --color-surface-2: #081428; /* sidebar gradient end */
+  --color-hero: #0b1d3d; /* overview hero */
+  --color-elevated: #102443; /* raised fills: buttons, hovers, skeletons */
+  --color-popover: #0a1830; /* tooltips, chart tooltips */
+  --color-line: #1b4778; /* borders */
+  --color-electric: #168bff;
+  --color-teal: #42d9d0;
+  --color-cyan: #00d9f5;
   --color-mint: #69e8c3;
-  --color-ink: #f0f8ff;
-  --color-muted: #9bb3c6;
+  --color-ink: #f4f8ff;
+  --color-muted: #a8bdd8;
   --color-amber: #e8b56b;
   --color-rose: #ef8a9a;
   --color-violet: #b49cf5;
+  /* data colours (subgroups, evidence, baselines) */
+  --color-aqua: #48e1cd;
+  --color-sky: #4ca8d8;
+  --color-slate: #5f7a90;
+  --color-orange: #f59e62;
+  --color-lime: #a6d96a;
+  --color-pearl: #dde7f0;
+  --color-periwinkle: #8fa8f0;
+  --color-glint: #5cc8ff;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --radius-panel: 14px;
-  --shadow-glow: 0 0 0 1px rgb(72 225 205 / 0.35), 0 0 24px -6px rgb(72 225 205 / 0.35);
+  --shadow-glow: 0 0 0 1px rgb(22 139 255 / 0.45), 0 0 28px -6px rgb(22 139 255 / 0.45), inset 0 0 40px -20px rgb(0 217 245 / 0.25);
 }
 
+/* Non-utility tokens: glows, chart chrome, backgrounds. */
 :root {
   color-scheme: dark;
+  --page-bg: linear-gradient(180deg, #070f1e 0%, #081428 55%, #070f1e 100%);
+  --glow-strong: rgb(22 139 255 / 0.8);
+  --glow: rgb(22 139 255 / 0.6);
+  --glow-ring: rgb(22 139 255 / 0.5);
+  --glow-cyan: rgb(0 217 245 / 0.6);
+  --edge-glow: rgb(22 139 255 / 0.12);
+  --chart-grid: #1b4778;
+  --chart-cursor: rgb(22 139 255 / 0.08);
+  --chart-dot-bg: #070f1e;
+  --net-bg: radial-gradient(ellipse at center, #0f2236 0%, #070f1e 70%);
+  --skeleton: rgb(16 36 67 / 0.7);
+  --popover-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.55);
+  --popover-opacity: 96%;
+  /* ambient waves and particles */
+  --wave-1: #168bff;
+  --wave-2: #00d9f5;
+  --wave-3: #8f7cf5;
+  --wave-4: #42d9d0;
+  --amb-a: rgb(22 139 255 / 0.2);
+  --amb-b: rgb(0 217 245 / 0.11);
+  --amb-c: rgb(143 124 245 / 0.09);
+  --hero-glow-a: rgb(0 217 245 / 0.16);
+  --hero-glow-b: rgb(22 139 255 / 0.2);
+  --btn-primary: linear-gradient(90deg, #168bff, #0aa8ff);
+  --btn-primary-hover: linear-gradient(90deg, #2b97ff, #14c4ff);
 }
 
-html,
-body {
-  background: var(--color-void);
+/*
+ * Light theme: an airy arctic-blue workspace. White cards on a blue-tinted
+ * page, darker accents so text keeps >= 4.5:1 contrast on white, and glows
+ * turned into soft shadows.
+ */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-void: #f4f8ff;
+  --color-surface: #edf4fc;
+  --color-surface-2: #e7f0fa;
+  --color-hero: #eaf2fc;
+  --color-elevated: #eaf2fc;
+  --color-popover: #ffffff;
+  --color-line: #d8e5f2;
+  --color-electric: #168bff;
+  --color-teal: #008f91;
+  --color-cyan: #1978b7;
+  --color-mint: #0b8560;
+  --color-ink: #102a43;
+  --color-muted: #526b85;
+  --color-amber: #9a6210;
+  --color-rose: #be3455;
+  --color-violet: #6a4bc4;
+  --color-aqua: #00877f;
+  --color-sky: #2a77b0;
+  --color-slate: #8397ac;
+  --color-orange: #c25a17;
+  --color-lime: #4d8a1c;
+  --color-pearl: #61758a;
+  --color-periwinkle: #4f68c4;
+  --color-glint: #0f86d6;
+  --shadow-glow: 0 0 0 1px rgb(25 120 183 / 0.25), 0 10px 30px -14px rgb(25 120 183 / 0.35);
+
+  --page-bg: linear-gradient(180deg, #f4f8ff 0%, #eef4fd 55%, #f4f8ff 100%);
+  --glow-strong: rgb(25 120 183 / 0.3);
+  --glow: rgb(25 120 183 / 0.22);
+  --glow-ring: rgb(25 120 183 / 0.4);
+  --glow-cyan: rgb(25 120 183 / 0.3);
+  --edge-glow: rgb(16 42 67 / 0.05);
+  --chart-grid: #a9bfd6;
+  --chart-cursor: rgb(25 120 183 / 0.07);
+  --chart-dot-bg: #ffffff;
+  --net-bg: radial-gradient(ellipse at center, #ffffff 0%, #f1f6fd 75%);
+  --skeleton: #e6eef8;
+  --popover-shadow: 0 12px 28px -10px rgb(16 42 67 / 0.22);
+  --popover-opacity: 100%;
+  --wave-1: #1978b7;
+  --wave-2: #3aa6d8;
+  --wave-3: #7e8fe0;
+  --wave-4: #2bb3b0;
+  --amb-a: rgb(22 139 255 / 0.1);
+  --amb-b: rgb(0 170 200 / 0.08);
+  --amb-c: rgb(126 143 224 / 0.07);
+  --hero-glow-a: rgb(0 170 200 / 0.1);
+  --hero-glow-b: rgb(22 139 255 / 0.1);
+  --btn-primary: linear-gradient(90deg, #1978b7, #1580e6);
+  --btn-primary-hover: linear-gradient(90deg, #156aa3, #1273d0);
+}
+
+/* Background lives on <html> only: a body background would paint over the z-index -1 ambient layer. */
+html {
+  background: var(--page-bg) fixed var(--color-void);
   color: var(--color-ink);
 }
 
 body {
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  background-image:
-    radial-gradient(1200px 600px at 85% -10%, rgb(72 225 205 / 0.07), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgb(76 168 216 / 0.06), transparent 60%);
-  background-attachment: fixed;
 }
 
 ::selection {
-  background: rgb(72 225 205 / 0.3);
+  background: rgb(0 217 245 / 0.3);
+}
+:root[data-theme="light"] ::selection {
+  background: rgb(25 120 183 / 0.18);
 }
 
 /* thin scrollbars that match the panels */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #294157 transparent;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/* Theme switch: a short crossfade via the View Transitions API (lib/theme.ts). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 280ms;
+  animation-timing-function: ease;
 }
 
 /* ------------------------------------------------------------- utilities */
+/*
+ * Panels are near-opaque instead of backdrop-blurred: blurring over the
+ * continuously animated background would re-rasterise every panel each frame.
+ */
 @utility panel {
-  background: linear-gradient(180deg, rgb(20 40 59 / 0.78), rgb(16 30 48 / 0.72));
-  border: 1px solid rgb(41 65 87 / 0.9);
+  background:
+    linear-gradient(180deg, rgb(22 139 255 / 0.05), transparent 120px),
+    linear-gradient(180deg, rgb(16 36 67 / 0.92), rgb(11 27 52 / 0.9));
+  border: 1px solid rgb(27 71 120 / 0.85);
   border-radius: var(--radius-panel);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 0 rgb(0 217 245 / 0.06) inset, 0 12px 32px -18px rgb(0 0 0 / 0.6);
   min-width: 0; /* let wide tables scroll inside grid cells instead of widening the page */
+
+  :root[data-theme="light"] & {
+    background:
+      linear-gradient(180deg, rgb(22 139 255 / 0.035), transparent 120px),
+      linear-gradient(180deg, #ffffff, rgb(251 253 255 / 0.97));
+    border-color: var(--color-line);
+    box-shadow: 0 1px 2px 0 rgb(16 42 67 / 0.04), 0 10px 28px -16px rgb(16 42 67 / 0.16);
+  }
+}
+
+/* Tooltip / popover surface, shared by Radix tooltips and chart tooltips. */
+@utility popover {
+  background: color-mix(in srgb, var(--color-popover) var(--popover-opacity), transparent);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--popover-shadow);
+}
+
+@utility skeleton-fill {
+  background: var(--skeleton);
 }
 
 @utility glow-ring {
@@ -66,8 +209,8 @@ body {
 
 @utility grid-bg {
   background-image:
-    linear-gradient(rgb(41 65 87 / 0.25) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(41 65 87 / 0.25) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--color-line) 28%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-line) 28%, transparent) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
@@ -89,8 +232,8 @@ body {
     border-color 200ms ease,
     background-color 200ms ease;
   &:hover {
-    border-color: rgb(72 225 205 / 0.32);
-    background-color: rgb(20 40 59 / 0.45);
+    border-color: rgb(22 139 255 / 0.45);
+    background-color: color-mix(in srgb, var(--color-elevated) 55%, transparent);
   }
 }
 
@@ -146,6 +289,65 @@ html:not([data-ready]) .stagger > * {
   animation: enter-fade 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ------------------------------------------------------------- chart motion */
+/*
+ * Hover / selection emphasis on Recharts bars and custom SVG marks: colour
+ * and opacity changes ease instead of snapping. Geometry animation itself
+ * comes from Recharts (bars grow from the baseline, lines draw) and from the
+ * custom scatter plot (components/viz/scatter-plot.tsx).
+ */
+/* .chart-hl: hovering a bar dims the other bars of its series (pure CSS, no rerender). */
+.chart-hl .recharts-bar-rectangles:has(.recharts-bar-rectangle:hover) .recharts-bar-rectangle {
+  opacity: 0.4;
+}
+.chart-hl .recharts-bar-rectangles .recharts-bar-rectangle:hover {
+  opacity: 1;
+}
+
+.recharts-bar-rectangle,
+.recharts-bar-rectangle path,
+.recharts-rectangle,
+.chart-mark {
+  transition:
+    fill-opacity 220ms ease,
+    opacity 220ms ease,
+    fill 400ms ease,
+    stroke 400ms ease;
+}
+
+/* Custom scatter points move, recolour and fade smoothly. */
+.sp-point {
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms ease,
+    fill 450ms ease;
+}
+.sp-point > circle {
+  transition:
+    r 180ms ease,
+    fill 450ms ease,
+    stroke-width 180ms ease;
+}
+.sp-enter .sp-point {
+  animation: sp-pop 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes sp-pop {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+.sp-point {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Width-animated horizontal bars (CountBars, coverage bars). */
+.bar-fill {
+  transition: width 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @keyframes enter-rise {
   from {
     opacity: 0;
@@ -175,6 +377,264 @@ html:not([data-ready]) .stagger > * {
   }
 }
 
+/* ------------------------------------------------------------- ambient */
+/*
+ * Continuous background motion. Each moving layer animates only transform or
+ * opacity, so the compositor runs it without repainting. `pointer-events:
+ * none` everywhere: decoration never takes clicks or blocks scrolling.
+ */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+
+.amb-glow {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 9999px;
+  will-change: transform;
+  animation: amb-drift 32s ease-in-out infinite alternate;
+}
+.amb-glow-a {
+  left: -20vmax;
+  top: -30vmax;
+  background: radial-gradient(closest-side, var(--amb-a), transparent);
+}
+.amb-glow-b {
+  right: -25vmax;
+  top: 10vh;
+  background: radial-gradient(closest-side, var(--amb-b), transparent);
+  animation-duration: 40s;
+  animation-delay: -12s;
+}
+.amb-glow-c {
+  left: 20vw;
+  bottom: -45vmax;
+  background: radial-gradient(closest-side, var(--amb-c), transparent);
+  animation-duration: 46s;
+  animation-delay: -24s;
+}
+
+@keyframes amb-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6vw, 4vh, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-4vw, 8vh, 0) scale(0.96);
+  }
+}
+
+.amb-waves {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  animation: amb-bob 14s ease-in-out infinite alternate;
+}
+.amb-waves-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  will-change: transform;
+  animation: amb-slide 60s linear infinite;
+}
+.amb-waves-page {
+  inset: auto 0 -6vh 0;
+  height: 72vh;
+  -webkit-mask-image: linear-gradient(180deg, transparent, black 35%, black 80%, transparent);
+  mask-image: linear-gradient(180deg, transparent, black 35%, black 80%, transparent);
+}
+
+@keyframes amb-slide {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes amb-bob {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -3%, 0);
+  }
+}
+
+.amb-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.amb-particles > span {
+  position: absolute;
+  border-radius: 9999px;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: amb-float 22s ease-in-out infinite;
+}
+
+@keyframes amb-float {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(18px, -60px, 0);
+    opacity: 0.45;
+  }
+  80% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate3d(-10px, -120px, 0);
+    opacity: 0;
+  }
+}
+
+/* Research Overview gets the full effect; data-heavy pages a quieter one. */
+.ambient[data-intensity="full"] .amb-waves {
+  opacity: 0.7;
+}
+.ambient[data-intensity="calm"] .amb-waves {
+  opacity: 0.32;
+}
+.ambient[data-intensity="calm"] .amb-glow {
+  opacity: 0.65;
+}
+.ambient[data-intensity="calm"] .amb-particles > span:nth-child(2n) {
+  display: none;
+}
+
+/*
+ * Light variant: the same moving layers, quieter. Waves and particles keep
+ * their motion but lose the neon glow, and a faint scientific mesh (hidden in
+ * dark mode) gives the white workspace some texture.
+ */
+.amb-mesh {
+  position: absolute;
+  inset: -10%;
+  display: none;
+  background-image:
+    linear-gradient(rgb(25 120 183 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(25 120 183 / 0.07) 1px, transparent 1px),
+    radial-gradient(circle, rgb(25 120 183 / 0.16) 1.2px, transparent 1.6px);
+  background-size: 56px 56px, 56px 56px, 56px 56px;
+  background-position: 0 0, 0 0, -0.5px -0.5px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 70% 20%, black, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 70% 20%, black, transparent 75%);
+  will-change: transform;
+  animation: amb-mesh-drift 90s linear infinite alternate;
+}
+@keyframes amb-mesh-drift {
+  to {
+    transform: translate3d(-56px, -28px, 0);
+  }
+}
+:root[data-theme="light"] .amb-mesh {
+  display: block;
+}
+:root[data-theme="light"] .ambient[data-intensity="full"] .amb-waves {
+  opacity: 0.42;
+}
+:root[data-theme="light"] .ambient[data-intensity="calm"] .amb-waves {
+  opacity: 0.2;
+}
+:root[data-theme="light"] .amb-particles > span {
+  box-shadow: none !important;
+  filter: saturate(0.8);
+}
+:root[data-theme="light"] .ambient .amb-particles {
+  opacity: 0.55;
+}
+
+/* Decorative helix strip scrolling sideways. */
+.amb-dna {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+.amb-dna-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  will-change: transform;
+  animation: amb-slide 48s linear infinite;
+}
+
+/* Overview hero: deep navy gradient with a thin glowing electric-blue frame. */
+.hero-frame {
+  background:
+    radial-gradient(900px 420px at 78% 30%, rgb(0 217 245 / 0.1), transparent 65%),
+    radial-gradient(700px 400px at 10% 100%, rgb(22 139 255 / 0.16), transparent 70%),
+    linear-gradient(160deg, #0b1d3d 0%, #0a1a36 55%, #081530 100%);
+  border-color: rgb(22 139 255 / 0.55);
+  box-shadow:
+    0 0 0 1px rgb(22 139 255 / 0.2),
+    0 0 36px -8px rgb(22 139 255 / 0.5),
+    inset 0 0 80px -40px rgb(0 217 245 / 0.35);
+}
+:root[data-theme="light"] .hero-frame {
+  background:
+    radial-gradient(900px 420px at 78% 30%, rgb(0 170 200 / 0.08), transparent 65%),
+    radial-gradient(700px 400px at 10% 100%, rgb(22 139 255 / 0.08), transparent 70%),
+    linear-gradient(160deg, #ffffff 0%, #f5f9ff 55%, #eaf2fc 100%);
+  border-color: rgb(25 120 183 / 0.28);
+  box-shadow:
+    0 1px 2px 0 rgb(16 42 67 / 0.05),
+    0 18px 44px -24px rgb(25 120 183 / 0.35);
+}
+
+/* Faded top and left, so the waves stay clear of the heading and intro text. */
+.hero-waves {
+  inset: 25% 0 0 0;
+  opacity: 0.85;
+  -webkit-mask-image:
+    linear-gradient(180deg, transparent, black 30%),
+    linear-gradient(90deg, rgb(0 0 0 / 0.18) 0%, rgb(0 0 0 / 0.25) 40%, black 65%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, transparent, black 30%),
+    linear-gradient(90deg, rgb(0 0 0 / 0.18) 0%, rgb(0 0 0 / 0.25) 40%, black 65%);
+  mask-composite: intersect;
+}
+@media (max-width: 1023px) {
+  /* stacked layout: text spans the full width, so keep the waves faint */
+  .hero-waves {
+    opacity: 0.4;
+  }
+}
+.hero-waves .amb-waves-track {
+  animation-duration: 38s;
+}
+
+/* Slowly breathing glow behind a section. */
+@utility ambient-pulse {
+  animation: amb-pulse 9s ease-in-out infinite alternate;
+}
+
+@keyframes amb-pulse {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
 /* ------------------------------------------------------------- boot screen */
 /*
  * Server-rendered overlay shown only while the JavaScript bundle loads.
@@ -189,7 +649,7 @@ html:not([data-ready]) .stagger > * {
   place-items: center;
   padding: 1.5rem;
   background:
-    radial-gradient(700px 400px at 50% 40%, rgb(72 225 205 / 0.08), transparent 70%),
+    radial-gradient(700px 400px at 50% 40%, rgb(22 139 255 / 0.12), transparent 70%),
     var(--color-void);
   animation: enter-fade 350ms ease 200ms backwards;
   transition:
@@ -205,16 +665,22 @@ html[data-ready] .boot-screen {
 }
 
 .boot-helix {
+  --amp: 28px;
+  --dot: 8px;
   position: relative;
   display: flex;
-  height: 72px;
+  height: calc(var(--amp) * 2 + var(--dot) * 2);
   align-items: center;
-  gap: 10px;
+  gap: calc(var(--dot) * 1.25);
+}
+.boot-helix.is-sm {
+  --amp: 12px;
+  --dot: 5px;
 }
 
 .boot-bp {
   position: relative;
-  width: 8px;
+  width: var(--dot);
   height: 100%;
 }
 
@@ -230,29 +696,29 @@ html[data-ready] .boot-screen {
 
 .boot-bp > .boot-a,
 .boot-bp > .boot-b {
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
+  width: var(--dot);
+  height: var(--dot);
+  margin: calc(var(--dot) / -2) 0 0 calc(var(--dot) / -2);
   border-radius: 9999px;
 }
 
 .boot-bp > .boot-a {
-  background: var(--color-teal);
-  box-shadow: 0 0 10px rgb(72 225 205 / 0.7);
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px rgb(0 217 245 / 0.7);
   animation-name: strand-a;
 }
 
 .boot-bp > .boot-b {
-  background: var(--color-cyan);
-  box-shadow: 0 0 10px rgb(76 168 216 / 0.6);
+  background: var(--color-electric);
+  box-shadow: 0 0 10px rgb(22 139 255 / 0.7);
   animation-name: strand-b;
 }
 
 .boot-bp > .boot-r {
   width: 1px;
-  height: 56px;
-  margin: -28px 0 0 -0.5px;
-  background: linear-gradient(var(--color-teal), var(--color-cyan));
+  height: calc(var(--amp) * 2);
+  margin: calc(var(--amp) * -1) 0 0 -0.5px;
+  background: linear-gradient(var(--color-cyan), var(--color-electric));
   opacity: 0.35;
   animation-name: rung;
 }
@@ -260,11 +726,11 @@ html[data-ready] .boot-screen {
 @keyframes strand-a {
   0%,
   100% {
-    transform: translateY(-28px) scale(1);
+    transform: translateY(calc(var(--amp) * -1)) scale(1);
     opacity: 1;
   }
   50% {
-    transform: translateY(28px) scale(0.55);
+    transform: translateY(var(--amp)) scale(0.55);
     opacity: 0.4;
   }
 }
@@ -272,11 +738,11 @@ html[data-ready] .boot-screen {
 @keyframes strand-b {
   0%,
   100% {
-    transform: translateY(28px) scale(0.55);
+    transform: translateY(var(--amp)) scale(0.55);
     opacity: 0.4;
   }
   50% {
-    transform: translateY(-28px) scale(1);
+    transform: translateY(calc(var(--amp) * -1)) scale(1);
     opacity: 1;
   }
 }
@@ -299,7 +765,7 @@ html[data-ready] .boot-screen {
   width: 180px;
   overflow: hidden;
   border-radius: 9999px;
-  background: rgb(41 65 87 / 0.8);
+  background: color-mix(in srgb, var(--color-line) 80%, transparent);
 }
 
 .boot-progress::after {
@@ -308,7 +774,7 @@ html[data-ready] .boot-screen {
   inset: 0;
   width: 40%;
   border-radius: inherit;
-  background: linear-gradient(90deg, transparent, var(--color-teal), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-cyan), transparent);
   animation: boot-sweep 1.4s ease-in-out infinite;
 }
 
@@ -339,6 +805,34 @@ html[data-ready] .boot-screen {
     animation: none !important;
   }
 
+  /* Background stays as a still image. */
+  .ambient *,
+  .amb-waves,
+  .amb-waves-track,
+  .amb-dna-track,
+  .amb-mesh,
+  .ambient-pulse {
+    animation: none !important;
+  }
+
+  /* Charts are static: no pop-in, no moving points. */
+  .sp-enter .sp-point {
+    animation: none !important;
+  }
+  .sp-point,
+  .sp-point > circle,
+  .bar-fill,
+  .chart-mark {
+    transition: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+  .amb-particles > span {
+    opacity: 0.45;
+  }
+
   /* Static helix and progress bar. */
   .boot-bp > span,
   .boot-progress::after {
@@ -346,11 +840,11 @@ html[data-ready] .boot-screen {
   }
   .boot-bp:nth-child(odd) > .boot-a,
   .boot-bp:nth-child(even) > .boot-b {
-    transform: translateY(-28px);
+    transform: translateY(calc(var(--amp) * -1));
   }
   .boot-bp:nth-child(odd) > .boot-b,
   .boot-bp:nth-child(even) > .boot-a {
-    transform: translateY(28px);
+    transform: translateY(var(--amp));
     opacity: 0.5;
   }
   .boot-progress::after {

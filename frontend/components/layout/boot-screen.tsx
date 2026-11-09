@@ -1,6 +1,6 @@
-import { LogoMark } from "./logo";
+import { DnaLoader } from "@/components/ui/dna-loader";
 
-const BASE_PAIRS = 12;
+import { LogoMark } from "./logo";
 
 // Fallback when JavaScript is disabled: never show the overlay or hold content back.
 const NO_SCRIPT_CSS = ".boot-screen{display:none}.page-stage>*>*,.stagger>*{animation:none!important}";
@@ -15,20 +15,12 @@ export function BootScreen() {
     <>
       <div className="boot-screen" role="status" aria-live="polite">
         <div className="flex flex-col items-center gap-6 text-center">
-          <div className="boot-helix" aria-hidden>
-            {Array.from({ length: BASE_PAIRS }, (_, i) => (
-              <span key={i} className="boot-bp" style={{ "--i": i } as React.CSSProperties}>
-                <span className="boot-r" />
-                <span className="boot-a" />
-                <span className="boot-b" />
-              </span>
-            ))}
-          </div>
+          <DnaLoader />
           <div className="flex items-center gap-3">
             <LogoMark className="size-9" />
             <div className="text-left leading-tight">
               <div className="text-[15px] font-semibold tracking-tight text-ink">PET Enzyme Explorer</div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-teal/80">Decode · Rethink</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan/80">Decode · Rethink</div>
             </div>
           </div>
           <div className="flex flex-col items-center gap-2.5">

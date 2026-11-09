@@ -1,9 +1,11 @@
 "use client";
 
-import { Beaker, FlaskConical, Hourglass, Thermometer } from "lucide-react";
+import { Beaker, Dna, FlaskConical, Hourglass, Layers, Thermometer } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { Badge, EmptyState, LoadingState, Notice, Panel, PanelHeader } from "@/components/ui/primitives";
+import { Badge, EmptyState, LoadingState, Notice, Panel, PanelHeader, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/primitives";
+import { BulkAnalysis } from "@/features/discovery/bulk/bulk-analysis";
 import { SequenceLabView } from "@/features/sequence-lab/sequence-lab-view";
 import { useApi } from "@/lib/api";
 import { num } from "@/lib/utils";
@@ -86,7 +88,7 @@ function Prediction() {
         eyebrow="Machine-learning prediction"
         title="Activity prediction"
         description="A predicted class or probability is only shown when a model has been validated well enough for the number to mean something."
-        action={<Badge color="#E8B56B">Unavailable</Badge>}
+        action={<Badge color="var(--color-amber)">Unavailable</Badge>}
       />
       <div className="p-5">
         <EmptyState variant="unavailable" title="No validated model is available to score your sequence" icon={<Hourglass className="size-5" />}>
@@ -118,7 +120,7 @@ function Candidates() {
         eyebrow="Candidate discovery"
         title="Ranked untested candidates"
         description="Previously untested sequences, ordered by predicted activity, for laboratory follow-up."
-        action={<Badge color="#E8B56B">Pending model outputs</Badge>}
+        action={<Badge color="var(--color-amber)">Pending model outputs</Badge>}
       />
       <div className="p-5">
         {res.loading ? (
@@ -145,7 +147,20 @@ function Candidates() {
 
 /* ---------------------------------------------------------- page */
 
+type Mode = "single" | "bulk";
+
 export function DiscoveryView() {
+  const params = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const mode: Mode = params.get("mode") === "bulk" ? "bulk" : "single";
+  const setMode = (m: string) => {
+    const sp = new URLSearchParams(params.toString());
+    if (m === "bulk") sp.set("mode", "bulk");
+    else sp.delete("mode");
+    router.replace(sp.size ? `${pathname}?${sp}` : pathname, { scroll: false });
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Notice>
@@ -161,13 +176,30 @@ export function DiscoveryView() {
           </div>
           <h2 className="mt-3 max-w-3xl text-2xl font-semibold tracking-tight sm:text-3xl">Place an unknown protein among the characterised PET enzymes</h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
-            Paste an amino-acid sequence or load a reference example. The sequence is aligned against every curated PET-active protein with Smith–Waterman and
-            BLOSUM62, and the closest matches are reported with their identity, coverage and the published assay evidence behind them.
+            Paste an amino-acid sequence or load a reference example, or upload a whole dataset under Bulk Analysis. Each sequence is aligned against every
+            curated PET-active protein with Smith–Waterman and BLOSUM62, and the closest matches are reported with their identity, coverage and the published
+            assay evidence behind them, alongside its composition, physicochemical properties and catalytic-motif search.
           </p>
         </div>
       </Panel>
 
-      <SequenceLabView />
+      {/* both panes stay mounted so switching tabs never discards an analysis in progress */}
+      <Tabs value={mode} onValueChange={setMode} className="flex flex-col gap-6">
+        <TabsList aria-label="Analysis mode" className="self-start">
+          <TabsTrigger value="single" className="flex items-center gap-1.5 px-4 py-2 text-[13px]">
+            <Dna className="size-4" /> Single Sequence
+          </TabsTrigger>
+          <TabsTrigger value="bulk" className="flex items-center gap-1.5 px-4 py-2 text-[13px]">
+            <Layers className="size-4" /> Bulk Analysis
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="single" forceMount className="reveal focus-visible:outline-none data-[state=inactive]:hidden">
+          <SequenceLabView />
+        </TabsContent>
+        <TabsContent value="bulk" forceMount className="reveal focus-visible:outline-none data-[state=inactive]:hidden">
+          <BulkAnalysis />
+        </TabsContent>
+      </Tabs>
 
       <Conditions />
       <Prediction />

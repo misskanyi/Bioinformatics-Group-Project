@@ -406,3 +406,129 @@ export interface Audit {
   library?: { rows: number; unique_seq_aa: number; by_dataset: Record<string, number>; tm_1_measured: number; seq_len: { min: number; median: number; max: number } };
   assay_table?: { rows: number; substrates: Record<string, number>; temperatures: Record<string, number>; pH: Record<string, number>; controls: Record<string, number> };
 }
+
+/* ------------------------------------------------- Sequence profile & bulk analysis */
+
+export interface PredictionCondition {
+  target: string;
+  temperature_c: number;
+  substrate: string;
+  protocol: string;
+}
+
+/** Always explicit: `score` stays null until a validated model is connected. */
+export interface PredictionBlock {
+  status: "not_available";
+  label: string;
+  reason: string;
+  condition: PredictionCondition;
+  score: null;
+}
+
+export interface SequenceProfile {
+  length: number;
+  composition: Record<string, number>;
+  physicochemical: {
+    molecular_weight_kda: number;
+    isoelectric_point: number;
+    gravy: number;
+    aromaticity: number;
+    instability_index: number;
+    helix_prone_fraction: number;
+    turn_prone_fraction: number;
+    sheet_prone_fraction: number;
+  };
+  motifs: { name: string; count: number; variants: string[]; positions: number[] };
+}
+
+export interface ProfileResult extends SequenceProfile {
+  header: string;
+  prediction: PredictionBlock;
+}
+
+export type EvidenceStatus = "experimental" | "similarity" | "unknown";
+export type RecordStatus = "valid" | "invalid" | "duplicate";
+
+export interface BatchRecord {
+  row: number;
+  protein_id: string;
+  organism: string | null;
+  source: string;
+  length: number | null;
+  status: RecordStatus;
+  errors: string[];
+  warnings: string[];
+  duplicate_of: number | null;
+  preview: string;
+}
+
+export type ColumnMapping = { protein_id: string | null; sequence: string | null; organism: string | null };
+
+export interface BatchParse {
+  format: "csv" | "tsv" | "xlsx" | "fasta" | "txt" | "pdf";
+  records: BatchRecord[];
+  counts: { total: number; valid: number; invalid: number; duplicate: number };
+  requires_confirmation: boolean;
+  columns?: string[];
+  mapping?: ColumnMapping;
+  suggested_mapping?: ColumnMapping;
+  preview_rows?: Record<string, string>[];
+}
+
+export interface BatchHit {
+  protein_id: number;
+  protein_name: string;
+  identity: number;
+  query_coverage: number;
+  target_coverage: number;
+  normalised_score: number;
+  shuffled_z: number;
+  interpretation: string;
+  query_range: [number, number];
+  target_range: [number, number];
+  aligned_query?: string;
+  aligned_target?: string;
+  reference: {
+    subcluster: string;
+    pet_label: string;
+    label_confidence: string;
+    n_pet_assays: number;
+    n_positive_assays: number;
+    n_publications: number;
+    temperatures_with_activity_c: number[];
+    organism: string | null;
+  };
+}
+
+export interface BatchResult extends Partial<Omit<SequenceProfile, "length">> {
+  row: number;
+  protein_id: string;
+  organism: string | null;
+  source: string;
+  length: number | null;
+  status: "analysed" | "invalid" | "duplicate" | "error";
+  errors: string[];
+  warnings: string[];
+  duplicate_of: number | null;
+  hits?: BatchHit[];
+  evidence_status?: EvidenceStatus;
+  prediction?: PredictionBlock;
+}
+
+export interface BatchJob {
+  job_id: string;
+  state: "queued" | "running" | "done" | "cancelled";
+  total: number;
+  done: number;
+  results: BatchResult[];
+  meta: { filename: string; format: string; counts: BatchParse["counts"] };
+}
+
+export interface BatchLimits {
+  max_file_mb: number;
+  max_records: number;
+  min_length: number;
+  max_length: number;
+  formats: string[];
+  prediction: { available: boolean; reason: string; condition: PredictionCondition; model: string | null; roc_auc: number | null; permutation_p: number | null };
+}

@@ -20,6 +20,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CountUp } from "@/components/ui/count-up";
 import { Badge, ErrorState, InfoTip, Notice, Panel, PanelHeader, Skeleton } from "@/components/ui/primitives";
+import { DnaStrip, FlowingWaves, Particles } from "@/components/viz/ambient";
 import { AA_LEGEND, HelixCanvas } from "@/components/viz/helix-canvas";
 import { useApi } from "@/lib/api";
 import { num } from "@/lib/utils";
@@ -91,28 +92,28 @@ const SOURCES = [
     role: "Plastics-Active Enzymes Database. Curated protein sequences and per-publication polymer assays; the source of every experimentally verified PET-active protein in this project.",
     url: "https://www.pazy.eu",
     evidence: "Experimentally validated",
-    color: "#69E8C3",
+    color: "var(--color-mint)",
   },
   {
     name: "PlasticDB",
     role: "Proteins and microorganisms reported to degrade plastics. Used for source-organism evidence and cross-checking, never as proof of activity, because entries are name-annotated rather than assay-verified.",
     url: "https://plasticdb.org",
     evidence: "Annotated",
-    color: "#4CA8D8",
+    color: "var(--color-sky)",
   },
   {
     name: "UniProt",
     role: "Reviewed records for reference cutinases, used for organism and taxonomy annotation of identical sequences.",
     url: "https://www.uniprot.org",
     evidence: "Annotated",
-    color: "#B49CF5",
+    color: "var(--color-violet)",
   },
   {
     name: "PETML",
     role: "Thirty-three digitised study workbooks of engineered PET-hydrolase variants with per-study activity and melting temperatures. Treated as within-study ordinal series — the workbooks record no units, so values are never pooled.",
     url: null,
     evidence: "Not unit-comparable",
-    color: "#E8B56B",
+    color: "var(--color-amber)",
   },
 ];
 
@@ -121,17 +122,25 @@ function Hero() {
   const ref = examples.data?.[0];
   const seq = ref?.fasta.split("\n").slice(1).join("") ?? "";
   return (
-    <Panel className="overflow-hidden">
-      <div className="grid-bg absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_70%_50%,black,transparent_75%)]" />
-      <div className="relative grid gap-6 p-6 sm:p-10 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+    <Panel className="hero-frame overflow-hidden">
+      {/* decorative layers, all behind the content and click-through */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="ambient-pulse absolute -right-32 -top-40 size-[520px] rounded-full bg-[radial-gradient(closest-side,var(--hero-glow-a),transparent)]" />
+        <div className="ambient-pulse absolute -bottom-48 -left-24 size-[560px] rounded-full bg-[radial-gradient(closest-side,var(--hero-glow-b),transparent)] [animation-delay:-4s]" />
+        <FlowingWaves className="hero-waves" id="hero" />
+        <div className="grid-bg absolute inset-0 opacity-30 [mask-image:radial-gradient(ellipse_at_70%_50%,black,transparent_75%)]" />
+        <Particles count={12} />
+        <DnaStrip className="inset-x-0 bottom-2 h-16 opacity-60" />
+      </div>
+      <div className="relative grid gap-6 p-6 pb-24 sm:p-10 sm:pb-24 lg:grid-cols-[1.05fr_1fr] lg:items-center">
         <div>
-          <motion.div {...fade(0)} className="eyebrow flex items-center gap-2 text-teal">
+          <motion.div {...fade(0)} className="eyebrow flex items-center gap-2 text-cyan">
             <Sparkles className="size-3.5" /> Computing for Bioinformatics · group research project
           </motion.div>
           <motion.h2 {...fade(1)} className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl xl:text-6xl">
             PET Enzyme Explorer
             <br />
-            <span className="bg-gradient-to-r from-teal via-mint to-cyan bg-clip-text text-transparent">Decode Enzymes. Rethink Plastic.</span>
+            <span className="bg-gradient-to-r from-cyan via-glint to-electric bg-clip-text text-transparent drop-shadow-[0_0_24px_color-mix(in_srgb,var(--glow-cyan)_40%,transparent)]">Decode Enzymes. Rethink Plastic.</span>
           </motion.h2>
           <motion.div {...fade(2)} className="mt-5 max-w-xl space-y-3 text-base leading-relaxed text-muted">
             <p>
@@ -156,7 +165,7 @@ function Hero() {
           </motion.div>
         </div>
         <motion.div {...fade(2)} className="relative">
-          <div className="relative h-56 overflow-hidden rounded-xl border border-line/70 bg-void/60 sm:h-72">
+          <div className="relative h-56 overflow-hidden rounded-xl border border-electric/35 bg-void/70 shadow-[0_0_32px_-10px_var(--glow)] sm:h-72">
             {seq ? (
               <HelixCanvas sequence={seq} className="reveal h-full w-full" />
             ) : examples.error ? (
@@ -169,7 +178,7 @@ function Hero() {
               <div className="font-mono text-[11px] text-muted">
                 {ref ? (
                   <>
-                    <span className="text-teal">{ref.protein_name}</span> · first 140 of {ref.length} residues · helical projection
+                    <span className="text-cyan">{ref.protein_name}</span> · first 140 of {ref.length} residues · helical projection
                   </>
                 ) : examples.error ? (
                   "Reference sequence unavailable"
@@ -337,28 +346,28 @@ function DatasetSummary() {
           value: count("proteins", s.proteins),
           sub: `${s.publications} publications`,
           hint: "Unique sequences with experimentally reported PET breakdown in at least one published assay (PAZy).",
-          color: "#48E1CD",
+          color: "var(--color-aqua)",
         },
         {
           label: "Experimental observations",
           value: a?.pazy ? count("assay-rows", a.pazy.assay_rows) : count("pet-assays", s.pet_assays),
           sub: a?.pazy ? `${num(a.pazy.rows_with_positive_measurement)} positive · ${num(a.pazy.rows_all_zero_or_nondetect)} below detection` : `${num(s.assays_detected)} with breakdown detected`,
           hint: "One row per reported PET assay measurement. Below-detection rows are condition-level zeroes for otherwise active enzymes, never proof of inactivity.",
-          color: "#4CA8D8",
+          color: "var(--color-sky)",
         },
         {
           label: "Data sources",
           value: "4",
           sub: "PAZy · PlasticDB · UniProt · PETML",
           hint: "Plus the 2025 standardised screening supplement, which is the only single-protocol dataset comparable across proteins.",
-          color: "#B49CF5",
+          color: "var(--color-violet)",
         },
         {
           label: "Curated training examples",
           value: m?.dataset ? count("training", m.dataset.n_proteins) : "—",
           sub: m?.dataset ? `${m.dataset.n_positive} detected / ${m.dataset.n_negative} not detected` : "pending model outputs",
           hint: "Proteins from the standardised screen with a label at 60 °C, grouped into homology groups at 70% identity for splitting.",
-          color: "#69E8C3",
+          color: "var(--color-mint)",
         },
       ]
     : [];

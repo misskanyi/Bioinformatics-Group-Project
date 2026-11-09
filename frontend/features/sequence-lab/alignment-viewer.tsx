@@ -18,7 +18,13 @@ const STYLE: Record<Kind, string> = {
  * Renders the local alignment returned by the backend (the same alignment the
  * identity and coverage figures were computed from).
  */
-export function AlignmentViewer({ hit, queryLabel }: { hit: Hit; queryLabel: string }) {
+export function AlignmentViewer({
+  hit,
+  queryLabel,
+}: {
+  hit: Pick<Hit, "aligned_query" | "aligned_target" | "protein_name" | "query_range" | "target_range">;
+  queryLabel: string;
+}) {
   const [width, setWidth] = useState(60);
   const [hover, setHover] = useState<number | null>(null);
 

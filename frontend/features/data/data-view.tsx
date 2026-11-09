@@ -2,11 +2,23 @@
 
 import { ArrowRight, Microscope, Share2, Sigma, Thermometer } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useMemo, useState } from "react";
+import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import { ErrorState, Notice, Panel, PanelHeader, Skeleton } from "@/components/ui/primitives";
-import { axisProps, ChartTooltip, gridProps } from "@/components/viz/chart-kit";
+import { ErrorState, Notice, Panel, PanelHeader, Select, Skeleton } from "@/components/ui/primitives";
+import {
+  axisLabel,
+  axisProps,
+  barCursor,
+  ChartControls,
+  ChartInView,
+  ChartTooltip,
+  gridProps,
+  Legend,
+  Segmented,
+  Takeaway,
+  useChartMotion,
+} from "@/components/viz/chart-kit";
 import { ConditionsView } from "@/features/conditions/conditions-view";
 import { ClusterCharts } from "@/features/networks/cluster-charts";
 import { NetworksView } from "@/features/networks/networks-view";
@@ -14,33 +26,11 @@ import { OrganismsView } from "@/features/organisms/organisms-view";
 import { DatasetsView } from "@/features/datasets/datasets-view";
 import { useApi } from "@/lib/api";
 import { DATA_SECTIONS, type DataSection } from "@/lib/nav";
-import { clusterColor } from "@/lib/palette";
-import { cn, num } from "@/lib/utils";
+import { C, clusterColor } from "@/lib/palette";
+import { num, sortGroups } from "@/lib/utils";
 import type { Audit, Clustering, Modelling, NetworkData, Overview } from "@/types/api";
 
-/* ------------------------------------------------------------------ section nav */
-
-function SectionNav({ active, onSelect }: { active: DataSection; onSelect: (s: DataSection) => void }) {
-  return (
-    <nav aria-label="Page sections" className="sticky top-16 z-10 -mx-4 overflow-x-auto border-b border-line/60 bg-void/80 px-4 py-2 backdrop-blur-xl sm:-mx-6 sm:px-6">
-      <div className="flex gap-1">
-        {DATA_SECTIONS.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => onSelect(s.id)}
-            aria-current={active === s.id ? "true" : undefined}
-            className={cn(
-              "whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] transition",
-              active === s.id ? "bg-elevated text-teal shadow-[inset_0_0_0_1px_rgb(72_225_205/0.35)]" : "text-muted hover:bg-elevated/60 hover:text-ink",
-            )}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
-    </nav>
-  );
-}
+/* ------------------------------------------------------------------ section intro */
 
 function SectionIntro({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -161,41 +151,95 @@ function CleaningSummary() {
 
 /* ------------------------------------------------------------------ label composition */
 
+const SUBSTRATE_LABEL: Record<string, string> = { cryPow: "Crystalline PET powder" };
+const substrateLabel = (code: string) => SUBSTRATE_LABEL[code] ?? "Amorphous PET film";
+const substrateColor = (code: string) => (code === "cryPow" ? C.aqua : C.violet);
+
 function LabelComposition() {
   const audit = useApi<Audit>("/audit");
   const a = audit.data?.available ? audit.data : undefined;
+  const [substrate, setSubstrate] = useState<string>("all");
+  const [temp, setTemp] = useState<string>("all");
+  const [sort, setSort] = useState<"rate" | "condition">("rate");
+
+  const all = useMemo(
+    () =>
+      (a?.condition_labels ?? []).map((c) => {
+        const [code, t, ph] = c.cond.split("|");
+        return { ...c, label: `${code} ${t}°C pH${ph}`, substrate: code, temp: t, ph: Number(ph) };
+      }),
+    [a],
+  );
+  const substrates = useMemo(() => [...new Set(all.map((r) => r.substrate))], [all]);
+  const temps = useMemo(() => [...new Set(all.map((r) => r.temp))].sort((x, y) => Number(x) - Number(y)), [all]);
+  const rows = useMemo(() => {
+    const r = all.filter((x) => (substrate === "all" || x.substrate === substrate) && (temp === "all" || x.temp === temp));
+    return sort === "rate"
+      ? r.sort((x, y) => y.pos_rate - x.pos_rate)
+      : r.sort((x, y) => x.substrate.localeCompare(y.substrate) || Number(x.temp) - Number(y.temp) || x.ph - y.ph);
+  }, [all, substrate, temp, sort]);
+  const motion = useChartMotion(rows, 650);
+
   if (!a?.condition_labels) return null;
-  const rows = a.condition_labels
-    .map((c) => {
-      const [substrate, temp, ph] = c.cond.split("|");
-      return { ...c, label: `${substrate} ${temp}°C pH${ph}`, substrate };
-    })
-    .sort((x, y) => y.pos_rate - x.pos_rate);
+  const hi = rows.reduce((m, r) => (r.pos_rate > m.pos_rate ? r : m), rows[0]);
+  const lo = rows.reduce((m, r) => (r.pos_rate < m.pos_rate ? r : m), rows[0]);
+  const dirty = substrate !== "all" || temp !== "all" || sort !== "rate";
 
   return (
     <Panel>
       <PanelHeader
         eyebrow="Activity by experimental condition"
-        title="The same enzymes, twenty different answers"
+        title={`The same enzymes, ${all.length} different answers`}
         description="Share of assayed enzymes with detected product in each condition of the 2025 standardised screen (crystalline powder vs amorphous film, 40 vs 60 °C, pH 4.5–8.5). Activity is only meaningful with its condition attached."
       />
       <div className="p-5">
-        <div className="h-[420px]">
+        <ChartControls
+          dirty={dirty}
+          onReset={() => {
+            setSubstrate("all");
+            setTemp("all");
+            setSort("rate");
+          }}
+        >
+          <Segmented
+            label="Substrate"
+            value={substrate}
+            onChange={setSubstrate}
+            options={[{ value: "all", label: "All" }, ...substrates.map((c) => ({ value: c, label: c === "cryPow" ? "Powder" : "Film" }))]}
+          />
+          <Segmented label="Temperature" value={temp} onChange={setTemp} options={[{ value: "all", label: "All" }, ...temps.map((t) => ({ value: t, label: `${t} °C` }))]} />
+          <Segmented
+            label="Sort"
+            value={sort}
+            onChange={setSort}
+            options={[
+              { value: "rate", label: "Positive rate" },
+              { value: "condition", label: "Condition" },
+            ]}
+          />
+        </ChartControls>
+        <ChartInView className="chart-hl h-[420px]">
           <ResponsiveContainer>
-            <BarChart data={rows} layout="vertical" margin={{ top: 4, right: 24, bottom: 4, left: 92 }}>
+            <BarChart data={rows} layout="vertical" margin={{ top: 4, right: 24, bottom: 22, left: 92 }}>
               <CartesianGrid {...gridProps} horizontal={false} />
-              <XAxis type="number" domain={[0, 1]} tickFormatter={(t) => `${Math.round(t * 100)}%`} {...axisProps} />
+              <XAxis
+                type="number"
+                domain={[0, 1]}
+                tickFormatter={(t) => `${Math.round(t * 100)}%`}
+                {...axisProps}
+                label={axisLabel("Enzymes with detected product (share of those assayed)")}
+              />
               <YAxis type="category" dataKey="label" width={92} {...axisProps} />
               <Tooltip
-                cursor={{ fill: "rgb(72 225 205 / 0.06)" }}
+                cursor={barCursor}
                 content={({ payload }) => {
                   const r = payload?.[0]?.payload as (typeof rows)[number] | undefined;
                   return r ? (
                     <ChartTooltip
-                      title={r.label}
+                      title={`${substrateLabel(r.substrate)} · ${r.temp} °C · pH ${r.ph}`}
                       rows={[
-                        { label: "Detected", value: r.pos, color: "#69E8C3" },
-                        { label: "Not detected", value: r.zero, color: "#EF8A9A" },
+                        { label: "Detected", value: r.pos, color: C.mint },
+                        { label: "Not detected", value: r.zero, color: C.rose },
                         { label: "Enzymes tested", value: r.n },
                         { label: "Positive rate", value: `${Math.round(r.pos_rate * 100)}%` },
                       ]}
@@ -203,26 +247,23 @@ function LabelComposition() {
                   ) : null;
                 }}
               />
-              <Bar dataKey="pos_rate" radius={[0, 4, 4, 0]} isAnimationActive={false}>
+              <Bar dataKey="pos_rate" radius={[0, 4, 4, 0]} {...motion}>
                 {rows.map((r) => (
-                  <Cell key={r.cond} fill={r.substrate === "cryPow" ? "#48E1CD" : "#B49CF5"} />
+                  <Cell key={r.cond} fill={substrateColor(r.substrate)} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted">
-          <span className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-sm bg-teal" /> Crystalline PET powder
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-sm bg-violet" /> Amorphous PET film
-          </span>
-        </div>
-        <p className="mt-3 max-w-3xl text-xs leading-relaxed text-muted">
-          Only the crystalline-powder conditions at 40 °C are near balanced (47–54% positive), which is why modelling uses a condition-specific label rather
-          than a global “PET-degrader” label.
-        </p>
+        </ChartInView>
+        <Legend items={substrates.map((c) => ({ label: substrateLabel(c), color: substrateColor(c) }))} />
+        {hi && lo && (
+          <Takeaway>
+            Across the {rows.length} condition{rows.length === 1 ? "" : "s"} shown, the positive rate ranges from {Math.round(lo.pos_rate * 100)}% (
+            {substrateLabel(lo.substrate).toLowerCase()}, {lo.temp} °C, pH {lo.ph}) to {Math.round(hi.pos_rate * 100)}% ({substrateLabel(hi.substrate).toLowerCase()},{" "}
+            {hi.temp} °C, pH {hi.ph}). Only the crystalline-powder conditions at 40 °C are near balanced, which is why modelling uses a condition-specific label
+            rather than a global “PET-degrader” label.
+          </Takeaway>
+        )}
       </div>
     </Panel>
   );
@@ -230,23 +271,32 @@ function LabelComposition() {
 
 /* ------------------------------------------------------------------ length distribution */
 
+const BIN_WIDTHS = ["25", "50", "100"] as const;
+
 function LengthDistribution() {
   const net = useApi<NetworkData>("/network?min_identity=0.4&min_coverage=0.7");
+  const [width, setWidth] = useState<(typeof BIN_WIDTHS)[number]>("50");
+  const [group, setGroup] = useState<string>("all");
+  const groups = useMemo(() => sortGroups([...new Set(net.data?.nodes.map((n) => n.subcluster) ?? [])]), [net.data]);
+  const nodes = useMemo(() => net.data?.nodes.filter((n) => group === "all" || n.subcluster === group) ?? [], [net.data, group]);
+
+  // Bins span the full length range of all proteins, so filtering a subgroup keeps the x-axis fixed and bars morph in place.
   const bins = useMemo(() => {
     if (!net.data) return [];
-    const width = 50;
-    const counts = new Map<number, { total: number; byGroup: Record<string, number> }>();
-    for (const n of net.data.nodes) {
-      const b = Math.floor(n.length / width) * width;
-      const entry = counts.get(b) ?? { total: 0, byGroup: {} };
-      entry.total += 1;
-      entry.byGroup[n.subcluster] = (entry.byGroup[n.subcluster] ?? 0) + 1;
-      counts.set(b, entry);
+    const w = Number(width);
+    const lengths = net.data.nodes.map((n) => n.length);
+    const lo = Math.floor(Math.min(...lengths) / w) * w;
+    const hi = Math.floor(Math.max(...lengths) / w) * w;
+    const out = new Map<number, { total: number; byGroup: Record<string, number> }>();
+    for (let b = lo; b <= hi; b += w) out.set(b, { total: 0, byGroup: {} });
+    for (const n of nodes) {
+      const e = out.get(Math.floor(n.length / w) * w)!;
+      e.total += 1;
+      e.byGroup[n.subcluster] = (e.byGroup[n.subcluster] ?? 0) + 1;
     }
-    return [...counts.entries()]
-      .sort((a, b) => a[0] - b[0])
-      .map(([bin, v]) => ({ bin, label: `${bin}–${bin + width - 1}`, ...v }));
-  }, [net.data]);
+    return [...out.entries()].map(([bin, v]) => ({ bin, label: `${bin}–${bin + w - 1}`, ...v }));
+  }, [net.data, nodes, width]);
+  const motion = useChartMotion(bins, 650);
 
   if (net.error)
     return (
@@ -255,29 +305,55 @@ function LengthDistribution() {
       </Panel>
     );
 
-  const lengths = net.data?.nodes.map((n) => n.length) ?? [];
-  const median = lengths.length ? [...lengths].sort((a, b) => a - b)[Math.floor(lengths.length / 2)] : null;
+  const lengths = nodes.map((n) => n.length).sort((a, b) => a - b);
+  const median = lengths.length ? lengths[Math.floor(lengths.length / 2)] : null;
+  const medianBin = median != null ? bins.find((b) => median >= b.bin && median < b.bin + Number(width))?.label : undefined;
+  const fill = group === "all" ? C.aqua : clusterColor(group);
+  const longest = net.data && group === "all" ? [...net.data.nodes].sort((a, b) => b.length - a.length).slice(0, 10) : [];
+  const longGroups = longest.reduce<Record<string, number>>((m, n) => ((m[n.subcluster] = (m[n.subcluster] ?? 0) + 1), m), {});
+  const topLong = Object.entries(longGroups).sort((x, y) => y[1] - x[1])[0];
 
   return (
     <Panel>
       <PanelHeader
         eyebrow="Exploratory analysis"
         title="Protein sequence length distribution"
-        description={`All ${net.data ? num(net.data.nodes.length) : ""} curated PET-active proteins, in 50-residue bins.`.replace("  ", " ")}
+        description={`${net.data ? num(nodes.length) : "All"} curated PET-active protein${nodes.length === 1 ? "" : "s"}${group === "all" ? "" : ` in subgroup ${group}`}, counted in ${width}-residue bins.`}
       />
       <div className="p-5">
         {!net.data ? (
           <Skeleton label="Loading sequence length distribution" className="h-[280px]" />
         ) : (
           <>
-            <div className="h-[280px]">
+            <ChartControls
+              dirty={width !== "50" || group !== "all"}
+              onReset={() => {
+                setWidth("50");
+                setGroup("all");
+              }}
+            >
+              <Segmented label="Bin width" value={width} onChange={setWidth} options={BIN_WIDTHS.map((w) => ({ value: w, label: `${w} aa` }))} />
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted">Subgroup</span>
+                <Select label="Subgroup" value={group} onChange={setGroup} options={[{ value: "all", label: "All proteins" }, ...groups.map((g) => ({ value: g, label: g }))]} />
+              </div>
+            </ChartControls>
+            <ChartInView className="chart-hl h-[300px]">
               <ResponsiveContainer>
-                <BarChart data={bins} margin={{ top: 8, right: 8, bottom: 20, left: -12 }}>
+                <BarChart data={bins} margin={{ top: 16, right: 8, bottom: 30, left: 0 }}>
                   <CartesianGrid {...gridProps} vertical={false} />
-                  <XAxis dataKey="label" {...axisProps} interval={1} angle={-30} textAnchor="end" height={48} />
-                  <YAxis {...axisProps} allowDecimals={false} />
+                  <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" angle={-30} textAnchor="end" height={48} />
+                  <YAxis {...axisProps} allowDecimals={false} width={52} label={axisLabel("Proteins", "insideLeft")} />
+                  {medianBin && (
+                    <ReferenceLine
+                      x={medianBin}
+                      stroke={C.amber}
+                      strokeDasharray="4 4"
+                      label={{ value: `median ${median} aa`, fill: C.amber, fontSize: 10, position: "top" }}
+                    />
+                  )}
                   <Tooltip
-                    cursor={{ fill: "rgb(72 225 205 / 0.06)" }}
+                    cursor={barCursor}
                     content={({ payload }) => {
                       const r = payload?.[0]?.payload as (typeof bins)[number] | undefined;
                       return r ? (
@@ -293,13 +369,18 @@ function LengthDistribution() {
                       ) : null;
                     }}
                   />
-                  <Bar dataKey="total" fill="#48E1CD" radius={[3, 3, 0, 0]} isAnimationActive={false} />
+                  <Bar dataKey="total" fill={fill} radius={[3, 3, 0, 0]} {...motion} />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-            <p className="mt-2 text-xs leading-relaxed text-muted">
-              Median length {median} aa. The long tail comes from subgroup G1b, whose members carry extra binding domains on top of the catalytic core.
-            </p>
+            </ChartInView>
+            <p className="-mt-1 text-center text-[11px] text-muted">Sequence length (amino-acid residues)</p>
+            {median != null && (
+              <Takeaway>
+                Median length {median} aa{group === "all" ? "" : ` in subgroup ${group}`}, range {lengths[0]}–{lengths[lengths.length - 1]} aa.
+                {topLong && ` ${topLong[1]} of the 10 longest proteins belong to subgroup ${topLong[0]}.`}
+                {group === "all" && " The long tail is proteins carrying extra binding domains on top of the catalytic core; length on its own says nothing about PET activity."}
+              </Takeaway>
+            )}
           </>
         )}
       </div>
@@ -401,7 +482,7 @@ export function DataView() {
     const sp = new URLSearchParams(params.toString());
     sp.set("section", section);
     if (section !== "network") sp.delete("protein");
-    router.replace(`${pathname}?${sp}`, { scroll: false });
+    router.push(`${pathname}?${sp}`);
   };
 
   const index = DATA_SECTIONS.findIndex((s) => s.id === active);
@@ -410,13 +491,12 @@ export function DataView() {
 
   return (
     <div className="flex flex-col gap-6">
-      <SectionNav active={active} onSelect={go} />
-
       <div className="flex items-center gap-2 text-muted">
         <Icon className="size-4" />
         <span className="eyebrow">
           Step {index + 1} of {DATA_SECTIONS.length}
         </span>
+        <span className="text-[13px] text-ink/85">· {DATA_SECTIONS[index].label}</span>
       </div>
 
       {active === "acquisition" && <Acquisition />}

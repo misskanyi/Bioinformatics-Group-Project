@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ErrorState, InfoTip, Input, Metric, Notice, Panel, PanelHeader, Skeleton, Slider, Tip } from "@/components/ui/primitives";
 import { NetworkGraph, type NetworkGraphHandle } from "@/components/viz/network-graph";
 import { useApi } from "@/lib/api";
-import { clusterColor } from "@/lib/palette";
+import { clusterColor, tint } from "@/lib/palette";
 import { cn, num, sortGroups } from "@/lib/utils";
 import type { Clustering, NetworkData } from "@/types/api";
 
@@ -176,9 +176,9 @@ export function NetworksView({ showClusterAnalysis = true }: { showClusterAnalys
                   onClick={() => setHidden((h) => (h.has(g) ? new Set([...h].filter((x) => x !== g)) : new Set([...h, g])))}
                   aria-pressed={!off}
                   className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] transition", off ? "border-line text-muted/60" : "text-ink")}
-                  style={off ? undefined : { borderColor: `${clusterColor(g)}66`, background: `${clusterColor(g)}14` }}
+                  style={off ? undefined : { borderColor: tint(clusterColor(g), 40), background: tint(clusterColor(g), 8) }}
                 >
-                  <span className="size-2 rounded-full" style={{ background: off ? "#294157" : clusterColor(g) }} />
+                  <span className="size-2 rounded-full" style={{ background: off ? "var(--color-line)" : clusterColor(g) }} />
                   {g} <span className="text-muted">{counts[g]}</span>
                 </button>
               );
@@ -186,7 +186,7 @@ export function NetworksView({ showClusterAnalysis = true }: { showClusterAnalys
           </div>
 
           {/* canvas */}
-          <div className="relative m-4 h-[560px] overflow-hidden rounded-xl border border-line/70 bg-[radial-gradient(ellipse_at_center,#0f2236_0%,#091321_70%)] lg:h-[640px]">
+          <div className="relative m-4 h-[560px] overflow-hidden rounded-xl border border-line/70 bg-[image:var(--net-bg)] lg:h-[640px]">
             {net.error && !shown ? (
               <ErrorState message={net.error.message} onRetry={net.retry} />
             ) : shown ? (
@@ -208,9 +208,9 @@ export function NetworksView({ showClusterAnalysis = true }: { showClusterAnalys
           {shown && (
             <div className="grid grid-cols-2 gap-4 border-t border-line/60 p-4 sm:grid-cols-4">
               <Metric label="Edges" value={num(shown.stats.edges)} hint={`≥ ${Math.round(shown.threshold.min_identity * 100)}% id, ≥ ${Math.round(shown.threshold.min_coverage * 100)}% cov`} />
-              <Metric label="Components" value={shown.stats.components} accent="#4CA8D8" />
-              <Metric label="Largest component" value={shown.stats.largest_component} accent="#69E8C3" hint="proteins" />
-              <Metric label="Isolated proteins" value={shown.stats.isolated} accent="#E8B56B" hint="no edge at this threshold" />
+              <Metric label="Components" value={shown.stats.components} accent="var(--color-sky)" />
+              <Metric label="Largest component" value={shown.stats.largest_component} accent="var(--color-mint)" hint="proteins" />
+              <Metric label="Isolated proteins" value={shown.stats.isolated} accent="var(--color-amber)" hint="no edge at this threshold" />
             </div>
           )}
         </Panel>

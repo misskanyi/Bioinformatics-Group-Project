@@ -171,9 +171,9 @@ export function ConditionsView() {
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4 border-t border-line/60 pt-4 sm:grid-cols-4">
           <Metric label="Assay records" value={num(filtered.length)} hint={`of ${num(all.length)}`} />
-          <Metric label="Distinct proteins" value={num(stats.proteins)} accent="#4CA8D8" />
-          <Metric label="Breakdown detected" value={filtered.length ? `${Math.round((100 * stats.detected) / filtered.length)}%` : "—"} accent="#69E8C3" hint="of assay records" />
-          <Metric label="Publications" value={num(stats.papers)} accent="#B49CF5" />
+          <Metric label="Distinct proteins" value={num(stats.proteins)} accent="var(--color-sky)" />
+          <Metric label="Breakdown detected" value={filtered.length ? `${Math.round((100 * stats.detected) / filtered.length)}%` : "—"} accent="var(--color-mint)" hint="of assay records" />
+          <Metric label="Publications" value={num(stats.papers)} accent="var(--color-violet)" />
         </div>
       </Panel>
 
@@ -207,7 +207,7 @@ export function ConditionsView() {
                 </div>
               </div>
               <p className="mt-3 text-sm text-muted">
-                <Badge color="#E8B56B" dot={false}>
+                <Badge color="var(--color-amber)" dot={false}>
                   Optimum status
                 </Badge>{" "}
                 {summary.temperature_optimum_status}
@@ -240,7 +240,7 @@ export function ConditionsView() {
             <Panel>
               <PanelHeader eyebrow="Substrate" title="PET material form" description="Top forms in the current selection." />
               <div className="p-5">
-                <CountBars rows={stats.forms} color="#B49CF5" unitLabel="assays" />
+                <CountBars rows={stats.forms} color="var(--color-violet)" unitLabel="assays" />
               </div>
             </Panel>
             <Panel>

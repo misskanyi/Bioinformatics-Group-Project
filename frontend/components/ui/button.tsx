@@ -7,16 +7,16 @@ import { cn } from "@/lib/utils";
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 " +
     "motion-safe:active:scale-[0.97] " +
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/70 focus-visible:ring-offset-2 " +
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/70 focus-visible:ring-offset-2 " +
     "focus-visible:ring-offset-void disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary:
-          "bg-teal text-void font-semibold shadow-[0_0_24px_-6px_rgb(72_225_205/0.7)] hover:bg-[#5ff0dc] hover:shadow-[0_0_32px_-4px_rgb(72_225_205/0.8)]",
-        secondary: "border border-line bg-elevated/70 text-ink hover:border-teal/60 hover:bg-elevated",
+          "bg-[image:var(--btn-primary)] text-white font-semibold shadow-[0_0_24px_-6px_var(--glow-strong)] hover:bg-[image:var(--btn-primary-hover)] hover:shadow-[0_0_34px_-4px_var(--glow-cyan)]",
+        secondary: "border border-line bg-elevated/70 text-ink hover:border-electric/70 hover:bg-elevated hover:shadow-[0_0_18px_-8px_var(--glow-strong)]",
         ghost: "text-muted hover:bg-elevated/70 hover:text-ink",
-        outline: "border border-teal/40 text-teal hover:bg-teal/10",
+        outline: "border border-cyan/40 text-cyan hover:bg-cyan/10",
       },
       size: {
         sm: "h-8 px-3 text-xs",
