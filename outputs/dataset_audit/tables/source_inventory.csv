@@ -1,0 +1,42 @@
+file,format,size_bytes,contents,provenance
+"Bell et al, 2022.xlsx",xlsx,11532,PETML study workbook,PETML per-study dataset
+"Brott et al, 2021.xlsx",xlsx,11692,PETML study workbook,PETML per-study dataset
+"Chen et al, 2021.xlsx",xlsx,12378,PETML study workbook,PETML per-study dataset
+"Cui et al, 2021 (NanoPET).xlsx",xlsx,22711,PETML study workbook,PETML per-study dataset
+"Cui et al, 2021 (PET film).xlsx",xlsx,14705,PETML study workbook,PETML per-study dataset
+"Erickson et al, 2022 (Project74).xlsx",xlsx,12959,PETML study workbook,PETML per-study dataset
+"Erickson et al, 2022 (Tm Project74).xlsx",xlsx,11058,PETML study workbook,PETML per-study dataset
+"Furukawa et al, 2019.xlsx",xlsx,11250,PETML study workbook,PETML per-study dataset
+"Guo et al, 2022.xlsx",xlsx,12080,PETML study workbook,PETML per-study dataset
+"Han et al, 2017.xlsx",xlsx,11877,PETML study workbook,PETML per-study dataset
+"Joo et al, 2018.xlsx",xlsx,11050,PETML study workbook,PETML per-study dataset
+"Li Q. et al, 2022 (Tm).xlsx",xlsx,11130,PETML study workbook,PETML per-study dataset
+"Li Q. et al, 2022.xlsx",xlsx,11223,PETML study workbook,PETML per-study dataset
+"Li Z. et al, 2022.xlsx",xlsx,11496,PETML study workbook,PETML per-study dataset
+"Liu et al, 2018.xlsx",xlsx,12754,PETML study workbook,PETML per-study dataset
+"Lu et al, 2022 (Tm).xlsx",xlsx,11439,PETML study workbook,PETML per-study dataset
+"Lu et al, 2022.xlsx",xlsx,11264,PETML study workbook,PETML per-study dataset
+"Ma et al, 2018.xlsx",xlsx,11445,PETML study workbook,PETML per-study dataset
+"Meng et al, 2021 (Tm).xlsx",xlsx,11422,PETML study workbook,PETML per-study dataset
+"Nakamura et al, 2021.xlsx",xlsx,12333,PETML study workbook,PETML per-study dataset
+"Pfaff et al, 2022.xlsx",xlsx,13052,PETML study workbook,PETML per-study dataset
+PlasticDB.fasta,fasta,137295,"329 records, 311 unique, 187 headers mention PET",PlasticDB
+"Sagong et al, 2022.xlsx",xlsx,11236,PETML study workbook,PETML per-study dataset
+"Son et al, 2019.xlsx",xlsx,12081,PETML study workbook,PETML per-study dataset
+"Sonnendecker et al, 2021.xlsx",xlsx,11243,PETML study workbook,PETML per-study dataset
+"Then et al, 2016.xlsx",xlsx,11509,PETML study workbook,PETML per-study dataset
+"Tournier et al, 2020 (Naturals).xlsx",xlsx,11120,PETML study workbook,PETML per-study dataset
+"Tournier et al, 2020.xlsx",xlsx,12116,PETML study workbook,PETML per-study dataset
+"Wang et al, 2022.xlsx",xlsx,12002,PETML study workbook,PETML per-study dataset
+"Wei et al, 2016.xlsx",xlsx,11330,PETML study workbook,PETML per-study dataset
+"Xi et al, 2021.xlsx",xlsx,10961,PETML study workbook,PETML per-study dataset
+"Zeng et al, 2022 (Tm).xlsx",xlsx,10581,PETML study workbook,PETML per-study dataset
+"Zeng et al, 2022.xlsx",xlsx,11967,PETML study workbook,PETML per-study dataset
+"Zhang et al, 2021.xlsx",xlsx,10968,PETML study workbook,PETML per-study dataset
+cs5c03460_si_002.xlsx,xlsx,817091,"7 sheets; Rounds=477 seqs, Activity=3856 assay rows",ACS Catal. 2025 supplementary (10.1021/acscatal.5c03460)
+degraders_list.tsv,tsv,1515331,2535 rows x 22 cols; 253 PET rows,PlasticDB organism degrader list
+pazy_polymer_assays.json.gz,gz,663271,579 publication records -> 7195 assays (5058 PET),"PAZy assay evidence, schema 4.2"
+pazy_proteins.fasta,fasta,101603,"301 records, 301 unique",PAZy curated plastic-active proteins
+pazy_proteins_sequences.csv,csv,100190,301 rows x 3 cols,PAZy id/name/sequence
+sequences.fasta,fasta,156043,501 sequence records (498 unique),PETML variant library
+uniprotkb_accession_E9LVH8_OR_accession_2026_10_27.fasta.gz,gz,467,3 records,UniProt reference cutinases

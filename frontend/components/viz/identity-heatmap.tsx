@@ -2,17 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { clusterColor } from "@/lib/palette";
+import { CLUSTER_COLORS, clusterColor } from "@/lib/palette";
+import { useResolvedColors, useTheme, type Theme } from "@/lib/theme";
 import type { Clustering } from "@/types/api";
 
-// Sequential ramp from the panel colour to teal. Identities at or below FLOOR share the darkest
-// colour so differences between related proteins stay visible.
+// Sequential ramp from the panel colour to teal, then to an extreme for near-identical pairs.
+// Identities at or below FLOOR share the base colour so differences between related proteins stay visible.
+// Light theme runs pale -> teal -> deep navy so high identity reads as "darker = more".
 const FLOOR = 20;
-function ramp(v: number) {
+const STOPS: Record<Theme, [number[], number[], number[]]> = {
+  dark: [[16, 30, 48], [72, 225, 205], [240, 240, 240]],
+  light: [[236, 243, 251], [0, 143, 145], [12, 52, 84]],
+};
+function ramp(v: number, theme: Theme) {
+  const [a, b, e] = STOPS[theme];
   const t = Math.min(1, Math.max(0, (v - FLOOR) / (100 - FLOOR)));
-  const a = [16, 30, 48];
-  const b = [72, 225, 205];
-  const c = t < 0.85 ? a.map((x, i) => x + (b[i] - x) * (t / 0.85)) : b.map((x) => x + (240 - x) * ((t - 0.85) / 0.15));
+  const c = t < 0.85 ? a.map((x, i) => x + (b[i] - x) * (t / 0.85)) : b.map((x, i) => x + (e[i] - x) * ((t - 0.85) / 0.15));
   return `rgb(${c.map(Math.round).join(",")})`;
 }
 
@@ -21,6 +26,8 @@ export function IdentityHeatmap({ data }: { data: Clustering["heatmap"] }) {
   const [hover, setHover] = useState<{ i: number; j: number } | null>(null);
   const n = data.ids.length;
   const BAND = 6;
+  const theme = useTheme();
+  const bands = useResolvedColors(CLUSTER_COLORS);
 
   useEffect(() => {
     const c = ref.current;
@@ -30,16 +37,16 @@ export function IdentityHeatmap({ data }: { data: Clustering["heatmap"] }) {
     c.height = n + BAND;
     data.matrix.forEach((row, i) =>
       row.forEach((v, j) => {
-        ctx.fillStyle = ramp(v);
+        ctx.fillStyle = ramp(v, theme);
         ctx.fillRect(j + BAND, i + BAND, 1, 1);
       }),
     );
     data.subclusters.forEach((s, i) => {
-      ctx.fillStyle = clusterColor(s);
+      ctx.fillStyle = bands[s] ?? "#888";
       ctx.fillRect(i + BAND, 0, 1, BAND - 1);
       ctx.fillRect(0, i + BAND, BAND - 1, 1);
     });
-  }, [data, n]);
+  }, [data, n, theme, bands]);
 
   const onMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -79,7 +86,7 @@ export function IdentityHeatmap({ data }: { data: Clustering["heatmap"] }) {
         </div>
         <div>
           <div className="eyebrow mb-2">Identity scale</div>
-          <div className="h-3 rounded-full" style={{ background: `linear-gradient(90deg, ${[20, 40, 60, 80, 100].map(ramp).join(",")})` }} />
+          <div className="h-3 rounded-full" style={{ background: `linear-gradient(90deg, ${[20, 40, 60, 80, 100].map((v) => ramp(v, theme)).join(",")})` }} />
           <div className="mt-1 flex justify-between font-mono text-[10px] text-muted">
             <span>≤ 20%</span>
             <span>60%</span>
@@ -88,7 +95,7 @@ export function IdentityHeatmap({ data }: { data: Clustering["heatmap"] }) {
         </div>
         <p className="text-xs leading-relaxed text-muted">
           Pairwise identity from local alignments of all {n} proteins ({((n * (n - 1)) / 2).toLocaleString()} pairs). Rows and columns are ordered by subgroup (coloured
-          bands), then by the first alignment-MDS axis. Bright blocks on the diagonal are coherent sequence families.
+          bands), then by the first alignment-MDS axis. High-identity blocks on the diagonal are coherent sequence families.
         </p>
       </div>
     </div>

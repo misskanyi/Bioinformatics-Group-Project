@@ -8,6 +8,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge, EmptyState, ErrorState, Input, Panel, PanelHeader, Select, Skeleton } from "@/components/ui/primitives";
 import { useApi } from "@/lib/api";
+import { networkHref } from "@/lib/nav";
 import { clusterColor, ORGANISM_EVIDENCE } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 import type { OrganismCard, OrganismEvidence, Organisms } from "@/types/api";
@@ -96,15 +97,15 @@ function Card({ o, i }: { o: OrganismCard; i: number }) {
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           <Badge color={ev.color}>{ev.short}</Badge>
-          {o.uncultured && <Badge color="#E8B56B">Uncultured / unspecified taxon</Badge>}
-          {disagree && <Badge color="#E8B56B">Sources disagree</Badge>}
+          {o.uncultured && <Badge color="var(--color-amber)">Uncultured / unspecified taxon</Badge>}
+          {disagree && <Badge color="var(--color-amber)">Sources disagree</Badge>}
         </div>
 
         <div className="mt-4 flex flex-wrap gap-1.5">
           {o.proteins.slice(0, 12).map((p) => (
             <Link
               key={p.protein_id}
-              href={`/networks?protein=${p.protein_id}`}
+              href={networkHref(p.protein_id)}
               className="rounded-md border border-line/70 bg-void/50 px-2 py-0.5 font-mono text-[11px] transition hover:border-teal/50 hover:text-teal"
               title={`${ORGANISM_EVIDENCE[p.evidence].label} · ${p.confidence} confidence`}
             >
@@ -171,7 +172,7 @@ export function OrganismsView() {
   if (!res.data)
     return (
       <div className="flex flex-col gap-6">
-        <Skeleton className="h-52 rounded-[14px]" />
+        <Skeleton label="Loading source organisms" className="h-52 rounded-[14px]" />
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }, (_, i) => (
             <Skeleton key={i} className="h-64 rounded-[14px]" />
@@ -258,9 +259,9 @@ export function OrganismsView() {
               </thead>
               <tbody>
                 {unknown.map((u) => (
-                  <tr key={u.protein_id} className="border-b border-line/40">
+                  <tr key={u.protein_id} className="border-b border-line/40 transition-colors duration-150 hover:bg-elevated/40">
                     <td className="px-5 py-2 font-mono">
-                      <Link href={`/networks?protein=${u.protein_id}`} className="hover:text-teal">
+                      <Link href={networkHref(u.protein_id)} className="hover:text-teal">
                         {u.protein_name}
                       </Link>
                     </td>
@@ -283,7 +284,7 @@ export function OrganismsView() {
           {[
             { c: ORGANISM_EVIDENCE.exact_sequence.color, t: "Directly documented", d: "A UniProt, PlasticDB or degraders-list record has exactly the same sequence and names its organism." },
             { c: ORGANISM_EVIDENCE.contained_sequence.color, t: "Reliable database match", d: "The sequence overlaps a record as its precursor or mature form (one contains the other over ≥ 100 residues)." },
-            { c: "#4CA8D8", t: "Similar protein elsewhere", d: "Shown only as context in the table above. A similar sequence from organism X does not mean the protein comes from X." },
+            { c: "var(--color-sky)", t: "Similar protein elsewhere", d: "Shown only as context in the table above. A similar sequence from organism X does not mean the protein comes from X." },
             { c: ORGANISM_EVIDENCE.none.color, t: "Unknown", d: "No record of the same sequence. Isolation sources are never guessed: missing values read “Not documented”." },
           ].map((r) => (
             <div key={r.t} className="rounded-lg border border-line/60 bg-void/40 p-4">

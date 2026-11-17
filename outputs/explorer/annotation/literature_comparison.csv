@@ -1,0 +1,11 @@
+enzyme,subcluster,length_aa,gxsxg_motifs,pfam,ssn_degree,published_properties
+ISPETase,G1a,290,GWSMG,PF12740 PET hydrolase/cutinase-like,147,"Ideonella sakaiensis PETase, from a bacterium living on PET; mesophilic (~30 °C) [Yoshida et al. 2016, Science]. 'Type IIb' PETase [Joo et al. 2018, Nat Commun]. Trp next to the catalytic Ser; W159H makes the active site cutinase-like [Austin et al. 2018, PNAS]."
+LCC,G1a,293,GHSMG,PF12740 PET hydrolase/cutinase-like,156,"Leaf-branch compost cutinase, metagenome [Sulaiman et al. 2012]. Thermophilic; engineered variant ICCG depolymerised 90% of PET in 10 h at 72 °C [Tournier et al. 2020, Nature]. 'Type I' [Joo et al. 2018]."
+TfCut2,G1a,262,GHSMG,not in UniParc / none,156,"Thermobifida fusca cutinase, thermophilic actinomycete [Roth et al. 2014]. 'Type I' [Joo et al. 2018]."
+TfH,G1a,301,GHSMG,PF12740 PET hydrolase/cutinase-like,157,"Thermobifida fusca hydrolase, one of the first PET hydrolases described [Müller et al. 2005]."
+Cut190,G1a,304,GHSMG,PF12740 PET hydrolase/cutinase-like,157,Saccharomonospora viridis cutinase; Ca2+-dependent thermostability [Kawai et al. 2014].
+Tcur_1278,G1a,289,GHSMG,PF12740 PET hydrolase/cutinase-like,157,"Thermomonospora curvata cutinase, thermophilic actinomycete [Wei et al. 2014]."
+BhrPETase,G1a,293,GHSMG,PF12740 PET hydrolase/cutinase-like,155,"Bacterium HR29 PETase, close LCC homolog, highly thermostable [Xi et al. 2021]."
+PE-H,G1a,304,GDSGG; GWSMG,PF12740 PET hydrolase/cutinase-like,140,"Pseudomonas aestusnigri, marine; 'Type IIa' PETase [Bollinger et al. 2020]."
+PET2,G1a,308,GWSMG,PF12740 PET hydrolase/cutinase-like,132,Metagenome-derived PET hydrolase [Danso et al. 2018].
+HiC,G3,194,GYSQG,PF01083 Cutinase/acetylxylan esterase,5,"Humicola insolens cutinase - a FUNGAL cutinase, PET hydrolysis at ~70 °C [Ronkvist et al. 2009]."

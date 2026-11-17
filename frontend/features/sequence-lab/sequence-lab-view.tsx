@@ -7,16 +7,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { EmptyState, InfoTip, Notice, Panel, PanelHeader } from "@/components/ui/primitives";
 import { api, ApiError } from "@/lib/api";
-import type { MatchResult, ProteinDetail } from "@/types/api";
+import type { MatchResult, ProfileResult, ProteinDetail } from "@/types/api";
+
+import { AssessmentDisclaimer, AssessmentPanel, RulesExplainer } from "../discovery/assessment";
 
 import { HitDetail } from "./hit-detail";
 import { HitList, MatchComparison } from "./hit-list";
 import { SequenceEditor } from "./sequence-editor";
+import { SequenceProfilePanel } from "./sequence-profile";
 
 function Loading({ length }: { length: number }) {
   return (
     <Panel className="overflow-hidden p-8">
-      <div className="flex flex-col items-center gap-4 text-center">
+      <div role="status" className="flex flex-col items-center gap-4 text-center">
         <div className="relative h-10 w-full max-w-md overflow-hidden rounded-md border border-line/70 bg-void/60 font-mono text-[11px] leading-10 text-teal/70">
           <motion.div
             className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-teal/25 to-transparent"
@@ -40,6 +43,7 @@ export function SequenceLabView() {
   const params = useSearchParams();
   const [input, setInput] = useState("");
   const [result, setResult] = useState<MatchResult | null>(null);
+  const [profile, setProfile] = useState<ProfileResult | null>(null);
   const [selected, setSelected] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
@@ -49,13 +53,19 @@ export function SequenceLabView() {
     setLoading(true);
     setError(undefined);
     try {
-      const r = await api.post<MatchResult>("/sequence/match", { sequence: text, top_n: 5 });
+      // the server validates both requests identically, so they succeed or fail together
+      const [r, pr] = await Promise.all([
+        api.post<MatchResult>("/sequence/match", { sequence: text, top_n: 5 }),
+        api.post<ProfileResult>("/sequence/profile", { sequence: text }),
+      ]);
       setResult(r);
+      setProfile(pr);
       setSelected(1);
       requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     } catch (e) {
       setError((e as ApiError).message);
       setResult(null);
+      setProfile(null);
     } finally {
       setLoading(false);
     }
@@ -106,6 +116,7 @@ export function SequenceLabView() {
                   Your query is identical to reference protein <b>{result.hits[0].protein_name}</b>, which is part of the characterised set.
                 </Notice>
               )}
+              {result.assessment && <AssessmentPanel assessment={result.assessment} />}
               <div className="grid gap-6 xl:grid-cols-[400px_1fr]">
                 <div className="flex flex-col gap-6">
                   <Panel>
@@ -155,7 +166,7 @@ export function SequenceLabView() {
                   <div className="mt-4 grid gap-2 sm:grid-cols-3">
                     {result.method.bands.map((b, i) => (
                       <div key={b.label} className="rounded-lg border border-line/60 bg-void/40 p-3 text-xs">
-                        <div className="font-medium" style={{ color: ["#48E1CD", "#4CA8D8", "#E8B56B"][i] }}>
+                        <div className="font-medium" style={{ color: ["var(--color-aqua)", "var(--color-sky)", "var(--color-amber)"][i] }}>
                           {b.label}
                         </div>
                         <div className="mt-1 text-muted">
@@ -170,6 +181,9 @@ export function SequenceLabView() {
                   </p>
                 </div>
               </Panel>
+              {profile && <SequenceProfilePanel profile={profile} prediction={profile.prediction} />}
+              <AssessmentDisclaimer />
+              <RulesExplainer />
             </motion.div>
           ) : (
             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

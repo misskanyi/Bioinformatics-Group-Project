@@ -1,9 +1,5 @@
-import type { Metadata } from "next";
-
-import { OrganismsView } from "@/features/organisms/organisms-view";
-
-export const metadata: Metadata = { title: "Organism Explorer" };
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <OrganismsView />;
+  redirect("/data?section=organisms");
 }

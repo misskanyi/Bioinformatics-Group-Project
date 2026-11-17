@@ -93,10 +93,12 @@ export interface ProteinDetail extends ProteinCard {
 }
 
 export interface Example {
-  protein_id: number;
+  protein_id: number | string;
   protein_name: string;
-  subcluster: string;
+  subcluster: string | null;
   length: number;
+  /** reference = curated PET-active protein; control = unrelated protein shipped as a sample */
+  kind: "reference" | "control";
   fasta: string;
 }
 
@@ -141,6 +143,7 @@ export interface MatchResult {
   length: number;
   hits: Hit[];
   method: MatchMethod;
+  assessment: Assessment;
 }
 
 export interface NetworkNode {
@@ -322,4 +325,273 @@ export interface Datasets {
   references: { doi: string; n_proteins: number }[];
   limitations: string[];
   downloads: { key: string; file: string; description: string; available: boolean }[];
+}
+
+/* ------------------------------------------------- Model validation (/api/modelling) */
+
+export interface ModelRow {
+  model: string;
+  kind: "baseline" | "model";
+  roc_auc_mean: number;
+  roc_auc_sd: number;
+  balanced_accuracy_mean: number;
+  balanced_accuracy_sd: number;
+}
+
+export interface Modelling {
+  available: boolean;
+  target: { label: string; definition: string; why: string; features: string; splitting: string; metrics: string };
+  dataset: {
+    n_proteins: number;
+    n_positive: number;
+    n_negative: number;
+    n_identity_groups: number;
+    by_subcluster: { subcluster: string; n: number; positive: number }[];
+    group_sizes: number[];
+  } | null;
+  comparison: ModelRow[] | null;
+  best_model: ModelRow | null;
+  permutation_test: {
+    model: string;
+    observed_roc_auc: number;
+    null_mean: number;
+    null_95th_percentile: number;
+    n_permutations: number;
+    empirical_p: number;
+  } | null;
+  feature_importance: { feature: string; logistic_coefficient_std: number; random_forest_importance: number }[] | null;
+  statistical_tests:
+    | {
+        dataset: string;
+        test: string;
+        comparison: string;
+        statistic: number;
+        p_value: number;
+        detail: string;
+        q_value_bh: number;
+        "significant_q<0.05": boolean;
+      }[]
+    | null;
+  clustering_null:
+    | { null_model: string; metric: string; observed: number; null_mean: number; null_sd: number; null_max: number; n_draws: number; empirical_p: number }[]
+    | null;
+  limitations: { title: string; detail: string }[];
+  candidates: { available: boolean; reason: string; pool: number | null; pool_source: string };
+  notes: string[];
+}
+
+/* ------------------------------------------------- Dataset audit (/api/audit) */
+
+export interface Audit {
+  available: boolean;
+  pazy?: {
+    assay_rows: number;
+    rows_with_positive_measurement: number;
+    rows_all_zero_or_nondetect: number;
+    proteins_with_positive: number;
+    proteins_with_only_zero: number;
+    top_units: [string, number][];
+    top_metric_types: [string, number][];
+    temperature: { n: number; min: number; max: number; median: number; distribution: Record<string, number> };
+  };
+  screen_labels?: {
+    n_enzymes_assayed: number;
+    ever_positive: number;
+    never_positive: number;
+    never_positive_with_ge8_conditions: number;
+    never_positive_with_lt8_conditions: number;
+    library_size_total: number;
+    library_never_assayed: number;
+  };
+  condition_labels?: { cond: string; n: number; pos: number; zero: number; pos_rate: number }[];
+  replicates?: { sample_condition_pairs: number; pairs_with_replicates: number; pairs_disagreeing: number; pairs_all_zero: number; pairs_all_positive: number };
+  overlap?: Record<string, { n_query: number; ge_99: number; ge_95: number; ge_90: number; ge_70: number; median_best_identity: number } | unknown>;
+  library?: { rows: number; unique_seq_aa: number; by_dataset: Record<string, number>; tm_1_measured: number; seq_len: { min: number; median: number; max: number } };
+  assay_table?: { rows: number; substrates: Record<string, number>; temperatures: Record<string, number>; pH: Record<string, number>; controls: Record<string, number> };
+}
+
+/* ------------------------------------------------- Sequence profile & bulk analysis */
+
+export interface PredictionCondition {
+  target: string;
+  temperature_c: number;
+  substrate: string;
+  protocol: string;
+}
+
+/** Always explicit: `score` stays null until a validated model is connected. */
+export interface PredictionBlock {
+  status: "not_available";
+  label: string;
+  reason: string;
+  condition: PredictionCondition;
+  score: null;
+}
+
+export interface SequenceProfile {
+  length: number;
+  composition: Record<string, number>;
+  physicochemical: {
+    molecular_weight_kda: number;
+    isoelectric_point: number;
+    gravy: number;
+    aromaticity: number;
+    instability_index: number;
+    helix_prone_fraction: number;
+    turn_prone_fraction: number;
+    sheet_prone_fraction: number;
+  };
+  motifs: { name: string; count: number; variants: string[]; positions: number[] };
+}
+
+export interface ProfileResult extends SequenceProfile {
+  header: string;
+  prediction: PredictionBlock;
+}
+
+/* ------------------------------------------------- Evidence assessment (rule-based, not ML) */
+
+export type AssessmentCategory = "green" | "yellow" | "red" | "insufficient";
+
+export interface Assessment {
+  category: AssessmentCategory;
+  label: string;
+  rule: string;
+  rule_condition: string | null;
+  known_reference: boolean;
+  summary: string;
+  reasons: string[];
+  limitations: string[];
+  next_steps: string[];
+  motif_count: number;
+  tandem_repeat_period: number | null;
+  metrics: {
+    identity: number;
+    query_coverage: number;
+    target_coverage: number;
+    min_coverage: number;
+    shuffled_z: number;
+    band: string;
+    closest_reference: string;
+    closest_reference_id: number;
+  } | null;
+  rules_version: string;
+  disclaimer: string;
+}
+
+export interface EvidenceRules {
+  version: string;
+  n_shuffles: number;
+  z_chance: number;
+  z_strong: number;
+  bands: { min_identity: number; min_coverage: number; label: string }[];
+  rules: { id: string; category: AssessmentCategory; condition: string; meaning: string }[];
+  calibration: {
+    n_per_set: number;
+    shuffled_null: { z_quantiles: Record<string, number>; z_max: number; categories: Partial<Record<AssessmentCategory, number>> };
+    leave_one_out: { z_min: number; twilight_band_z_min: number | null; categories: Partial<Record<AssessmentCategory, number>> };
+  } | null;
+  notes: string[];
+}
+
+export interface SampleDataset {
+  id: string;
+  number: number;
+  title: string;
+  description: string;
+  filename: string;
+  n_proteins: number;
+  proteins: string[];
+  download_url: string;
+}
+
+export type EvidenceStatus = "experimental" | "similarity" | "unknown";
+export type RecordStatus = "valid" | "invalid" | "duplicate";
+
+export interface BatchRecord {
+  row: number;
+  protein_id: string;
+  organism: string | null;
+  source: string;
+  length: number | null;
+  status: RecordStatus;
+  errors: string[];
+  warnings: string[];
+  duplicate_of: number | null;
+  preview: string;
+}
+
+export type ColumnMapping = { protein_id: string | null; sequence: string | null; organism: string | null };
+
+export interface BatchParse {
+  format: "csv" | "tsv" | "xlsx" | "fasta" | "txt" | "pdf";
+  records: BatchRecord[];
+  counts: { total: number; valid: number; invalid: number; duplicate: number };
+  requires_confirmation: boolean;
+  columns?: string[];
+  mapping?: ColumnMapping;
+  suggested_mapping?: ColumnMapping;
+  preview_rows?: Record<string, string>[];
+}
+
+export interface BatchHit {
+  protein_id: number;
+  protein_name: string;
+  identity: number;
+  query_coverage: number;
+  target_coverage: number;
+  normalised_score: number;
+  shuffled_z: number;
+  interpretation: string;
+  query_range: [number, number];
+  target_range: [number, number];
+  aligned_query?: string;
+  aligned_target?: string;
+  reference: {
+    subcluster: string;
+    pet_label: string;
+    label_confidence: string;
+    n_pet_assays: number;
+    n_positive_assays: number;
+    n_negative_assays: number;
+    n_publications: number;
+    dois: string[];
+    substrate_forms: string[];
+    temperatures_with_activity_c: number[];
+    organism: string | null;
+  };
+}
+
+export interface BatchResult extends Partial<Omit<SequenceProfile, "length">> {
+  row: number;
+  protein_id: string;
+  organism: string | null;
+  source: string;
+  length: number | null;
+  status: "analysed" | "invalid" | "duplicate" | "error";
+  errors: string[];
+  warnings: string[];
+  duplicate_of: number | null;
+  hits?: BatchHit[];
+  evidence_status?: EvidenceStatus;
+  assessment?: Assessment;
+  prediction?: PredictionBlock;
+}
+
+export interface BatchJob {
+  job_id: string;
+  state: "queued" | "running" | "done" | "cancelled";
+  total: number;
+  done: number;
+  results: BatchResult[];
+  meta: { filename: string; format: string; counts: BatchParse["counts"] };
+}
+
+export interface BatchLimits {
+  max_file_mb: number;
+  max_records: number;
+  min_length: number;
+  max_length: number;
+  formats: string[];
+  prediction: { available: boolean; reason: string; condition: PredictionCondition; model: string | null; roc_auc: number | null; permutation_p: number | null };
 }

@@ -2,13 +2,18 @@
 
 import { useEffect, useRef } from "react";
 
+import { C } from "@/lib/palette";
+import { useResolvedColors, useTheme } from "@/lib/theme";
+
 // Residue classes used for colouring (standard physicochemical grouping).
-const AA_CLASS: Record<string, string> = {
-  A: "#69E8C3", V: "#69E8C3", L: "#69E8C3", I: "#69E8C3", M: "#69E8C3", F: "#69E8C3", W: "#69E8C3", P: "#69E8C3", // hydrophobic
-  S: "#4CA8D8", T: "#4CA8D8", N: "#4CA8D8", Q: "#4CA8D8", Y: "#4CA8D8", C: "#4CA8D8", G: "#9BB3C6", // polar / glycine
-  D: "#EF8A9A", E: "#EF8A9A", // acidic
-  K: "#B49CF5", R: "#B49CF5", H: "#B49CF5", // basic
+type AaClass = "hydrophobic" | "polar" | "glycine" | "acidic" | "basic";
+const AA_CLASS: Record<string, AaClass> = {
+  A: "hydrophobic", V: "hydrophobic", L: "hydrophobic", I: "hydrophobic", M: "hydrophobic", F: "hydrophobic", W: "hydrophobic", P: "hydrophobic",
+  S: "polar", T: "polar", N: "polar", Q: "polar", Y: "polar", C: "polar", G: "glycine",
+  D: "acidic", E: "acidic",
+  K: "basic", R: "basic", H: "basic",
 };
+const CLASS_VARS = { hydrophobic: C.mint, polar: C.sky, glycine: C.muted, acidic: C.rose, basic: C.violet, backbone: C.aqua, label: C.ink };
 
 /**
  * A slowly rotating helical projection of a real reference sequence.
@@ -17,6 +22,8 @@ const AA_CLASS: Record<string, string> = {
  */
 export function HelixCanvas({ sequence, className }: { sequence: string; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const colors = useResolvedColors(CLASS_VARS);
+  const light = useTheme() === "light";
 
   useEffect(() => {
     const canvas = ref.current;
@@ -62,12 +69,14 @@ export function HelixCanvas({ sequence, className }: { sequence: string; classNa
       for (let i = 1; i < pts.length; i++) {
         const p = pts[i - 1];
         const q = pts[i];
-        ctx.strokeStyle = `rgba(72,225,205,${0.08 + 0.22 * ((p.z + q.z) / 2 + 1) / 2})`;
+        ctx.strokeStyle = colors.backbone;
+        ctx.globalAlpha = (light ? 0.18 : 0.08) + 0.22 * ((p.z + q.z) / 2 + 1) / 2;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(q.x, q.y);
         ctx.stroke();
       }
+      ctx.globalAlpha = 1;
       // residues, back to front
       [...pts]
         .sort((a, b) => a.z - b.z)
@@ -75,16 +84,17 @@ export function HelixCanvas({ sequence, className }: { sequence: string; classNa
           const depth = (p.z + 1) / 2;
           const r = 1.6 + depth * 3.2;
           ctx.globalAlpha = 0.25 + depth * 0.75;
-          ctx.fillStyle = AA_CLASS[p.aa] ?? "#9BB3C6";
+          ctx.fillStyle = colors[AA_CLASS[p.aa] ?? "glycine"];
           ctx.shadowColor = ctx.fillStyle;
-          ctx.shadowBlur = depth * 10;
+          // glow on navy; on white a glow just looks blurry
+          ctx.shadowBlur = light ? 0 : depth * 10;
           ctx.beginPath();
           ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
           ctx.fill();
           if (depth > 0.82 && w > 500) {
             ctx.shadowBlur = 0;
             ctx.globalAlpha = (depth - 0.82) * 4;
-            ctx.fillStyle = "#F0F8FF";
+            ctx.fillStyle = colors.label;
             ctx.font = "9px var(--font-geist-mono), monospace";
             ctx.fillText(p.aa, p.x - 3, p.y - r - 4);
           }
@@ -106,15 +116,15 @@ export function HelixCanvas({ sequence, className }: { sequence: string; classNa
       ro.disconnect();
       io.disconnect();
     };
-  }, [sequence]);
+  }, [sequence, colors, light]);
 
   return <canvas ref={ref} className={className} aria-hidden />;
 }
 
 export const AA_LEGEND = [
-  { label: "Hydrophobic", color: "#69E8C3" },
-  { label: "Polar", color: "#4CA8D8" },
-  { label: "Acidic", color: "#EF8A9A" },
-  { label: "Basic", color: "#B49CF5" },
-  { label: "Glycine", color: "#9BB3C6" },
+  { label: "Hydrophobic", color: C.mint },
+  { label: "Polar", color: C.sky },
+  { label: "Acidic", color: C.rose },
+  { label: "Basic", color: C.violet },
+  { label: "Glycine", color: C.muted },
 ];

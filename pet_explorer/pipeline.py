@@ -150,20 +150,39 @@ def export_network():
     n, e = network.export_cytoscape(g, C.NETWORK)
     network.sensitivity(pairs, nodes.protein_id.tolist()).to_csv(C.NETWORK / "edge_threshold_sensitivity.csv", index=False)
     network.layout(g).to_csv(C.NETWORK / "ssn_layout.csv", index=False)
+    plots.ssn(pd.read_csv(C.NETWORK / "ssn_edges.csv"), assign)
+    cent = network.centrality(g).merge(assign[["protein_id", "subcluster"]], on="protein_id")
+    cent.sort_values("degree", ascending=False).to_csv(C.NETWORK / "centrality.csv", index=False)
     import networkx as nx
     comps = sorted((len(c) for c in nx.connected_components(g)), reverse=True)
     print(f"[network] {g.number_of_nodes()} nodes, {g.number_of_edges()} edges, "
           f"{len(comps)} components (largest {comps[0]}, isolated {comps.count(1)})")
 
 
+def stage5(refresh_annotation=False):
+    """Evaluation and interpretation on cached outputs: clustering vs null
+    baselines, supervised prediction, domain annotation (needs the network)."""
+    from . import annotation, prediction
+    proteins = preprocess.load_proteins()
+    sim = similarity.square_matrix(pd.read_csv(C.F_PAIRS), proteins.protein_id.tolist())
+    assign = pd.read_csv(C.CLUSTERING / "cluster_assignments.csv")
+    labels = assign.cluster.str[1:].astype(int).to_numpy()
+    null = clustering.null_baseline(clustering.distance_matrix(sim), sim, labels)
+    null.to_csv(C.CLUSTERING / "null_baseline.csv", index=False)
+    print("[stage 5] clustering vs null baselines\n" + null.to_string(index=False))
+    prediction.run()
+    annotation.run(refresh_annotation)
+
+
 # --------------------------------------------------------------------------- #
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--stage", type=int, choices=[1, 2, 3, 4])
+    ap.add_argument("--stage", type=int, choices=[1, 2, 3, 4, 5])
     ap.add_argument("--recompute-alignments", action="store_true")
+    ap.add_argument("--refresh-annotation", action="store_true", help="query UniParc again")
     args = ap.parse_args()
     C.ensure_dirs()
-    stages = [args.stage] if args.stage else [1, 2, 3, 4]
+    stages = [args.stage] if args.stage else [1, 2, 3, 4, 5]
     if 1 in stages:
         stage1()
     if 2 in stages:
@@ -174,7 +193,10 @@ def main():
     if 4 in stages:
         from . import organisms
         organisms.run()
-    export_network()
+    if stages != [5]:
+        export_network()
+    if 5 in stages:
+        stage5(args.refresh_annotation)
 
 
 if __name__ == "__main__":

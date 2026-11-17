@@ -1,6 +1,6 @@
 "use client";
 
-import { Eraser, FlaskConical, Loader2, Play } from "lucide-react";
+import { Eraser, FlaskConical, HeartPulse, Loader2, Play } from "lucide-react";
 import { useMemo, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -92,11 +92,23 @@ export function SequenceEditor({
         action={
           <div className="flex flex-wrap items-center gap-2">
             {examples.data ? (
-              examples.data.map((e) => (
-                <Button key={e.protein_id} size="sm" variant="ghost" onClick={() => onChange(e.fasta)} title={`Load the PAZy reference sequence of ${e.protein_name}`}>
-                  <FlaskConical /> {e.protein_name}
-                </Button>
-              ))
+              examples.data.map((e) =>
+                e.kind === "control" ? (
+                  <Button
+                    key={e.protein_id}
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onChange(e.fasta)}
+                    title={`Load ${e.protein_name}: an unrelated protein example, not a PET reference`}
+                  >
+                    <HeartPulse /> {e.protein_name}
+                  </Button>
+                ) : (
+                  <Button key={e.protein_id} size="sm" variant="ghost" onClick={() => onChange(e.fasta)} title={`Load the PAZy reference sequence of ${e.protein_name}`}>
+                    <FlaskConical /> {e.protein_name}
+                  </Button>
+                ),
+              )
             ) : (
               <Skeleton className="h-8 w-40" />
             )}
@@ -161,7 +173,7 @@ export function SequenceEditor({
             <Eraser /> Clear
           </Button>
           <span className="hidden font-mono text-[11px] text-muted sm:inline">⌘/Ctrl + Enter</span>
-          <Badge color="#4CA8D8" className="ml-auto">
+          <Badge color="var(--color-sky)" className="ml-auto">
             Computational similarity only
           </Badge>
         </div>

@@ -88,3 +88,24 @@ def test_downloads_are_whitelisted(client):
     assert client.get("/api/downloads/ssn_edges").status_code == 200
     assert client.get("/api/downloads/..%2F..%2Fdata%2Fdegraders_list.tsv").status_code == 404
     assert client.get("/api/proteins/999999").status_code == 404
+
+
+def test_modelling_matches_prediction_outputs(client):
+    m = client.get("/api/modelling").json()
+    table = pd.read_csv(C.PREDICTION / "model_comparison.csv")
+    assert m["available"] and len(m["comparison"]) == len(table)
+    best = table[table.kind == "model"].roc_auc_mean.max()
+    assert m["best_model"]["roc_auc_mean"] == best
+    ds = pd.read_csv(C.PREDICTION / "prediction_dataset.csv")
+    assert m["dataset"]["n_proteins"] == len(ds)
+    assert m["dataset"]["n_identity_groups"] == ds.identity_group_70.nunique()
+    # no candidate ranking may be served while the model does not clear its null
+    assert m["candidates"]["available"] is False
+
+
+def test_audit_reports_screen_labels(client):
+    a = client.get("/api/audit").json()
+    if not a["available"]:
+        pytest.skip("dataset audit has not been generated")
+    assert a["screen_labels"]["ever_positive"] > 0
+    assert sum(c["pos"] + c["zero"] == c["n"] for c in a["condition_labels"]) == len(a["condition_labels"])

@@ -1,0 +1,15 @@
+metric,before_original_data,after_new_data,notes
+Total sequence records (all files),301 PAZy + 329 PlasticDB + 3 UniProt + 527 degraders rows,+ 501 PETML + 477 SI library records,Raw record counts; contain duplicates both within and across files.
+Unique amino acid sequences,557,1411,"+854 genuinely new (153.3% growth), after exact deduplication."
+"Independent families (<=70% identity), assayable set",not separable - no negative class existed,69,69 identity groups among the 212 assayed enzymes; the largest holds 85 (40%).
+PETML independent families (<=70% identity),n/a,27,501 PETML records collapse to 27 families; the largest holds 243.
+Experimentally measured PET proteins,311,311 + 212 SI-assayed (100 overlap),PAZy already contained 99 proteins from the 2025 paper.
+Positive observations (protein level),303,303 + 128 SI positives,PAZy: 303 of 311 PET proteins have >=1 positive value; 8 carry no numeric value.
+Below-detection observations (protein level),0,56,THE decisive change: PAZy holds zero protein-level negatives; the SI screen yields 56 enzymes with no product across >=8 conditions.
+Uncertain observations,not representable,28,28 enzymes with no product but only 4 conditions tested - too little coverage to call.
+Experimental conditions recorded,"heterogeneous, per-publication",fully standardised grid (2 substrates x 2 temperatures x 5 pH),"SI records reaction volume, PET loading, enzyme loading, nM enzyme and dilution per well."
+Units / measurement definitions,"69 distinct units, 14 metric types","9 normalised measurement columns, one protocol",PETML workbooks carry NO units at all.
+Replicate structure,not recorded,"1244 duplicated pairs, 1.8% disagreement",Allows an empirical reproducibility estimate for the first time.
+Explicit controls,none,220 blank wells + 252 LCC-ICCG rows + 1 RFP non-enzyme control,LCC-ICCG positive in 251/252 rows; RFP zero in all 48 of its rows.
+Potential independent validation examples,none defensible,2 of 212 above 95% identity to PETML,"PETML vs SI is the only clean boundary: 0 exact matches, median 63% identity."
+Previously untested candidate sequences,PlasticDB annotation-only entries,263 SI library sequences,BUT these failed expression (median 0.044 vs 0.568 mg/mL) - not free candidates.

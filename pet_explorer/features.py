@@ -90,4 +90,5 @@ def cluster_kmers(proteins, labels, k=5, min_size=5, min_in=0.8, max_out=0.2):
             if fin >= min_in and fout <= max_out:
                 rows.append({"cluster": c, "kmer": km, "fraction_in_cluster": round(fin, 3),
                              "fraction_outside": round(fout, 3)})
-    return pd.DataFrame(rows, columns=["cluster", "kmer", "fraction_in_cluster", "fraction_outside"])
+    out = pd.DataFrame(rows, columns=["cluster", "kmer", "fraction_in_cluster", "fraction_outside"])
+    return out.sort_values(["cluster", "kmer"], ignore_index=True)   # set order varies between runs

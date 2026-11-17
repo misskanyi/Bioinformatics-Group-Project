@@ -3,12 +3,14 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { AlertTriangle, Info, RotateCw, SearchX } from "lucide-react";
+import { AlertTriangle, Hourglass, Info, RotateCw, SearchX } from "lucide-react";
 import * as React from "react";
 
+import { tint } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 
 import { Button } from "./button";
+import { DnaLoader } from "./dna-loader";
 
 /* ---------------------------------------------------------------- Panel */
 export function Panel({
@@ -51,7 +53,7 @@ export function PanelHeader({
 
 /* ---------------------------------------------------------------- Badge */
 export function Badge({
-  color = "#9BB3C6",
+  color = "var(--color-muted)",
   children,
   className,
   dot = true,
@@ -67,7 +69,7 @@ export function Badge({
         "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium leading-5",
         className,
       )}
-      style={{ color, borderColor: `${color}55`, background: `${color}14` }}
+      style={{ color, borderColor: tint(color, 33), background: tint(color, 8) }}
     >
       {dot && <span className="size-1.5 rounded-full" style={{ background: color }} />}
       {children}
@@ -76,10 +78,25 @@ export function Badge({
 }
 
 /* ---------------------------------------------------------------- Skeleton */
-export function Skeleton({ className }: { className?: string }) {
+/** Placeholder block. Pass `label` on the main skeleton of a region so screen readers hear what is loading. */
+export function Skeleton({ className, label }: { className?: string; label?: string }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-md bg-elevated/70", className)}>
-      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+    <div
+      className={cn("reveal skeleton-fill relative overflow-hidden rounded-md", className)}
+      {...(label ? { role: "status", "aria-label": label } : { "aria-hidden": true })}
+    >
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-cyan/[0.07] to-transparent" />
+    </div>
+  );
+}
+
+/** Labelled loading indicator for work that takes noticeable time (analysis, model outputs). */
+export function LoadingState({ title, children, className }: { title: string; children?: React.ReactNode; className?: string }) {
+  return (
+    <div role="status" className={cn("reveal flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
+      <DnaLoader small pairs={10} />
+      <p className="font-medium text-ink">{title}</p>
+      {children && <div className="max-w-md text-sm leading-relaxed text-muted">{children}</div>}
     </div>
   );
 }
@@ -95,7 +112,7 @@ export function Tip({ content, children, side = "top" }: { content: React.ReactN
         <TooltipPrimitive.Content
           side={side}
           sideOffset={6}
-          className="z-50 max-w-xs rounded-lg border border-line bg-[#0d1a2a]/95 px-3 py-2 text-xs leading-relaxed text-ink shadow-xl backdrop-blur"
+          className="z-50 max-w-xs popover rounded-lg px-3 py-2 text-xs leading-relaxed text-ink"
         >
           {content}
         </TooltipPrimitive.Content>
@@ -107,7 +124,7 @@ export function Tip({ content, children, side = "top" }: { content: React.ReactN
 export function InfoTip({ content }: { content: React.ReactNode }) {
   return (
     <Tip content={content}>
-      <button type="button" aria-label="More information" className="text-muted/70 transition hover:text-teal">
+      <button type="button" aria-label="More information" className="text-muted/70 transition hover:text-cyan">
         <Info className="size-3.5" />
       </button>
     </Tip>
@@ -119,12 +136,12 @@ export function Slider({ className, ...props }: React.ComponentProps<typeof Slid
   return (
     <SliderPrimitive.Root className={cn("relative flex h-5 w-full touch-none select-none items-center", className)} {...props}>
       <SliderPrimitive.Track className="relative h-1 grow overflow-hidden rounded-full bg-line">
-        <SliderPrimitive.Range className="absolute h-full bg-gradient-to-r from-cyan to-teal" />
+        <SliderPrimitive.Range className="absolute h-full bg-gradient-to-r from-electric to-cyan" />
       </SliderPrimitive.Track>
       {(props.value ?? props.defaultValue ?? [0]).map((_, i) => (
         <SliderPrimitive.Thumb
           key={i}
-          className="block size-4 rounded-full border-2 border-teal bg-void shadow-[0_0_12px_rgb(72_225_205/0.6)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60"
+          className="block size-4 rounded-full border-2 border-cyan bg-void shadow-[0_0_12px_var(--glow-cyan)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60"
         />
       ))}
     </SliderPrimitive.Root>
@@ -147,8 +164,8 @@ export function TabsTrigger({ className, ...props }: React.ComponentProps<typeof
   return (
     <TabsPrimitive.Trigger
       className={cn(
-        "rounded-md px-3 py-1.5 text-xs font-medium text-muted transition hover:text-ink",
-        "data-[state=active]:bg-elevated data-[state=active]:text-teal data-[state=active]:shadow-[inset_0_0_0_1px_rgb(72_225_205/0.35)]",
+        "rounded-md px-3 py-1.5 text-xs font-medium text-muted transition duration-200 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/50",
+        "data-[state=active]:bg-electric/15 data-[state=active]:text-cyan data-[state=active]:shadow-[inset_0_0_0_1px_var(--glow-ring)]",
         className,
       )}
       {...props}
@@ -165,7 +182,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
       ref={ref}
       className={cn(
         "h-9 w-full rounded-lg border border-line bg-void/70 px-3 text-sm text-ink placeholder:text-muted/60",
-        "transition focus:border-teal/60 focus:outline-none focus:ring-2 focus:ring-teal/20",
+        "transition focus:border-electric/70 focus:outline-none focus:ring-2 focus:ring-electric/25",
         className,
       )}
       {...props}
@@ -193,7 +210,7 @@ export function Select({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={cn(
-        "h-9 rounded-lg border border-line bg-void/70 px-2.5 text-sm text-ink focus:border-teal/60 focus:outline-none focus:ring-2 focus:ring-teal/20",
+        "h-9 rounded-lg border border-line bg-void/70 px-2.5 text-sm text-ink focus:border-electric/70 focus:outline-none focus:ring-2 focus:ring-electric/25",
         className,
       )}
     >
@@ -209,7 +226,7 @@ export function Select({
 /* ---------------------------------------------------------------- States */
 export function ErrorState({ message, onRetry, className }: { message: string; onRetry?: () => void; className?: string }) {
   return (
-    <div role="alert" className={cn("flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
+    <div role="alert" className={cn("reveal flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
       <div className="grid size-11 place-items-center rounded-full border border-amber/40 bg-amber/10 text-amber">
         <AlertTriangle className="size-5" />
       </div>
@@ -226,21 +243,33 @@ export function ErrorState({ message, onRetry, className }: { message: string; o
   );
 }
 
+/**
+ * `empty`: the request worked but returned nothing.
+ * `unavailable`: the output has not been generated or is withheld on purpose (dashed amber ring).
+ */
 export function EmptyState({
   title,
   children,
   icon,
   className,
+  variant = "empty",
 }: {
   title: string;
   children?: React.ReactNode;
   icon?: React.ReactNode;
   className?: string;
+  variant?: "empty" | "unavailable";
 }) {
+  const unavailable = variant === "unavailable";
   return (
-    <div className={cn("flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
-      <div className="grid size-11 place-items-center rounded-full border border-line bg-elevated text-muted">
-        {icon ?? <SearchX className="size-5" />}
+    <div className={cn("reveal flex flex-col items-center gap-3 px-6 py-10 text-center", className)}>
+      <div
+        className={cn(
+          "grid size-11 place-items-center rounded-full border",
+          unavailable ? "border-dashed border-amber/50 bg-amber/[0.06] text-amber/90" : "border-line bg-elevated text-muted",
+        )}
+      >
+        {icon ?? (unavailable ? <Hourglass className="size-5" /> : <SearchX className="size-5" />)}
       </div>
       <p className="font-medium text-ink">{title}</p>
       {children && <div className="max-w-md text-sm leading-relaxed text-muted">{children}</div>}
@@ -263,7 +292,7 @@ export function Metric({
   label,
   value,
   hint,
-  accent = "#48E1CD",
+  accent = "var(--color-aqua)",
   className,
 }: {
   label: string;

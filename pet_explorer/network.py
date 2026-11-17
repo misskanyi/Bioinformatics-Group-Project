@@ -58,6 +58,19 @@ def export_cytoscape(g, folder):
     return nodes, edges
 
 
+def centrality(g):
+    """Per-protein network roles. In an SSN a high-degree node is a 'central'
+    family member similar to many others (a good representative); high
+    betweenness marks a bridge between otherwise separate sub-families."""
+    comp = {n: i for i, c in enumerate(sorted(nx.connected_components(g), key=len, reverse=True), 1) for n in c}
+    deg = dict(g.degree())
+    btw = nx.betweenness_centrality(g)
+    clo = nx.closeness_centrality(g)
+    return pd.DataFrame([{"protein_id": n, "protein_name": d.get("protein_name"), "cluster": d.get("cluster"),
+                          "component": comp[n], "degree": deg[n], "betweenness": round(btw[n], 4),
+                          "closeness": round(clo[n], 4)} for n, d in g.nodes(data=True)])
+
+
 def layout(g, seed=7):
     pos = nx.spring_layout(g, seed=seed, k=0.15, iterations=200)
     return pd.DataFrame([{"protein_id": n, "x": float(x), "y": float(y)} for n, (x, y) in pos.items()])

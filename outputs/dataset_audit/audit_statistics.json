@@ -1,0 +1,1449 @@
+{
+ "petml": {
+  "fasta_ids": 501,
+  "fasta_unique_seqs": 498,
+  "petml_unique_names": 501,
+  "petml_name_mentions": 711,
+  "petml_names_in_fasta": 501,
+  "petml_names_missing": [],
+  "fasta_ids_never_measured": []
+ },
+ "si2025": {
+  "rounds": {
+   "rows": 477,
+   "unique_sample_id": 477,
+   "unique_accession": 474,
+   "unique_seq_aa": 477,
+   "by_round": {
+    "RND2": 191,
+    "RND3": 190,
+    "RND1": 94
+   },
+   "by_dataset": {
+    "TEP": 191,
+    "ESM": 190,
+    "DP": 94
+   },
+   "tm_1_measured": 234,
+   "tm_2_measured": 2,
+   "expression_missing": 2,
+   "accession_prefixes": {
+    "WP_": 241,
+    "MGYP": 99,
+    "MBC": 7,
+    "MBN": 6,
+    "MBT": 5,
+    "NUT": 4,
+    "MBP": 3,
+    "MBX": 3,
+    "GGO": 3,
+    "MBO": 3,
+    "MCU": 2,
+    "MCF": 2,
+    "NUS": 2,
+    "MBF": 2,
+    "NUP": 2,
+    "WCH": 2,
+    "GIU": 2,
+    "nan": 2,
+    "MBI": 2,
+    "TDP": 2,
+    "RAY": 2,
+    "MBQ": 2,
+    "TVP": 1,
+    "OWQ": 1,
+    "PKO": 1,
+    "NUR": 1,
+    "GHJ": 1,
+    "TWG": 1,
+    "SCF": 1,
+    "RTL": 1,
+    "WBC": 1,
+    "OGP": 1,
+    "TNH": 1,
+    "NJC": 1,
+    "KWV": 1,
+    "UAC": 1,
+    "GIF": 1,
+    "PKM": 1,
+    "KOV": 1,
+    "MBH": 1,
+    "KGM": 1,
+    "AXQ": 1,
+    "MTK": 1,
+    "PYC": 1,
+    "GGR": 1,
+    "RZL": 1,
+    "BAB": 1,
+    "HEC": 1,
+    "RZI": 1,
+    "USX": 1,
+    "PWR": 1,
+    "GLI": 1,
+    "HIV": 1,
+    "RZJ": 1,
+    "MBW": 1,
+    "PTT": 1,
+    "NLY": 1,
+    "GLH": 1,
+    "GFJ": 1,
+    "OLT": 1,
+    "TSI": 1,
+    "HIF": 1,
+    "MCR": 1,
+    "MCB": 1,
+    "REH": 1,
+    "ACV": 1,
+    "GIG": 1,
+    "TWP": 1,
+    "SHN": 1,
+    "GGY": 1,
+    "ONI": 1,
+    "OKI": 1,
+    "MXX": 1,
+    "SCE": 1,
+    "MBU": 1,
+    "GHD": 1,
+    "NYJ": 1,
+    "GGK": 1,
+    "MBJ": 1,
+    "MBB": 1,
+    "UVS": 1,
+    "MBL": 1,
+    "KOT": 1,
+    "MBR": 1,
+    "GAQ": 1,
+    "GHA": 1,
+    "ROO": 1,
+    "QIQ": 1,
+    "WAU": 1,
+    "GGU": 1,
+    "ADV": 1,
+    "OAA": 1,
+    "OLR": 1,
+    "SOD": 1,
+    "SDF": 1,
+    "MBE": 1,
+    "TAK": 1,
+    "KAA": 1,
+    "QEV": 1
+   },
+   "seq_len": {
+    "min": 159,
+    "median": 266.0,
+    "max": 570
+   }
+  },
+  "activity": {
+   "rows": 3856,
+   "unique_sample_id": 216,
+   "substrates": {
+    "cryPow": 2432,
+    "aFilm": 1424
+   },
+   "temperatures": {
+    "40": 2052,
+    "60": 1804
+   },
+   "pH": {
+    "5.5": 964,
+    "6.5": 964,
+    "7.5": 964,
+    "4.5": 764,
+    "8.5": 200
+   },
+   "datasets": {
+    "P740 ESM": 1656,
+    "P740 TEP": 1400,
+    "P740 Round1": 800
+   },
+   "controls": {
+    "blank": 220,
+    "LCC-ICCG": 220
+   },
+   "measurement_cols": [
+    "mM_product",
+    "ug_per_mL_product_avgTPAMHET",
+    "mg_TPAeq",
+    "percent_depolymerization",
+    "mM_product_per_mg_enzyme",
+    "mmol_product_per_mg_enzyme",
+    "umol_product_per_mg_enzyme",
+    "mg_TPAeq_per_mg_enzyme",
+    "nmol_product_per_nM_enzyme"
+   ],
+   "missing_umol": 0,
+   "non_blank_rows": 3636,
+   "non_blank_samples": 215
+  },
+  "conditions": [
+   {
+    "cond": "cryPow_40_5.5",
+    "rows": 315,
+    "samples": 215,
+    "zero": 146,
+    "pos": 169,
+    "maxval": 96.99999999999999
+   },
+   {
+    "cond": "cryPow_40_6.5",
+    "rows": 315,
+    "samples": 215,
+    "zero": 128,
+    "pos": 187,
+    "maxval": 129.0
+   },
+   {
+    "cond": "cryPow_40_7.5",
+    "rows": 315,
+    "samples": 215,
+    "zero": 142,
+    "pos": 173,
+    "maxval": 168.0
+   },
+   {
+    "cond": "cryPow_60_7.5",
+    "rows": 258,
+    "samples": 163,
+    "zero": 184,
+    "pos": 74,
+    "maxval": 322.0
+   },
+   {
+    "cond": "cryPow_60_6.5",
+    "rows": 258,
+    "samples": 163,
+    "zero": 168,
+    "pos": 90,
+    "maxval": 254.99999999999994
+   },
+   {
+    "cond": "cryPow_60_5.5",
+    "rows": 258,
+    "samples": 163,
+    "zero": 184,
+    "pos": 74,
+    "maxval": 162.0
+   },
+   {
+    "cond": "cryPow_40_4.5",
+    "rows": 242,
+    "samples": 162,
+    "zero": 154,
+    "pos": 88,
+    "maxval": 34.99999999999999
+   },
+   {
+    "cond": "cryPow_60_4.5",
+    "rows": 206,
+    "samples": 130,
+    "zero": 181,
+    "pos": 25,
+    "maxval": 65.0
+   },
+   {
+    "cond": "aFilm_40_6.5",
+    "rows": 168,
+    "samples": 80,
+    "zero": 136,
+    "pos": 32,
+    "maxval": 53.00000000000001
+   },
+   {
+    "cond": "aFilm_40_7.5",
+    "rows": 168,
+    "samples": 80,
+    "zero": 139,
+    "pos": 29,
+    "maxval": 92.0
+   },
+   {
+    "cond": "aFilm_60_5.5",
+    "rows": 168,
+    "samples": 80,
+    "zero": 152,
+    "pos": 16,
+    "maxval": 472.00000000000006
+   },
+   {
+    "cond": "aFilm_60_6.5",
+    "rows": 168,
+    "samples": 80,
+    "zero": 147,
+    "pos": 21,
+    "maxval": 836.0
+   },
+   {
+    "cond": "aFilm_60_7.5",
+    "rows": 168,
+    "samples": 80,
+    "zero": 147,
+    "pos": 21,
+    "maxval": 1231.0
+   },
+   {
+    "cond": "aFilm_40_5.5",
+    "rows": 168,
+    "samples": 80,
+    "zero": 139,
+    "pos": 29,
+    "maxval": 31.0
+   },
+   {
+    "cond": "aFilm_40_4.5",
+    "rows": 136,
+    "samples": 65,
+    "zero": 120,
+    "pos": 16,
+    "maxval": 11.0
+   },
+   {
+    "cond": "aFilm_60_4.5",
+    "rows": 136,
+    "samples": 65,
+    "zero": 123,
+    "pos": 13,
+    "maxval": 74.0
+   },
+   {
+    "cond": "cryPow_40_8.5",
+    "rows": 73,
+    "samples": 55,
+    "zero": 40,
+    "pos": 33,
+    "maxval": 133.0
+   },
+   {
+    "cond": "cryPow_60_8.5",
+    "rows": 52,
+    "samples": 35,
+    "zero": 40,
+    "pos": 12,
+    "maxval": 296.0
+   },
+   {
+    "cond": "aFilm_60_8.5",
+    "rows": 32,
+    "samples": 16,
+    "zero": 30,
+    "pos": 2,
+    "maxval": 673.0
+   },
+   {
+    "cond": "aFilm_40_8.5",
+    "rows": 32,
+    "samples": 16,
+    "zero": 26,
+    "pos": 6,
+    "maxval": 94.0
+   }
+  ],
+  "per_sample": {
+   "n_samples": 215,
+   "ever_active": 130,
+   "never_active": 85,
+   "obs_per_sample_median": 8.0,
+   "obs_per_sample_min": 4,
+   "obs_per_sample_max": 220,
+   "never_active_conditions_tested": {
+    "4": 28,
+    "8": 37,
+    "16": 19,
+    "18": 1
+   }
+  },
+  "linkage": {
+   "activity_samples_in_rounds": 214,
+   "activity_samples_not_in_rounds": [
+    "sumo_LCC-ICCG"
+   ],
+   "n_not_in_rounds": 1
+  },
+  "fig4a": {
+   "rows": 92,
+   "cols": [
+    "nan",
+    "n_observed",
+    "activity_at_4.5_40_cryPow"
+   ],
+   "n_zero": 57,
+   "n_pos": 35
+  }
+ },
+ "sources": {
+  "pazy": {
+   "fasta_records": 301,
+   "fasta_unique_seq": 301,
+   "csv_rows": 301,
+   "csv_cols": [
+    "protein_id",
+    "protein_name",
+    "amino_acid_sequence"
+   ],
+   "csv_missing": {
+    "protein_id": 0,
+    "protein_name": 0,
+    "amino_acid_sequence": 0
+   },
+   "assays_n": 579,
+   "assay_example": "{'schema_version': '4.2', 'protein_id': 67, 'protein_name': 'protease', 'literature_doi': '10.1002/1616-5195(200101)1:1<25::AID-MABI25>3.0.CO;2-3', 'reference_role': 'both', 'synonyms': [{'name': 'PLLA-degrading enzyme', 'synonym_type': 'publication_alias', 'source_doi': '10.1002/1616-5195(200101)1:1<25::AID-MABI25>3.0.CO;2-3'}, {'name': 'fraction A-1-a', 'synonym_type': 'publication_alias', 'source_doi': '10.1002/1616-5195(200101)1:1<25::AID-MABI25>3.0.CO;2-3'}], 'supporting_types': ['protein_characterization', 'historical_first_report'], 'assays': [{'substrate': 'PLA', 'is_representative': T",
+   "assay_cols": [
+    "schema_version",
+    "protein_id",
+    "protein_name",
+    "literature_doi",
+    "reference_role",
+    "synonyms",
+    "supporting_types",
+    "assays"
+   ],
+   "assay_value_counts": {
+    "schema_version": {
+     "4.2": 579
+    },
+    "reference_role": {
+     "both": 523,
+     "supporting": 40,
+     "activity_evidence": 16
+    }
+   },
+   "assay_missing": {
+    "schema_version": 0,
+    "protein_id": 0,
+    "protein_name": 0,
+    "literature_doi": 0,
+    "reference_role": 0,
+    "synonyms": 0,
+    "supporting_types": 0,
+    "assays": 0
+   }
+  },
+  "plasticdb": {
+   "records": 329,
+   "unique_seq": 311,
+   "header_example": [
+    "00001|PHB_depolymerase|Ralstonia_pickettii|PHB_PHA|BAA04986.1",
+    "00002|PHA_depolymerase|Pseudomonas_fluorescens|PHO_PHA|AAA64538.1",
+    "00003|PHB_depolymerase-A|Paucimonas_lemoignei|PHB_PHA|AAA65705.1",
+    "00004|PHB_depolymerase|Paucimonas_lemoignei|PHB_PHA|WP_132258119.1",
+    "00005|PHA_depolymerase_B|Paucimonas_lemoignei|PHB_PHA|AAB17150.1"
+   ],
+   "headers_mentioning_PET": 187,
+   "pet_header_example": [
+    "00057|Cutinase|Thermobifida_fusca|PET|ADV92528.1",
+    "00058|Cutinase|Thermobifida_cellulosilytica|PET|ADV92527.1",
+    "00059|Cutinase|Thermobifida_cellulosilytica|PET|ADV92526.1",
+    "00062|Cutinase|Uncultured_bacterium|PCL_PET|AEV21261.1",
+    "00073|Cutinase|Thermobifida_fusca|PET|NA"
+   ]
+  },
+  "degraders": {
+   "rows": 2535,
+   "cols": [
+    "Microorganism",
+    "Tax ID",
+    "Plastic",
+    "Ref",
+    "Enzyme",
+    "Enzyme ID",
+    "Database Enzyne Name",
+    "Gene",
+    "GenbankID",
+    "Sequence",
+    "Year",
+    "Evidence",
+    "Plastic used",
+    "Manufacturer",
+    "Analitical grade",
+    "Thermophilic conditions",
+    "Isolation sample type",
+    "Isolation environment",
+    "Isolation location",
+    "Degradation extrapolated from enzyme",
+    "Enzyme ID in paper",
+    "DOI"
+   ],
+   "missing": {
+    "Microorganism": 0,
+    "Tax ID": 0,
+    "Plastic": 0,
+    "Ref": 0,
+    "Enzyme": 543,
+    "Enzyme ID": 2008,
+    "Database Enzyne Name": 2008,
+    "Gene": 10,
+    "GenbankID": 2051,
+    "Sequence": 2008,
+    "Year": 1,
+    "Evidence": 45,
+    "Plastic used": 138,
+    "Manufacturer": 784,
+    "Analitical grade": 1114,
+    "Thermophilic conditions": 54,
+    "Isolation sample type": 630,
+    "Isolation environment": 591,
+    "Isolation location": 866,
+    "Degradation extrapolated from enzyme": 5,
+    "Enzyme ID in paper": 2508,
+    "DOI": 2436
+   },
+   "value_counts": {
+    "Gene": {
+     "No": 1998,
+     "Yes": 527,
+     "nan": 10
+    },
+    "Analitical grade": {
+     "nan": 1114,
+     "No": 721,
+     "Yes": 696,
+     "NA ": 4
+    },
+    "Thermophilic conditions": {
+     "No": 2288,
+     "Yes": 193,
+     "nan": 54
+    },
+    "Degradation extrapolated from enzyme": {
+     "No": 2131,
+     "Yes": 399,
+     "nan": 5
+    },
+    "Enzyme ID in paper": {
+     "nan": 2508,
+     "g9562.t1": 2,
+     "PETcan412": 1,
+     "PETcan716": 1,
+     "PETcan712": 1,
+     "PETcan711": 1,
+     "PETcan708": 1,
+     "PETcan702": 1,
+     "PETcan701": 1,
+     "PETcan611": 1,
+     "PETcan606": 1,
+     "PETcan504": 1,
+     "PETcan503": 1,
+     "PETcan409": 1,
+     "PETcan102": 1
+    },
+    "DOI": {
+     "nan": 2436,
+     "doi.org/10.1021/acscatal.5c03460": 99
+    }
+   }
+  },
+  "uniprot": {
+   "records": 3,
+   "headers": [
+    "sp|E9LVH8|PETH1_THECS Cutinase 1 (Fragment) OS=Thermobifida cellulosilytica OX=144786 GN=cut1 PE=1 SV=1",
+    "sp|E9LVH9|PETH2_THECS Cutinase 2 (Fragment) OS=Thermobifida cellulosilytica OX=144786 GN=cut2 PE=1 SV=1",
+    "sp|Q47RJ6|PETH2_THEFY Cutinase OS=Thermobifida fusca (strain YX) OX=269800 GN=TfH PE=1 SV=1"
+   ]
+  },
+  "overlap": {
+   "PETML(sequences.fasta) vs SI2025(Rounds)": {
+    "exact_shared_sequences": 0,
+    "a_unique_seqs": 498,
+    "b_unique_seqs": 477
+   },
+   "PETML(sequences.fasta) vs PAZy": {
+    "exact_shared_sequences": 16,
+    "a_unique_seqs": 498,
+    "b_unique_seqs": 301
+   },
+   "PETML(sequences.fasta) vs PlasticDB": {
+    "exact_shared_sequences": 16,
+    "a_unique_seqs": 498,
+    "b_unique_seqs": 311
+   },
+   "PETML(sequences.fasta) vs UniProt": {
+    "exact_shared_sequences": 0,
+    "a_unique_seqs": 498,
+    "b_unique_seqs": 3
+   },
+   "SI2025(Rounds) vs PAZy": {
+    "exact_shared_sequences": 102,
+    "a_unique_seqs": 477,
+    "b_unique_seqs": 301
+   },
+   "SI2025(Rounds) vs PlasticDB": {
+    "exact_shared_sequences": 12,
+    "a_unique_seqs": 477,
+    "b_unique_seqs": 311
+   },
+   "SI2025(Rounds) vs UniProt": {
+    "exact_shared_sequences": 0,
+    "a_unique_seqs": 477,
+    "b_unique_seqs": 3
+   },
+   "PAZy vs PlasticDB": {
+    "exact_shared_sequences": 57,
+    "a_unique_seqs": 301,
+    "b_unique_seqs": 311
+   },
+   "PAZy vs UniProt": {
+    "exact_shared_sequences": 1,
+    "a_unique_seqs": 301,
+    "b_unique_seqs": 3
+   },
+   "PlasticDB vs UniProt": {
+    "exact_shared_sequences": 3,
+    "a_unique_seqs": 311,
+    "b_unique_seqs": 3
+   }
+  },
+  "internal_duplicates": {
+   "PETML(sequences.fasta)": {
+    "n_records": 501,
+    "n_unique": 498,
+    "n_dup_groups": 3,
+    "examples": [
+     [
+      "IsPETase_S121E/D186H/R280A/R224Q/N233K",
+      "IsPETase_S121E/R224Q/N233K/D186H/R280A"
+     ],
+     [
+      "BbPETase",
+      "BurPL"
+     ],
+     [
+      "IsPETase_S214H/I168R/W159H/S188Q/R280A/A180I/G165A/Q119Y/L117F/T140D",
+      "IsPETase_L117F/Q119Y/T140D/W159H/G165A/I168R/A180I/S188Q/S214H/R280A"
+     ]
+    ]
+   },
+   "SI2025(Rounds)": {
+    "n_records": 477,
+    "n_unique": 477,
+    "n_dup_groups": 0,
+    "examples": []
+   },
+   "PAZy": {
+    "n_records": 301,
+    "n_unique": 301,
+    "n_dup_groups": 0,
+    "examples": []
+   },
+   "PlasticDB": {
+    "n_records": 329,
+    "n_unique": 311,
+    "n_dup_groups": 16,
+    "examples": [
+     [
+      "00011|PHB_depolymerase|Comamonas_acidovorans|PHB_PHA|BAA19791.1",
+      "00015|PHB_depolymerase|Comamonas_acidovorans|P3HP_P4HB_PEA_PES_PHB_PHA|BAA19791.1"
+     ],
+     [
+      "00016|Polyurethane_esterase_A|Pseudomonas_chlororaphis|PU|NA",
+      "00021|Polyurethane_esterase_A|Pseudomonas_chlororaphis|PU|AAD22743.1"
+     ],
+     [
+      "00023|Polyurethanase|Pseudomonas_chlororaphis|PU|AAF01331.1",
+      "00046|Polyurethanase|Pseudomonas_chlororaphis|PU|ABM54446.1"
+     ],
+     [
+      "00029|PHA_depolymerase|Schlegelella_thermodepolymerans|P(3HB-co-3MP)_PHA|NA",
+      "00030|PHB_depolymerase|Schlegelella_sp.|PHB_PHA|AAT09963.1",
+      "00031|PHB_depolymerase|Schlegelella_sp.|PHB_PHA|AAT09963.1"
+     ],
+     [
+      "00073|Cutinase|Thermobifida_fusca|PET|NA",
+      "00100|Esterase|Aspergillus_fumigatus|PBS_PCL_PES_PHB_PLA_PHA|NA"
+     ],
+     [
+      "00074|Cutinase|Saccharomonospora_viridis|PBAT_PBS_PBSA_PCL_PET_PHB_PLA_PHA|BAO42836.1",
+      "00076|Cutinase|Saccharomonospora_viridis|PBAT_PBS_PBSA_PCL_PET_PHB_PLA_PHA|NA"
+     ],
+     [
+      "00083|PETase|Ideonella_sakaiensis|PET_PEF|A0A0K8P6T7",
+      "00096|PETase|Ideonella_sakaiensis|PET_PEF|NA"
+     ],
+     [
+      "00097|PETase|Oleispira_antarctica|PCL_PET|CCK74972.1",
+      "00213|Lipase|Moraxella_sp.|PET|P19833"
+     ]
+    ]
+   },
+   "UniProt": {
+    "n_records": 3,
+    "n_unique": 3,
+    "n_dup_groups": 0,
+    "examples": []
+   }
+  }
+ },
+ "overlap": {
+  "counts": {
+   "si_assayed_with_seq": 214,
+   "petml": 501
+  },
+  "SIassayed_to_PETML": {
+   "n_query": 214,
+   "ge_99": 0,
+   "ge_95": 2,
+   "ge_90": 4,
+   "ge_70": 56,
+   "ge_40": 207,
+   "median_best_identity": 0.632
+  },
+  "SIassayed_to_PAZy": {
+   "n_query": 214,
+   "ge_99": 128,
+   "ge_95": 131,
+   "ge_90": 137,
+   "ge_70": 181,
+   "ge_40": 208,
+   "median_best_identity": 1.0
+  },
+  "PETML_to_PAZy": {
+   "n_query": 501,
+   "ge_99": 329,
+   "ge_95": 490,
+   "ge_90": 494,
+   "ge_70": 500,
+   "ge_40": 500,
+   "median_best_identity": 0.9961
+  },
+  "si_pazy_exact_by_dataset": {
+   "DP": 25,
+   "ESM": 47,
+   "TEP": 30
+  },
+  "si_assayed_by_dataset": {
+   "DP": 53,
+   "ESM": 86,
+   "TEP": 73
+  },
+  "si_assayed_and_in_pazy": 100,
+  "degraders_2025paper": {
+   "rows": 99,
+   "with_sequence": 99,
+   "plastics": {
+    "PET": 99
+   },
+   "evidence": {
+    "Spectrophotometry": 99
+   }
+  },
+  "degraders_pet_rows": 253,
+  "degraders_evidence_all": {
+   "Clear zone": 661,
+   "Spectrophotometry": 154,
+   "Weight loss": 83,
+   "Weight loss;tensile strength;WCA;FTIR;SEM": 65,
+   "HPLC": 63,
+   "CO2;Clear zone": 55,
+   "nan": 45,
+   "Clear zone;TOC": 42,
+   "Clear zone;Weight loss": 36,
+   "Clear zone;Spectrophotometry": 35,
+   "Weight loss;SEM": 31,
+   "CO2": 31,
+   "Weight loss;FTIR;SEM": 29,
+   "SEM;FTIR": 28,
+   "Clear zone;SEM": 26
+  }
+ },
+ "pazy": {
+  "pazy_assays": {
+   "assay_rows": 7195,
+   "cols": [
+    "protein_id",
+    "protein_name",
+    "doi",
+    "reference_role",
+    "supporting_types",
+    "substrate",
+    "is_representative",
+    "representative_group",
+    "material",
+    "conditions",
+    "degradation_chemistry",
+    "detection_methods",
+    "measurements",
+    "evidence"
+   ],
+   "unique_proteins": 462,
+   "substrates": {
+    "PET": 5058,
+    "PA": 564,
+    "PLA": 429,
+    "PHA": 340,
+    "PBS": 195,
+    "PEF": 146,
+    "PUR": 128,
+    "PBAT": 124,
+    "NR": 124,
+    "PC": 87
+   },
+   "missing": {
+    "protein_id": 0,
+    "protein_name": 0,
+    "doi": 0,
+    "reference_role": 0,
+    "supporting_types": 0,
+    "substrate": 0,
+    "is_representative": 0,
+    "representative_group": 6503,
+    "material": 0,
+    "conditions": 0,
+    "degradation_chemistry": 0,
+    "detection_methods": 0,
+    "measurements": 0,
+    "evidence": 0
+   },
+   "value_counts": {
+    "reference_role": {
+     "both": 7033,
+     "activity_evidence": 162
+    },
+    "substrate": {
+     "PET": 5058,
+     "PA": 564,
+     "PLA": 429,
+     "PHA": 340,
+     "PBS": 195,
+     "PEF": 146,
+     "PUR": 128,
+     "PBAT": 124,
+     "NR": 124,
+     "PC": 87
+    },
+    "is_representative": {
+     "False": 6596,
+     "True": 599
+    },
+    "representative_group": {
+     "None": 6503,
+     "PA_polyamide6": 378,
+     "PA_polyamide66": 118,
+     "PUR_polyester": 100,
+     "PA_polyamide4": 68,
+     "PUR_polyether": 22,
+     "PUR_nonsegmented": 6
+    }
+   }
+  },
+  "pazy_PET": {
+   "assay_rows": 5058,
+   "unique_proteins": 311,
+   "substrate_breakdown": {
+    "PET": 5058
+   },
+   "dois": 83,
+   "is_representative": {
+    "False": 4746,
+    "True": 312
+   },
+   "reference_role": {
+    "both": 4980,
+    "activity_evidence": 78
+   },
+   "supporting_types": {
+    "sequence_identification;protein_characterization": 3349,
+    "sequence_identification;protein_characterization;structure": 671,
+    "protein_characterization": 344,
+    "gene_identification;sequence_identification;protein_characterization;historical_first_report": 274,
+    "gene_identification;sequence_identification;protein_characterization": 145,
+    "gene_identification;sequence_identification;protein_characterization;structure;historical_first_report": 83,
+    "": 62,
+    "gene_identification;sequence_identification;protein_characterization;organism_level_degradation;historical_first_report": 44,
+    "protein_characterization;historical_first_report": 39,
+    "sequence_identification;protein_characterization;historical_first_report": 34
+   },
+   "proteins_with_PET_assay": 311,
+   "proteins_without_PET_assay": 151
+  },
+  "petml_scaffolds": {
+   "n_scaffolds": 66,
+   "counts": {
+    "IsPETase": 244,
+    "LCC": 54,
+    "TfCut2": 53,
+    "PES-H1": 30,
+    "PET2": 25,
+    "SbPETase": 13,
+    "BbPETase": 7,
+    "Ple629": 7,
+    "BurPL": 4,
+    "PbPL": 4,
+    "TfCut": 2,
+    "CtPL": 2,
+    "PpPL": 2,
+    "OaPL": 2,
+    "PETcan610": 1,
+    "PETcan708": 1,
+    "PHL1": 1,
+    "PETcan407": 1,
+    "PETcan608": 1,
+    "PETcan410": 1,
+    "PETcan402": 1,
+    "PETcan409": 1,
+    "BTA1": 1,
+    "PETcan702": 1,
+    "PETcan711": 1,
+    "PETcan611": 1,
+    "PHL7": 1,
+    "PETcan713": 1,
+    "PETcan501": 1,
+    "PHL6": 1,
+    "PETcan406": 1,
+    "PETcan503": 1,
+    "PETcan405": 1,
+    "PETcan706": 1,
+    "PET27": 1,
+    "PETcan605": 1,
+    "PETcan704": 1,
+    "PETcan401": 1,
+    "PETcan602": 1,
+    "PETcan707": 1,
+    "PETcan412": 1,
+    "PETcan701": 1,
+    "PETcan202": 1,
+    "PETcan601": 1,
+    "PETcan710": 1,
+    "PETcan715": 1,
+    "BhrPETase": 1,
+    "PHL2": 1,
+    "PETcan102": 1,
+    "PETcan717": 1,
+    "PHL5": 1,
+    "PETcan714": 1,
+    "PETcan712": 1,
+    "PETcan604": 1,
+    "PETcan705": 1,
+    "PHL4": 1,
+    "PETcan606": 1,
+    "PET30": 1,
+    "PHL3": 1,
+    "PETcan709": 1,
+    "PETcan716": 1,
+    "PETcan306": 1,
+    "PETcan504": 1,
+    "PETcan703": 1,
+    "PETcan403": 1,
+    "BTA2": 1
+   },
+   "wildtype_entries_present": [
+    "BTA1",
+    "BTA2",
+    "BbPETase",
+    "BhrPETase",
+    "BurPL",
+    "CtPL",
+    "IsPETase",
+    "LCC",
+    "OaPL",
+    "PES-H1",
+    "PET2",
+    "PET27",
+    "PET30",
+    "PETcan102",
+    "PETcan202",
+    "PETcan306",
+    "PETcan401",
+    "PETcan402",
+    "PETcan403",
+    "PETcan405",
+    "PETcan406",
+    "PETcan407",
+    "PETcan409",
+    "PETcan410",
+    "PETcan412",
+    "PETcan501",
+    "PETcan503",
+    "PETcan504",
+    "PETcan601",
+    "PETcan602",
+    "PETcan604",
+    "PETcan605",
+    "PETcan606",
+    "PETcan608",
+    "PETcan610",
+    "PETcan611",
+    "PETcan701",
+    "PETcan702",
+    "PETcan703",
+    "PETcan704",
+    "PETcan705",
+    "PETcan706",
+    "PETcan707",
+    "PETcan708",
+    "PETcan709",
+    "PETcan710",
+    "PETcan711",
+    "PETcan712",
+    "PETcan713",
+    "PETcan714",
+    "PETcan715",
+    "PETcan716",
+    "PETcan717",
+    "PHL1",
+    "PHL2",
+    "PHL3",
+    "PHL4",
+    "PHL5",
+    "PHL6",
+    "PHL7",
+    "PbPL",
+    "Ple629",
+    "PpPL",
+    "SbPETase",
+    "TfCut",
+    "TfCut2"
+   ],
+   "n_variants_of_wt": {
+    "IsPETase": 243,
+    "LCC": 53,
+    "TfCut2": 52,
+    "PES-H1": 29,
+    "PET2": 24,
+    "SbPETase": 12,
+    "BbPETase": 6,
+    "Ple629": 6,
+    "BurPL": 3,
+    "PbPL": 3,
+    "TfCut": 1,
+    "CtPL": 1
+   }
+  },
+  "existing_clean_set": {
+   "rows": 298,
+   "cols": [
+    "protein_id",
+    "protein_name",
+    "pet_label",
+    "label_confidence",
+    "n_pet_assays",
+    "n_positive_assays",
+    "n_negative_assays",
+    "n_publications",
+    "temperature_range_c",
+    "ph_range",
+    "substrate_forms",
+    "enzyme_preparations",
+    "detection_methods",
+    "in_standardised_screen",
+    "dois",
+    "plasticdb_ids",
+    "plasticdb_enzyme_name",
+    "genbank",
+    "uniprot_match",
+    "sequence_length",
+    "sequence"
+   ],
+   "value_counts": {
+    "pet_label": {
+     "PET-active": 161,
+     "PET-active (condition-dependent)": 137
+    },
+    "label_confidence": {
+     "high": 287,
+     "medium": 11
+    },
+    "n_publications": {
+     "1": 282,
+     "2": 10,
+     "3": 4,
+     "7": 1,
+     "4": 1
+    },
+    "enzyme_preparations": {
+     "purified": 287,
+     "partially_purified": 6,
+     "partially_purified; purified": 1,
+     "commercial_preparation": 1,
+     "culture_supernatant; purified": 1,
+     "commercial_preparation; purified": 1,
+     "other": 1
+    },
+    "in_standardised_screen": {
+     "False": 273,
+     "True": 25
+    },
+    "uniprot_match": {
+     "nan": 297,
+     "Q47RJ6 (exact)": 1
+    }
+   }
+  },
+  "existing_prediction_dataset": {
+   "rows": 78,
+   "cols": [
+    "protein_id",
+    "detected_at_60c",
+    "subcluster",
+    "identity_group_70"
+   ],
+   "label_counts": {
+    "detected_at_60c": {
+     "0": 39,
+     "1": 39
+    }
+   }
+  }
+ },
+ "labels": {
+  "pazy_pet_measurements": {
+   "assay_rows": 5058,
+   "rows_with_positive_measurement": 3549,
+   "rows_all_zero_or_nondetect": 1509,
+   "rows_without_measurements": 0,
+   "proteins_with_positive": 311,
+   "proteins_with_only_zero": 0,
+   "top_units": [
+    [
+     "mg/L",
+     2130
+    ],
+    [
+     "%",
+     2060
+    ],
+    [
+     "\u00b5mol aromatic products/mg enzyme",
+     1836
+    ],
+    [
+     "\u00b5M",
+     1040
+    ],
+    [
+     "mM",
+     279
+    ],
+    [
+     "None",
+     232
+    ],
+    [
+     "\u00b5mol/L",
+     179
+    ],
+    [
+     "\u00b5g product/mg PET",
+     128
+    ],
+    [
+     "nmol min^-1 cm^-2",
+     120
+    ],
+    [
+     "\u00b5mol/mL/h",
+     93
+    ],
+    [
+     "mM/h",
+     49
+    ],
+    [
+     "fraction",
+     24
+    ]
+   ],
+   "top_metric_types": [
+    [
+     "product_concentration",
+     3658
+    ],
+    [
+     "specific_activity",
+     1875
+    ],
+    [
+     "conversion_percent",
+     1853
+    ],
+    [
+     "product_release_rate",
+     303
+    ],
+    [
+     "categorical_activity",
+     219
+    ],
+    [
+     "product_amount",
+     174
+    ],
+    [
+     "mass_loss_percent",
+     146
+    ],
+    [
+     "other",
+     110
+    ],
+    [
+     "relative_activity",
+     41
+    ],
+    [
+     "kinetic_parameter",
+     23
+    ],
+    [
+     "absorbance",
+     22
+    ],
+    [
+     "contact_angle",
+     9
+    ]
+   ],
+   "temperature": {
+    "n": 4995,
+    "min": 4,
+    "max": 90,
+    "median": 50.0,
+    "distribution": {
+     "4": 3,
+     "10": 1,
+     "16": 1,
+     "20": 1,
+     "25": 17,
+     "26": 1,
+     "28": 1,
+     "30": 854,
+     "35": 9,
+     "37": 151,
+     "40": 1153,
+     "45": 38,
+     "50": 736,
+     "55": 110,
+     "60": 1171,
+     "65": 69,
+     "70": 624,
+     "72": 17,
+     "75": 14,
+     "80": 18,
+     "85": 5,
+     "90": 1
+    }
+   }
+  },
+  "si_replicates": {
+   "sample_condition_pairs": 2158,
+   "replicates_per_pair": {
+    "1": 872,
+    "2": 1262,
+    "3": 1,
+    "4": 7,
+    "8": 2,
+    "10": 6,
+    "12": 1,
+    "15": 3,
+    "16": 1,
+    "20": 3
+   },
+   "pairs_with_replicates": 1286,
+   "pairs_disagreeing": 40,
+   "pairs_all_zero": 1541,
+   "pairs_all_positive": 577
+  },
+  "si_protein_labels": {
+   "n_enzymes_assayed": 213,
+   "ever_positive": 128,
+   "never_positive": 85,
+   "never_positive_with_ge8_conditions": 57,
+   "never_positive_with_lt8_conditions": 28,
+   "library_size_total": 477,
+   "library_never_assayed": 264
+  },
+  "si_condition_labels": [
+   {
+    "cond": "cryPow|40|5.5",
+    "n": 213,
+    "pos": 100,
+    "zero": 113,
+    "pos_rate": 0.469
+   },
+   {
+    "cond": "cryPow|40|6.5",
+    "n": 213,
+    "pos": 114,
+    "zero": 99,
+    "pos_rate": 0.535
+   },
+   {
+    "cond": "cryPow|40|7.5",
+    "n": 213,
+    "pos": 106,
+    "zero": 107,
+    "pos_rate": 0.498
+   },
+   {
+    "cond": "cryPow|60|7.5",
+    "n": 161,
+    "pos": 40,
+    "zero": 121,
+    "pos_rate": 0.248
+   },
+   {
+    "cond": "cryPow|60|6.5",
+    "n": 161,
+    "pos": 47,
+    "zero": 114,
+    "pos_rate": 0.292
+   },
+   {
+    "cond": "cryPow|60|5.5",
+    "n": 161,
+    "pos": 36,
+    "zero": 125,
+    "pos_rate": 0.224
+   },
+   {
+    "cond": "cryPow|40|4.5",
+    "n": 160,
+    "pos": 47,
+    "zero": 113,
+    "pos_rate": 0.294
+   },
+   {
+    "cond": "cryPow|60|4.5",
+    "n": 128,
+    "pos": 6,
+    "zero": 122,
+    "pos_rate": 0.047
+   },
+   {
+    "cond": "aFilm|40|6.5",
+    "n": 78,
+    "pos": 12,
+    "zero": 66,
+    "pos_rate": 0.154
+   },
+   {
+    "cond": "aFilm|40|7.5",
+    "n": 78,
+    "pos": 9,
+    "zero": 69,
+    "pos_rate": 0.115
+   },
+   {
+    "cond": "aFilm|60|5.5",
+    "n": 78,
+    "pos": 3,
+    "zero": 75,
+    "pos_rate": 0.038
+   },
+   {
+    "cond": "aFilm|60|6.5",
+    "n": 78,
+    "pos": 6,
+    "zero": 72,
+    "pos_rate": 0.077
+   },
+   {
+    "cond": "aFilm|60|7.5",
+    "n": 78,
+    "pos": 5,
+    "zero": 73,
+    "pos_rate": 0.064
+   },
+   {
+    "cond": "aFilm|40|5.5",
+    "n": 78,
+    "pos": 10,
+    "zero": 68,
+    "pos_rate": 0.128
+   },
+   {
+    "cond": "aFilm|40|4.5",
+    "n": 63,
+    "pos": 3,
+    "zero": 60,
+    "pos_rate": 0.048
+   },
+   {
+    "cond": "aFilm|60|4.5",
+    "n": 63,
+    "pos": 2,
+    "zero": 61,
+    "pos_rate": 0.032
+   },
+   {
+    "cond": "cryPow|40|8.5",
+    "n": 54,
+    "pos": 24,
+    "zero": 30,
+    "pos_rate": 0.444
+   },
+   {
+    "cond": "cryPow|60|8.5",
+    "n": 34,
+    "pos": 8,
+    "zero": 26,
+    "pos_rate": 0.235
+   },
+   {
+    "cond": "aFilm|60|8.5",
+    "n": 15,
+    "pos": 0,
+    "zero": 15,
+    "pos_rate": 0.0
+   },
+   {
+    "cond": "aFilm|40|8.5",
+    "n": 15,
+    "pos": 3,
+    "zero": 12,
+    "pos_rate": 0.2
+   }
+  ],
+  "petml_zero_activity": {
+   "files_with_zeros": 7,
+   "total_zero_rows": 32,
+   "unique_proteins_with_a_zero": 32,
+   "detail": {
+    "Chen et al, 2021.xlsx": [
+     "PpPL_H225S/F229I",
+     "OaPL",
+     "OaPL_H196S/F200I"
+    ],
+    "Cui et al, 2021 (NanoPET).xlsx": [
+     "IsPETase_R123V",
+     "IsPETase_P181A",
+     "IsPETase_Q228V",
+     "IsPETase_R100F",
+     "IsPETase_T113P",
+     "IsPETase_A215P",
+     "IsPETase_A240V",
+     "IsPETase_K259F",
+     "IsPETase_D112R",
+     "IsPETase_D186W",
+     "IsPETase_P210K",
+     "IsPETase_T286V",
+     "IsPETase_I218F"
+    ],
+    "Erickson et al, 2022 (Project74).xlsx": [
+     "PETcan402",
+     "PETcan604",
+     "PETcan605",
+     "PETcan608",
+     "PETcan610",
+     "PETcan709",
+     "PETcan710",
+     "PETcan712",
+     "PETcan713"
+    ],
+    "Guo et al, 2022.xlsx": [
+     "IsPETase_G86E",
+     "IsPETase_Y87D/T88F"
+    ],
+    "Han et al, 2017.xlsx": [
+     "IsPETase_C239S"
+    ],
+    "Sonnendecker et al, 2021.xlsx": [
+     "PHL2"
+    ],
+    "Wang et al, 2022.xlsx": [
+     "SbPETase_W160A",
+     "SbPETase_T240F",
+     "SbPETase_T240S"
+    ]
+   }
+  }
+ }
+}

@@ -1,14 +1,14 @@
 "use client";
 
 import { Download, Maximize2, RotateCcw, Search, ZoomIn, ZoomOut } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ErrorState, InfoTip, Input, Metric, Notice, Panel, PanelHeader, Skeleton, Slider, Tip } from "@/components/ui/primitives";
 import { NetworkGraph, type NetworkGraphHandle } from "@/components/viz/network-graph";
 import { useApi } from "@/lib/api";
-import { clusterColor } from "@/lib/palette";
+import { clusterColor, tint } from "@/lib/palette";
 import { cn, num, sortGroups } from "@/lib/utils";
 import type { Clustering, NetworkData } from "@/types/api";
 
@@ -25,9 +25,10 @@ function downloadCsv(name: string, rows: (string | number | null)[][]) {
   URL.revokeObjectURL(url);
 }
 
-export function NetworksView() {
+export function NetworksView({ showClusterAnalysis = true }: { showClusterAnalysis?: boolean } = {}) {
   const params = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const graph = useRef<NetworkGraphHandle>(null);
   const [identity, setIdentity] = useState(DEFAULT.identity);
   const [coverage, setCoverage] = useState(DEFAULT.coverage);
@@ -38,7 +39,7 @@ export function NetworksView() {
   const selected = params.get("protein") ? Number(params.get("protein")) : null;
 
   const net = useApi<NetworkData>(`/network?min_identity=${applied.identity}&min_coverage=${applied.coverage}`);
-  const clustering = useApi<Clustering>("/clustering");
+  const clustering = useApi<Clustering>(showClusterAnalysis ? "/clustering" : null);
   const [shown, setShown] = useState<NetworkData>();
   useEffect(() => {
     if (net.data) setShown(net.data); // keep the previous graph visible while a new threshold loads
@@ -56,7 +57,7 @@ export function NetworksView() {
     const sp = new URLSearchParams(params.toString());
     if (id == null) sp.delete("protein");
     else sp.set("protein", String(id));
-    router.replace(`/networks${sp.size ? `?${sp}` : ""}`, { scroll: false });
+    router.replace(`${pathname}${sp.size ? `?${sp}` : ""}`, { scroll: false });
   };
 
   useEffect(() => {
@@ -175,9 +176,9 @@ export function NetworksView() {
                   onClick={() => setHidden((h) => (h.has(g) ? new Set([...h].filter((x) => x !== g)) : new Set([...h, g])))}
                   aria-pressed={!off}
                   className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] transition", off ? "border-line text-muted/60" : "text-ink")}
-                  style={off ? undefined : { borderColor: `${clusterColor(g)}66`, background: `${clusterColor(g)}14` }}
+                  style={off ? undefined : { borderColor: tint(clusterColor(g), 40), background: tint(clusterColor(g), 8) }}
                 >
-                  <span className="size-2 rounded-full" style={{ background: off ? "#294157" : clusterColor(g) }} />
+                  <span className="size-2 rounded-full" style={{ background: off ? "var(--color-line)" : clusterColor(g) }} />
                   {g} <span className="text-muted">{counts[g]}</span>
                 </button>
               );
@@ -185,13 +186,13 @@ export function NetworksView() {
           </div>
 
           {/* canvas */}
-          <div className="relative m-4 h-[560px] overflow-hidden rounded-xl border border-line/70 bg-[radial-gradient(ellipse_at_center,#0f2236_0%,#091321_70%)] lg:h-[640px]">
+          <div className="relative m-4 h-[560px] overflow-hidden rounded-xl border border-line/70 bg-[image:var(--net-bg)] lg:h-[640px]">
             {net.error && !shown ? (
               <ErrorState message={net.error.message} onRetry={net.retry} />
             ) : shown ? (
               <NetworkGraph ref={graph} data={shown} selectedId={selected} hiddenClusters={hidden} onSelect={select} />
             ) : (
-              <Skeleton className="h-full w-full" />
+              <Skeleton label="Loading similarity network" className="h-full w-full" />
             )}
             {net.loading && shown && (
               <div className="absolute right-3 top-3 rounded-full border border-teal/40 bg-void/80 px-3 py-1 font-mono text-[11px] text-teal">Updating edges…</div>
@@ -207,9 +208,9 @@ export function NetworksView() {
           {shown && (
             <div className="grid grid-cols-2 gap-4 border-t border-line/60 p-4 sm:grid-cols-4">
               <Metric label="Edges" value={num(shown.stats.edges)} hint={`≥ ${Math.round(shown.threshold.min_identity * 100)}% id, ≥ ${Math.round(shown.threshold.min_coverage * 100)}% cov`} />
-              <Metric label="Components" value={shown.stats.components} accent="#4CA8D8" />
-              <Metric label="Largest component" value={shown.stats.largest_component} accent="#69E8C3" hint="proteins" />
-              <Metric label="Isolated proteins" value={shown.stats.isolated} accent="#E8B56B" hint="no edge at this threshold" />
+              <Metric label="Components" value={shown.stats.components} accent="var(--color-sky)" />
+              <Metric label="Largest component" value={shown.stats.largest_component} accent="var(--color-mint)" hint="proteins" />
+              <Metric label="Isolated proteins" value={shown.stats.isolated} accent="var(--color-amber)" hint="no edge at this threshold" />
             </div>
           )}
         </Panel>
@@ -245,14 +246,14 @@ export function NetworksView() {
         </div>
       </div>
 
-      {clustering.error ? (
+      {!showClusterAnalysis ? null : clustering.error ? (
         <Panel>
           <ErrorState message={clustering.error.message} onRetry={clustering.retry} />
         </Panel>
       ) : clustering.data ? (
         <ClusterCharts data={clustering.data} />
       ) : (
-        <Skeleton className="h-[520px] rounded-[14px]" />
+        <Skeleton label="Loading similarity network" className="h-[520px] rounded-[14px]" />
       )}
     </div>
   );

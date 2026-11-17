@@ -1,9 +1,5 @@
-import type { Metadata } from "next";
-
-import { ConditionsView } from "@/features/conditions/conditions-view";
-
-export const metadata: Metadata = { title: "Activity Conditions" };
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <ConditionsView />;
+  redirect("/data?section=conditions");
 }

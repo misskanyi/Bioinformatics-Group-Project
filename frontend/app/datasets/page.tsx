@@ -1,9 +1,5 @@
-import type { Metadata } from "next";
-
-import { DatasetsView } from "@/features/datasets/datasets-view";
-
-export const metadata: Metadata = { title: "Dataset Intelligence" };
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <DatasetsView />;
+  redirect("/data?section=acquisition");
 }

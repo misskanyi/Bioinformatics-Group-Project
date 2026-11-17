@@ -1,0 +1,213 @@
+sequence_sha1,sample_id,primary_group,label,split,split_reason,cv_fold
+f5fcabd6ec6e041ccdd7efcab1548e204f7f2a79,TEP014,2,uncertain,excluded,label is 'uncertain' - replicates disagree at this condition,-1
+2fe39b4a5c50a4aada33db6aa242cc4648900fe7,ESM139,6,uncertain,excluded,label is 'uncertain' - replicates disagree at this condition,-1
+e35eb32d3505eb62fa29c877ce6601a956359280,DP080,161,uncertain,excluded,label is 'uncertain' - replicates disagree at this condition,-1
+737cb3b5d68fff4c081d5a5e5db8bfed69912cf1,DP093,178,uncertain,excluded,label is 'uncertain' - replicates disagree at this condition,-1
+03de4eded1e49d6832ff7e2242e15fac67ec185c,ESM045,1,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,4
+1b66fe9bab94e86ca8856d1370fc094c6c3efc59,ESM053,1,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,4
+1e7e8c945d258253730525a1a4d3b6e1808bb318,TEP004,1,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,4
+db31b46ef9e1dbc28cf26c9fe6a1ad8738fd2941,DP032,1,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,4
+def42b253ab352bc43e0d414a8b28c44f5fa448e,TEP080,1,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,4
+060a8d68783343b4bd24ecc0659c66e48d6a2ae3,DP051,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+2b06f36b8c2c1a159ab940f98bd4dc6d95f20476,ESM156,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+2e19a045df8dd4b5714f34ff06035cc8d6d48134,DP022,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+3476e1fdd129980cf68ce949cd79f9d49ab6bb57,DP085,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+36f32d3849f21e788ceb4bab4db5d7fbb60024cd,DP084,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+3d472ee4533e833b611715f3c4a779966fa1e03f,TEP018,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+4218b8c860f1fc43689426e4eebf389761aca217,DP034,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+44557953433c26fd11164de07a20958b1b3c9c5d,TEP081,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+4e76d6cce7981bdec40ef59d945d70291a63f0b9,ESM167,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+52b79aa737d5cedde03914fa99203040ec646d18,TEP110,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+52fc95dcc81b325e79bacfa3a23d5446578dcc0f,DP086,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+5b23f37b97e36bf7736ffbe6288548d34b2fb967,TEP099,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+5c814f4a3e3c839bb807ad87b6e06b1a8627c588,TEP178,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+5d687d13c274b5cb796d723520a52744eedccd8b,TEP188,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+6832bc63e101bdea1549af04b4c7f066ee8d11c9,DP033,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+6861c6518c1570990947f0b82210e09e5c87cc39,TEP089,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+6d05c9592ad63205600b4956a902e6ea1f73495f,DP057,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+75920f0e67270e4f582a3d27368d37e40903599e,DP056,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+77d35cc4a6fec9593c8f4883445b3a7704fbbe6e,TEP073,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+78a548b86de30b2fbddd335664e73bfedcbbddba,TEP144,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+800331d345ee2932e3a4a2596fc85b5c6606f550,ESM140,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+825939240a79bda3400596e3155ed0d1e5fbba73,TEP182,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+93e384a849720ae6aaaeabe7392d468054177b07,TEP194,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+96c25ded8cacced28461d2866777cb029cf5fe6c,TEP140,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+9e7e0b9ed6025a9bf5f6e5b31e077cd47214ce84,TEP091,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+af556a380d2b87e2bc2de5ed3bd478cfe0eb1404,TEP108,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+c92768c050fe5a6fb1cbe2647e70cba648363a9d,DP088,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+ded6ae78856d8256be976bf19e7ca7b2f5e29668,TEP061,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+e64716261d75ab1f4e7106d95dc8eb9590d79ca0,DP090,2,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,1
+fa0ff752f15a7a6368dd4d2c510601967d9ea492,TEP117,2,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,1
+0f898278a567b6c11d6d37fd457bc6c197e1451e,ESM186,11,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,4
+1bdd778aad467f2629645456e65be3dd19122c45,ESM042,11,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,4
+be5de473987d88f50524193c8032ad5d594419b0,DP021,14,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,4
+12ebcfd3a8920275359c9fcd19535c9a5f1932e3,TEP157,40,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,2
+62c5c39a5ea52482d07a25a4d1da391c0d41543a,ESM162,70,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,3
+aa10aff11ef1a7e2fe9936b4a94252826156c4b2,TEP036,77,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,3
+d28e09c155f7eb5c89baf29e27b20fca8b248ab5,TEP160,77,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,3
+36928b214e0cab1c249cd7799c5ce8dfdc25f1fd,TEP195,100,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,4
+cdc681ca853401cccf6d400b9cefe6b854a65e9c,DP006,119,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,2
+549be7514b4b6945e00f73c84318eae53c952e5f,DP082,144,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,3
+6e1d475c443176e444b238fbcfdc75303dec5767,TEP006,169,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,4
+86970fdbc3f0b460eefbb7978a5613edb3f49ae7,DP091,195,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,2
+a2e28839684b7a0c1ebc5dec85421dc6bc50bf43,DP077,229,detectable_activity,test,identity group held out; no member has a >=70%-identical relative in training,3
+bc85d4b0bdce524c512b757fed3a76fc5e58286e,DP045,256,below_detection,test,identity group held out; no member has a >=70%-identical relative in training,4
+02a7e55d358505be8ccb209c44404c1f76ac7f62,ESM038,6,detectable_activity,train,identity group assigned to the training set,4
+229988156a48a736d59f33087cba70bf818fca1d,ESM024,6,detectable_activity,train,identity group assigned to the training set,4
+4302d64dab3f4b33294bc4fd429e241cfd33a7a1,ESM010,6,detectable_activity,train,identity group assigned to the training set,4
+833b20e6e027ec26fab0646ef5c113b3ff63a9d3,DP092,6,detectable_activity,train,identity group assigned to the training set,4
+a78d40570d87897e9394d45d7733304fada210b4,ESM021,6,detectable_activity,train,identity group assigned to the training set,4
+c807a996283221e8dbc123ada4d1c7df9fe28ca7,ESM026,6,detectable_activity,train,identity group assigned to the training set,4
+031211a39f2f9bc0c0aef13952a7fbb890dc1564,ESM080,9,detectable_activity,train,identity group assigned to the training set,0
+047e314722713c26522b28c0ccf4804a3d96cdc9,ESM004,9,below_detection,train,identity group assigned to the training set,0
+04eb4919cdd3bb7ea31f4940d6a2c7f7ec46043a,TEP010,9,detectable_activity,train,identity group assigned to the training set,0
+06a90b7b183a98dcbc01a12d650e1de7ef9b2420,TEP092,9,detectable_activity,train,identity group assigned to the training set,0
+071406e26fd7aa6ed8a7f14b3f0a3a92a5e7eaaf,TEP102,9,detectable_activity,train,identity group assigned to the training set,0
+08a2e84bd351da87c567f7f9474775d0ec1fb778,ESM011,9,below_detection,train,identity group assigned to the training set,0
+0a514d39db7668dde7aaa675a860137bc4585f34,TEP013,9,detectable_activity,train,identity group assigned to the training set,0
+0cc75b5d33e9e463d7b590053e4ce3e2e61e0a54,ESM059,9,detectable_activity,train,identity group assigned to the training set,0
+11ae3d5a0f07de5af559c5ef0edbf7a1b608585f,ESM136,9,detectable_activity,train,identity group assigned to the training set,0
+15c4f84e96e8516ad70d392fb50415d7e3ac2436,ESM173,9,detectable_activity,train,identity group assigned to the training set,0
+19ae3c028413c093886bfb9ab65e40a5c04ab987,ESM163,9,below_detection,train,identity group assigned to the training set,0
+1a8d234c1f20f271a2b58decefc5f44ac7d43040,ESM031,9,below_detection,train,identity group assigned to the training set,0
+25a9f6f2faff2daa4cb830dab801894d8ab2f983,ESM161,9,detectable_activity,train,identity group assigned to the training set,0
+2706167c59d8446f533276ab62ca416b0e61fc1b,ESM137,9,detectable_activity,train,identity group assigned to the training set,0
+28bf4b2f60096f9837b7e9e984e671e3977c557d,TEP131,9,detectable_activity,train,identity group assigned to the training set,0
+2a6f37c6bb74ff7cd67bc6acb4a5902a79481fb3,TEP165,9,detectable_activity,train,identity group assigned to the training set,0
+3310cee6655fa77ee5cd2a138503b6b27b1b195c,TEP054,9,detectable_activity,train,identity group assigned to the training set,0
+382f7bf3854b526b35a76d9b2fcd424153ab498d,TEP114,9,detectable_activity,train,identity group assigned to the training set,0
+3a7c017ac808a08c048e744f5181ee30a68f463a,ESM091,9,detectable_activity,train,identity group assigned to the training set,0
+3b1a229eb874792b40cb3d2a7d7312d6a6895c0d,ESM036,9,below_detection,train,identity group assigned to the training set,0
+3dbf73e1427ec7e8232f25a50616c41a313c235d,TEP024,9,detectable_activity,train,identity group assigned to the training set,0
+3e207f66b52aab2c0fc17e6b5796b60ec145e5d0,TEP082,9,detectable_activity,train,identity group assigned to the training set,0
+403b41516ac2e2ccbbf09e9e1cd82bd649eb7081,ESM078,9,below_detection,train,identity group assigned to the training set,0
+46cb8542f247a9cb9939abf7aa541e00a844b705,ESM132,9,below_detection,train,identity group assigned to the training set,0
+48a65fa39945a8954cbe69d87bd4365e9edf2b78,ESM062,9,detectable_activity,train,identity group assigned to the training set,0
+49efdc81171fc1f1c5ba3b617fc7701a6d874595,ESM034,9,below_detection,train,identity group assigned to the training set,0
+49f40600cf53ae567ea4d501a162b0949bd6eb55,ESM033,9,detectable_activity,train,identity group assigned to the training set,0
+4afe412430f506b2876a5800a62bacf66ea528d8,DP059,9,detectable_activity,train,identity group assigned to the training set,0
+5188aaf0c580be216d66724e62e6f2433ec6d090,ESM135,9,detectable_activity,train,identity group assigned to the training set,0
+53bb91a9090dadbe9fa1b5e10f536be38151778e,TEP029,9,detectable_activity,train,identity group assigned to the training set,0
+57a3ee4f1a3c6cb2c4f471ff6f0839d776ee86f2,ESM069,9,detectable_activity,train,identity group assigned to the training set,0
+57ae927ff60e14d99876254b42e9f261f53e6db6,TEP167,9,below_detection,train,identity group assigned to the training set,0
+5a8686a19916ac2f13e993e9f3781f2a3375f319,ESM052,9,detectable_activity,train,identity group assigned to the training set,0
+5cbc9919618349fddb517c18bcc458a198fed811,ESM130,9,detectable_activity,train,identity group assigned to the training set,0
+5f2a1ed9dfecc97fe1c902ef0a4501c4711db625,ESM006,9,detectable_activity,train,identity group assigned to the training set,0
+662cf89264c9f5146e1ffe1b99a3321653432b00,ESM067,9,below_detection,train,identity group assigned to the training set,0
+7244775a70917e77a76aa6f778e19add9cd947d2,ESM013,9,below_detection,train,identity group assigned to the training set,0
+74896d245355e770a0bbda642cb19e9a8a22f270,TEP126,9,below_detection,train,identity group assigned to the training set,0
+7501848573c6d759d75972b53fe5edd2856739ef,ESM184,9,below_detection,train,identity group assigned to the training set,0
+7568d50d91bdb16f059f9f101091c0d746c2b4aa,ESM143,9,below_detection,train,identity group assigned to the training set,0
+7767524b01e5161d2760a3800dc562b194428d0b,TEP086,9,below_detection,train,identity group assigned to the training set,0
+7813ae63b47873cfed7cd938d403e89fb65c541e,TEP164,9,detectable_activity,train,identity group assigned to the training set,0
+7b3fde72ebabf90dd597cd1fda9a8f87320e3e22,ESM121,9,detectable_activity,train,identity group assigned to the training set,0
+81efe273b8e9757d4b865ba1f0ea12e646517692,TEP111,9,detectable_activity,train,identity group assigned to the training set,0
+828f0d4c60779447065d91600b03bed639e8c0f9,TEP122,9,below_detection,train,identity group assigned to the training set,0
+8533936504ff0d0bec942a486c0af89721d0e98f,TEP181,9,detectable_activity,train,identity group assigned to the training set,0
+86f0e51ecd417907d9e434825c89c2c8cf7e7829,ESM106,9,detectable_activity,train,identity group assigned to the training set,0
+88c03e627d30af8ce0091030f8635b7d450fbc4d,ESM037,9,below_detection,train,identity group assigned to the training set,0
+8a32a744b4bde3569e80cf3c72a5259661b83ef9,ESM061,9,detectable_activity,train,identity group assigned to the training set,0
+8cf9582df29c9c9f035e6fda710f86d04b07794c,ESM007,9,below_detection,train,identity group assigned to the training set,0
+90982b26844d1439b0d6cdd384f2ba78cda713ca,ESM075,9,detectable_activity,train,identity group assigned to the training set,0
+98296f81cebb16aa1f1b35c6b4e932c03f7d238d,TEP168,9,detectable_activity,train,identity group assigned to the training set,0
+9c51e2193722fff98308464e985adedefb079563,ESM005,9,below_detection,train,identity group assigned to the training set,0
+9c74b91631b57fe21a2483e879742263da426f94,ESM009,9,below_detection,train,identity group assigned to the training set,0
+9d0c18b508047d306ad9d8e3a2e1e6365f95928a,TEP097,9,detectable_activity,train,identity group assigned to the training set,0
+a125b70c248b437979f1795d29f57ed97adf6c58,ESM014,9,below_detection,train,identity group assigned to the training set,0
+a76f6557f41fa7038f4f783f62c8eeb7d8750854,TEP093,9,detectable_activity,train,identity group assigned to the training set,0
+a9d232ed083f0823aedb74ec3ed9c70ea9522e29,TEP003,9,below_detection,train,identity group assigned to the training set,0
+aa6028205f07c7f4d0b9156197ec51f21f7bed7e,ESM070,9,detectable_activity,train,identity group assigned to the training set,0
+aef7c2efae1125789202678a1a648e5a2ca42656,ESM084,9,below_detection,train,identity group assigned to the training set,0
+b0f6166143184d1d0ca7f28036bd24c67c7a5537,ESM015,9,below_detection,train,identity group assigned to the training set,0
+b2e87185395011758dfa1022a63ad328bb5b61f2,TEP041,9,detectable_activity,train,identity group assigned to the training set,0
+b46a4511cff33199af8187794e21a9c1b5f1f1a8,ESM041,9,below_detection,train,identity group assigned to the training set,0
+b9fd59948c0a97a7bd483ac3575b261ec0a73231,DP061,9,detectable_activity,train,identity group assigned to the training set,0
+bdda2b47b725486c4eaa8c6ed3a0f026b8210741,TEP049,9,below_detection,train,identity group assigned to the training set,0
+beb099d6b816719fe94bb3184f3db500a008ddd0,DP047,9,below_detection,train,identity group assigned to the training set,0
+beeaef4ab27faa5a6222f7cbdce852028a62744b,DP072,9,detectable_activity,train,identity group assigned to the training set,0
+c03ee8967911f2035c9c7734016aac2a8a6e0338,ESM097,9,below_detection,train,identity group assigned to the training set,0
+c333e0c287a896189dba8513d5b293363606aa60,ESM040,9,below_detection,train,identity group assigned to the training set,0
+c4e1445b6b14b79e137b5dc9b4d2ce89ab342ab5,ESM065,9,detectable_activity,train,identity group assigned to the training set,0
+c5764268490e1954a3ee03d42f2d7fd37294d1a3,ESM103,9,below_detection,train,identity group assigned to the training set,0
+c6c23aa0bf7ae141fe364207edab7e410c24aae6,ESM023,9,below_detection,train,identity group assigned to the training set,0
+c83fd8e9be639b430a9436523a225bd8e4a7b198,TEP062,9,below_detection,train,identity group assigned to the training set,0
+cdfca479e643d9de7320e0f195e0928318b465b6,DP068,9,detectable_activity,train,identity group assigned to the training set,0
+d19c9d5c1a8add265968833a026444a41ff5b772,ESM035,9,detectable_activity,train,identity group assigned to the training set,0
+d4a9f85fdfc9fa711aadd188b74d9eb508d6d393,TEP083,9,below_detection,train,identity group assigned to the training set,0
+dd52c7da8a610de34f72d8a65b3ba45af4aa665f,TEP109,9,detectable_activity,train,identity group assigned to the training set,0
+e45154240a072cd4fd461e1e9751fb387172fc63,ESM101,9,detectable_activity,train,identity group assigned to the training set,0
+e7099123a7855628c02acee0b406e2a4e1228725,ESM058,9,detectable_activity,train,identity group assigned to the training set,0
+e73aba36698bcb9e00fe2a1dbd5273759e360064,TEP163,9,detectable_activity,train,identity group assigned to the training set,0
+e79e1ba0dc10c7a25f61e509e0c4ef997a6c3fcc,ESM018,9,detectable_activity,train,identity group assigned to the training set,0
+eb5b94fb061474c32082bafc289d3b7f39ed89f0,ESM043,9,detectable_activity,train,identity group assigned to the training set,0
+ee0fde1b0a16d7ca2c80c2a81ae4f0cd4941a1c2,ESM095,9,detectable_activity,train,identity group assigned to the training set,0
+efaf95ced3eb3d4c67dc9d18be189f85f45fa37d,ESM012,9,detectable_activity,train,identity group assigned to the training set,0
+f311f5eeb0454d5151bc2a4cb4bd7c3b54e2e943,TEP115,9,detectable_activity,train,identity group assigned to the training set,0
+06bf805ddd04d0d2538778cce21ad91d8a926adb,ESM144,18,below_detection,train,identity group assigned to the training set,2
+1a7b1489c595abaca9b0b9c988c2b55a1dc3b555,ESM147,18,detectable_activity,train,identity group assigned to the training set,2
+4fbf6df70d57b76039e79275b4834f48998d0ff2,TEP103,18,detectable_activity,train,identity group assigned to the training set,2
+5249a2aa415847ba686957c6704081cf7bacb980,ESM093,18,detectable_activity,train,identity group assigned to the training set,2
+6235c568516b9cc7babe661c42cb8854d6d3804b,ESM082,18,detectable_activity,train,identity group assigned to the training set,2
+b8bbd3133323ecfec706299d45eca28c069a799f,ESM047,18,detectable_activity,train,identity group assigned to the training set,2
+c6259bbf31aa09d501ac5009af8b0797e884d189,ESM090,18,detectable_activity,train,identity group assigned to the training set,2
+f78f5297732483f8fd71947d3547acc9f469210c,ESM177,18,detectable_activity,train,identity group assigned to the training set,2
+7290d24f2d7bf3b59e90c985f06b752321393904,DP016,22,detectable_activity,train,identity group assigned to the training set,2
+cbfbeacf6b07903639b2ea751ca1398b22e33115,TEP067,22,detectable_activity,train,identity group assigned to the training set,2
+0b55a34f8323b2a6683ad25e46ba8c7fd2ec9636,TEP106,28,below_detection,train,identity group assigned to the training set,2
+0bf50f3351c728a4461cce328e2845d3b30f292f,DP089,31,detectable_activity,train,identity group assigned to the training set,3
+0fd490333d6d2c7cb3f0fb0803a7c1565bc0a6d5,DP007,36,detectable_activity,train,identity group assigned to the training set,4
+6ccbbfda84fe584b20a475f44f6f3c3bbfda57c3,ESM096,41,detectable_activity,train,identity group assigned to the training set,2
+d8186663b42554615ed76946822d26ccc503849b,ESM017,41,detectable_activity,train,identity group assigned to the training set,2
+df82531c6b13d2ae0c811fc3ed007ee8e0f53efd,ESM048,41,below_detection,train,identity group assigned to the training set,2
+f5cf7c7cfebd140f7b113fb23b4d52266b09e677,DP078,41,detectable_activity,train,identity group assigned to the training set,2
+1b8fc98d4e3c795d6577fbff0b1b49dcb3f3aa8c,ESM128,43,detectable_activity,train,identity group assigned to the training set,3
+28a0164e53cd81bd0c801210113a3ced68ae8753,ESM064,43,detectable_activity,train,identity group assigned to the training set,3
+40e241ecb9d8f34320f1ebf4bca6ebbaaa472324,ESM060,43,detectable_activity,train,identity group assigned to the training set,3
+60af5d091f2f85f8806b81bac0a6da0ef2cf4aea,ESM160,43,detectable_activity,train,identity group assigned to the training set,3
+8a2b0bfaa67712c7361730ebe4c90a34393d7c32,ESM159,43,detectable_activity,train,identity group assigned to the training set,3
+940dfba21dd748e444522f24051a6bb79ed57472,ESM081,43,detectable_activity,train,identity group assigned to the training set,3
+c05207f40d2fc8de19852cfa063800a62826d3a2,DP043,43,detectable_activity,train,identity group assigned to the training set,3
+f538a1b18891b2d7725afd20363bbdf6b97b7249,ESM157,43,detectable_activity,train,identity group assigned to the training set,3
+14bdc3862f332a92ab3099b7093b907d5121b743,DP017,44,detectable_activity,train,identity group assigned to the training set,3
+a66eedbf70c5edb3ab14b0edd5f20b37a0c343fb,ESM050,46,detectable_activity,train,identity group assigned to the training set,4
+e05e4fd16fa25e93d133d14a7cba4e9aa89a7d38,TEP189,46,detectable_activity,train,identity group assigned to the training set,4
+e05495a521fa4b9b67dfb85db3781310df82eb8d,ESM175,49,below_detection,train,identity group assigned to the training set,4
+e67c4f7f8bc85cb32cfabd3d6b4c98f16b1460b1,DP048,63,below_detection,train,identity group assigned to the training set,2
+2145c4f8efa00b96707bbeb948d632e78cbe601e,DP009,69,detectable_activity,train,identity group assigned to the training set,2
+5cb23928747b8db93011957ab4684d889dea62df,TEP101,69,detectable_activity,train,identity group assigned to the training set,2
+e7e6e75842bce378f4b9b8c032dbfd4de37881a2,DP008,73,detectable_activity,train,identity group assigned to the training set,4
+32050378b97e7d375a21d5c5c375276445fa4e89,TEP035,89,below_detection,train,identity group assigned to the training set,2
+32ac80b92f4ab785e1c23348570245b211daf1c4,TEP107,91,below_detection,train,identity group assigned to the training set,4
+af414494e99c6ba7de7f3165d6029f8d61303662,TEP038,91,below_detection,train,identity group assigned to the training set,4
+a15a2c4988aa4c9e31a119e7a750c7799ca25031,DP054,95,detectable_activity,train,identity group assigned to the training set,3
+358137b5d199e2c854e897f52f4f9d51148b0df8,DP023,97,below_detection,train,identity group assigned to the training set,3
+3b64cea0134732c5cb4dc00ceb6618ba477d9d1d,TEP037,97,below_detection,train,identity group assigned to the training set,3
+3c4b88351fd3361fe949a4fb7b91430e7557bb41,TEP105,97,detectable_activity,train,identity group assigned to the training set,3
+371b6e7a2f5e867e1aad9a1a10f17fe95a54188a,TEP021,103,below_detection,train,identity group assigned to the training set,2
+69ab7616cffaf9865b3a65aff0e14043421a1d59,TEP119,103,below_detection,train,identity group assigned to the training set,2
+3cba4fa01a6775da919ed6ea1db54e5d056a9bf3,DP044,110,below_detection,train,identity group assigned to the training set,2
+3ccfedec145fd64031550c24b6e52a2a996658c3,TEP039,111,below_detection,train,identity group assigned to the training set,3
+66162800a3dc8ade197b9df5f3bdf6e363bb3cfe,TEP098,111,below_detection,train,identity group assigned to the training set,3
+a611c9f854d0d457f042f82457b9748580fb5568,TEP011,111,below_detection,train,identity group assigned to the training set,3
+3db08186f0aecf65dbc6f695471919a84588d650,TEP173,114,below_detection,train,identity group assigned to the training set,3
+a2a727da6dfbff1726175d31915a0aaf8978f79a,DP003,116,below_detection,train,identity group assigned to the training set,4
+851dba81e607f6ea408cec80c79d54cc7dfc0b5f,DP026,126,below_detection,train,identity group assigned to the training set,3
+d5c849d2ebaab54771606708d27d609f017e2b1b,DP039,134,detectable_activity,train,identity group assigned to the training set,4
+5395363d0886eea99a9d06376856e6d5a055d262,DP075,141,below_detection,train,identity group assigned to the training set,2
+5a664c7a2af5b96e58810d279ebbf39361627b99,DP052,149,below_detection,train,identity group assigned to the training set,4
+5c2352fd368d568b4b43fdf0318bc2e5a94be268,DP038,150,detectable_activity,train,identity group assigned to the training set,3
+c57454856f0fd2eda7eb3ca2b0a168daefe23e94,ESM169,150,detectable_activity,train,identity group assigned to the training set,3
+5ffe0c10ccb57d392289d6161c06585291bed7c4,DP019,153,below_detection,train,identity group assigned to the training set,2
+67ad0990a46bd10d1f8986d938d6a3f2dce48db5,TEP171,160,below_detection,train,identity group assigned to the training set,3
+a39532e573393b710225ded4c1ea9eb319b2afd4,DP058,172,below_detection,train,identity group assigned to the training set,2
+706a47299a951a5588254cd1266226068583edc4,DP011,176,below_detection,train,identity group assigned to the training set,3
+82718fc83745863618788f398cec5041f544e6e9,DP087,189,below_detection,train,identity group assigned to the training set,4
+870f6eb7ec2cd6e4a21f1ccaee10347f61d678b0,ESM174,196,below_detection,train,identity group assigned to the training set,3
+94776353a11b3891212ea573cb2fd9f5a6271acf,DP040,209,detectable_activity,train,identity group assigned to the training set,4
+9ca6d45f57462e4966a7fbd88af338bb5974f5f8,TEP193,219,below_detection,train,identity group assigned to the training set,2
+a9680a365e5e9d8dc5e48411aced64a36d0bb140,TEP170,236,below_detection,train,identity group assigned to the training set,4
+b1c87cc05c78d3d63eba56e29ae3f672ef59b5d5,DP081,242,detectable_activity,train,identity group assigned to the training set,2
+b54ce896b4c7046cc56e65e26bfcdb91d04673c8,TEP050,246,below_detection,train,identity group assigned to the training set,3
+c3f9bf08ba1799abd25eb33fb15436b8e8737211,DP053,261,below_detection,train,identity group assigned to the training set,1
+e648f8bb5abf25a19cf590bd10dcdf5a58249a1a,DP079,294,below_detection,train,identity group assigned to the training set,2
+ec15f0e339e0646309feb2f8578832dc9a42359d,DP018,296,below_detection,train,identity group assigned to the training set,3

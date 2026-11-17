@@ -1,0 +1,2 @@
+model,observed_roc_auc,null_mean,null_95th_percentile,n_permutations,empirical_p
+logistic regression (features),0.556,0.492,0.694,200,0.3184

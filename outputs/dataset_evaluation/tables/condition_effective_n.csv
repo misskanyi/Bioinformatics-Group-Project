@@ -1,0 +1,4 @@
+condition,n_enzymes,n_positive,n_negative,n_clusters,clusters_with_positive,clusters_with_negative,clusters_all_positive,clusters_all_negative,largest_cluster_n,largest_cluster_pos_rate
+cryPow|T40|pH6.5,212,114,98,69,28,48,21,41,85,0.612
+cryPow|T40|pH7.5,212,106,106,69,26,50,19,43,85,0.529
+cryPow|T40|pH5.5,212,100,112,69,23,53,16,46,85,0.588

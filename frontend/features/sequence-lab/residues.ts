@@ -1,11 +1,11 @@
 // Standard physicochemical residue classes (side-chain properties).
 export const RESIDUE_CLASS: Record<string, { name: string; color: string }> = {
-  hydrophobic: { name: "Hydrophobic (A V L I M)", color: "#69E8C3" },
-  aromatic: { name: "Aromatic (F W Y)", color: "#48E1CD" },
-  polar: { name: "Polar (S T N Q C)", color: "#4CA8D8" },
-  acidic: { name: "Acidic (D E)", color: "#EF8A9A" },
-  basic: { name: "Basic (K R H)", color: "#B49CF5" },
-  special: { name: "Special (G P)", color: "#E8B56B" },
+  hydrophobic: { name: "Hydrophobic (A V L I M)", color: "var(--color-mint)" },
+  aromatic: { name: "Aromatic (F W Y)", color: "var(--color-aqua)" },
+  polar: { name: "Polar (S T N Q C)", color: "var(--color-sky)" },
+  acidic: { name: "Acidic (D E)", color: "var(--color-rose)" },
+  basic: { name: "Basic (K R H)", color: "var(--color-violet)" },
+  special: { name: "Special (G P)", color: "var(--color-amber)" },
 };
 
 const MAP: Record<string, keyof typeof RESIDUE_CLASS> = {

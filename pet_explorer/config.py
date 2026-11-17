@@ -13,6 +13,8 @@ CLUSTERING = EXPLORER / "clustering"
 NETWORK = EXPLORER / "network"
 TEMPERATURE = EXPLORER / "temperature"
 ORGANISMS = EXPLORER / "organisms"
+ANNOTATION = EXPLORER / "annotation"
+PREDICTION = EXPLORER / "prediction"
 FIGURES = EXPLORER / "figures"
 
 F_ASSAYS = DATA / "pazy_polymer_assays.json.gz"
@@ -52,5 +54,5 @@ NO_MATCH_BAND = "No reliable similarity"
 
 
 def ensure_dirs():
-    for d in (CLEAN, MATCHING, CLUSTERING, NETWORK, TEMPERATURE, ORGANISMS, FIGURES):
+    for d in (CLEAN, MATCHING, CLUSTERING, NETWORK, TEMPERATURE, ORGANISMS, ANNOTATION, PREDICTION, FIGURES):
         d.mkdir(parents=True, exist_ok=True)

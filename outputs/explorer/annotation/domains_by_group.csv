@@ -1,0 +1,9 @@
+subcluster,n_proteins,n_in_uniparc,n_with_pfam,pfam_families
+G1a,165,92,92,"PF12740 PET hydrolase/cutinase-like (88); PF18962 Secretion system, C-terminal sorting domain (2); PF07224 Chlorophyllase-like (2); PF12146 Alpha/beta hydrolase domain-containing protein 17C-like (1); PF00754 Coagulation factor 5/8, C-terminal domain (1); PF03403  (1)"
+G1b,98,50,50,"PF12740 PET hydrolase/cutinase-like (50); PF00652 Ricin B, lectin domain (32); PF00553 Carbohydrate-binding type-2 domain (5); PF03422 Carbohydrate binding module family 6 (1)"
+G2,15,10,10,"PF12146 Alpha/beta hydrolase domain-containing protein 17C-like (4); PF00326 Peptidase S9, prolyl oligopeptidase, catalytic domain (3); PF00561 Alpha/beta hydrolase fold-1 (3)"
+G3,9,6,6,PF01083 Cutinase/acetylxylan esterase (6)
+G4,5,3,3,"PF00135 Carboxylesterase, type B (3)"
+G5,4,4,4,"PF24708 Lipase-like, C-terminal domain (2); PF02230 Phospholipase/carboxylesterase/thioesterase (1); PF01674 Lipase EstA/Esterase EstB (1)"
+G6,1,1,0,none
+G7,1,1,1,PF07859 Alpha/beta hydrolase fold-3 (1)

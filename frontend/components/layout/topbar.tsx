@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Tip } from "@/components/ui/primitives";
 import { api } from "@/lib/api";
 import { navFor } from "@/lib/nav";
-import { EVIDENCE } from "@/lib/palette";
+import { C, EVIDENCE, tint } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 import type { Health } from "@/types/api";
+
+import { ThemeToggle } from "./theme-toggle";
 
 type Status = { state: "checking" } | { state: "ready"; health: Health } | { state: "offline"; message: string };
 
@@ -34,7 +36,7 @@ function DatasetStatus() {
     };
   }, []);
 
-  const color = status.state === "ready" ? "#69E8C3" : status.state === "offline" ? "#E8B56B" : "#9BB3C6";
+  const color = status.state === "ready" ? C.mint : status.state === "offline" ? C.amber : C.muted;
   const label =
     status.state === "ready" ? `Dataset ready · ${status.health.proteins} proteins` : status.state === "offline" ? "Backend offline" : "Checking backend…";
   const tip =
@@ -48,8 +50,8 @@ function DatasetStatus() {
     <Tip content={tip} side="bottom">
       <div
         role="status"
-        className="flex h-8 items-center gap-2 rounded-full border px-3 font-mono text-[11px]"
-        style={{ borderColor: `${color}40`, color, background: `${color}0f` }}
+        className="flex h-8 items-center gap-2 rounded-full border px-3 font-mono text-[11px] transition-colors duration-300"
+        style={{ borderColor: tint(color, 25), color, background: tint(color, 6) }}
       >
         <span className="relative flex size-2">
           {status.state === "ready" && <span className="absolute inset-0 animate-ping rounded-full opacity-60" style={{ background: color }} />}
@@ -79,8 +81,8 @@ function HelpDialog() {
             </Dialog.Close>
           </div>
           <Dialog.Description className="mt-2 text-sm leading-relaxed text-muted">
-            PET Enzyme Explorer is an evidence browser, not a prediction model. It compares a sequence with 298 experimentally
-            characterised PET-active proteins and shows what has been reported about them.
+            PET Enzyme Explorer compares a sequence with 298 experimentally characterised PET-active proteins and shows what has been
+            reported about them. Predictions are shown only where a model has been validated; see Model Validation.
           </Dialog.Description>
           <div className="mt-5 space-y-3">
             {Object.values(EVIDENCE).map((e) => (
@@ -101,7 +103,7 @@ function HelpDialog() {
             ))}
           </div>
           <p className="mt-5 text-xs text-muted">
-            See <Link href="/about#documentation" className="text-teal hover:underline">research documentation</Link> for methods.
+            See <Link href="/conclusions#methods" className="text-teal hover:underline">methods</Link> on the conclusions page.
           </p>
         </Dialog.Content>
       </Dialog.Portal>
@@ -113,13 +115,13 @@ export function Topbar({ onOpenMobile, className }: { onOpenMobile: () => void; 
   const pathname = usePathname();
   const item = navFor(pathname);
   return (
-    <header className={cn("sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line/60 bg-void/75 px-4 backdrop-blur-xl sm:px-6", className)}>
+    <header className={cn("sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line/60 bg-surface/90 px-4 shadow-[0_1px_0_0_var(--edge-glow)] sm:px-6", className)}>
       <Button variant="ghost" size="icon" className="lg:hidden" onClick={onOpenMobile} aria-label="Open navigation">
         <Menu />
       </Button>
       <div className="min-w-0">
         <nav aria-label="Breadcrumb" className="flex items-center gap-1 font-mono text-[11px] text-muted">
-          <Link href="/dashboard" className="shrink-0 whitespace-nowrap hover:text-teal">
+          <Link href="/overview" className="shrink-0 whitespace-nowrap hover:text-teal">
             PET Explorer
           </Link>
           {item && (
@@ -133,6 +135,7 @@ export function Topbar({ onOpenMobile, className }: { onOpenMobile: () => void; 
       </div>
       <div className="ml-auto flex items-center gap-2">
         <DatasetStatus />
+        <ThemeToggle />
         <HelpDialog />
       </div>
     </header>

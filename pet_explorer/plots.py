@@ -192,3 +192,47 @@ def motif_variants(feats):
     title(ax, f"G-x-S-x-G motif variants ({n_with}/{len(feats)} proteins have ≥1)")
     style(ax, grid="x")
     save(fig, "f09_gxsxg_motif_variants.png")
+
+
+def ssn(edges, assign):
+    """Static SSN picture. Nodes sit at their alignment-distance MDS position (so the
+    layout itself reflects homology); edges are drawn on top."""
+    from matplotlib.collections import LineCollection
+    df = assign.set_index("protein_id")
+    pos = df[["mds1", "mds2"]]
+    colors = cluster_colors(df.subcluster)
+    sizes = df.subcluster.value_counts()
+    fig, ax = plt.subplots(figsize=(8, 6))
+    segs = np.stack([pos.loc[edges.source].to_numpy(), pos.loc[edges.target].to_numpy()], axis=1)
+    ax.add_collection(LineCollection(segs, colors=GREY, linewidths=0.2, alpha=0.25, zorder=1))
+    for c, (col, mk) in colors.items():
+        sub = df[df.subcluster == c]
+        ax.scatter(sub.mds1, sub.mds2, s=24, color=col, marker=mk, edgecolor="white", linewidth=0.6, zorder=2,
+                   label=f"{c} (n={sizes[c]})")
+    ax.legend(fontsize=8, frameon=False, loc="center left", bbox_to_anchor=(1, 0.5))
+    ax.set_xlabel("MDS axis 1 (alignment distance)", color=INK2, fontsize=9)
+    ax.set_ylabel("MDS axis 2", color=INK2, fontsize=9)
+    title(ax, f"Sequence-similarity network: {len(df)} proteins, {len(edges):,} edges\n"
+              f"(edge = ≥40% identity over ≥70% of both proteins)")
+    style(ax, grid=None)
+    save(fig, "f11_similarity_network.png")
+
+
+def model_comparison(table, n, n_pos):
+    fig, axes = plt.subplots(1, 2, figsize=(11, 3.6), sharey=True)
+    t = table.iloc[::-1]
+    y = np.arange(len(t))
+    colors = [GREY if k == "baseline" else SERIES[0] for k in t.kind]
+    for ax, m, lab in zip(axes, ["roc_auc", "balanced_accuracy"], ["ROC AUC", "Balanced accuracy"]):
+        ax.barh(y, t[f"{m}_mean"], xerr=t[f"{m}_sd"], color=colors, height=0.6, edgecolor="white",
+                error_kw={"ecolor": INK2, "lw": 1})
+        ax.axvline(0.5, color=INK2, lw=1, ls="--")
+        for yi, v in zip(y, t[f"{m}_mean"]):
+            ax.text(0.02, yi, f"{v:.2f}", va="center", fontsize=8.5, color="white")
+        ax.set_xlim(0, 1)
+        ax.set_xlabel(f"{lab} (mean ± sd, 20 × grouped 5-fold CV)", color=INK2, fontsize=9)
+        style(ax, grid="x")
+    axes[0].set_yticks(y, t.model)
+    title(axes[0], f"Predicting PET conversion at 60 °C")
+    title(axes[1], f"n={n} ({n_pos} detected). Grey = baseline")
+    save(fig, "f10_prediction_models.png")

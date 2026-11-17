@@ -274,6 +274,78 @@ def fig_screen_acs(meas, names):
     return t
 
 
+# --------------------------------------------------------------------------- statistics
+def bh_fdr(p):
+    """Benjamini-Hochberg adjusted p-values (q-values)."""
+    p = np.asarray(p, dtype=float)
+    o = np.argsort(p)
+    q = p[o] * len(p) / np.arange(1, len(p) + 1)
+    q = np.minimum.accumulate(q[::-1])[::-1]
+    out = np.empty_like(q)
+    out[o] = np.minimum(q, 1)
+    return out
+
+
+def statistics(assays, acs, min_group=5):
+    """Formal tests for H2, Benjamini-Hochberg corrected as one family.
+
+    A. All PAZy assays: one value per protein (median temperature with detected
+       activity - assays of one protein are not independent). Kruskal-Wallis
+       across groups with >= min_group proteins, then pairwise Mann-Whitney.
+       Confounded by study design (see notebook) - kept as the naive test.
+    B. 99-protein standardised screen (one protocol, 40 and 60 °C): the
+       controlled comparison. Wilcoxon signed-rank 40 vs 60 °C; G1a vs G1b
+       Mann-Whitney on conversion at each temperature; Fisher exact test on
+       'conversion detected at 60 °C'."""
+    from scipy import stats as st
+    from itertools import combinations
+
+    rows = []
+    a = assays[assays.in_pet_active_set & (assays.degradation_detected == "detected") & assays.temperature_c.notna()]
+    per_protein = a.groupby(["subcluster", "protein_id"]).temperature_c.median().reset_index()
+    groups = {g: v.temperature_c.to_numpy() for g, v in per_protein.groupby("subcluster") if len(v) >= min_group}
+    names = sorted(groups, key=plots.group_key)
+    desc = lambda g: f"{g} median {np.median(groups[g]):g} °C, mean {np.mean(groups[g]):.1f} °C (n={len(groups[g])})"
+    h, p = st.kruskal(*[groups[g] for g in names])
+    rows.append({"dataset": "all PAZy assays", "test": "Kruskal-Wallis", "comparison": " vs ".join(names),
+                 "statistic": h, "p_value": p, "detail": "; ".join(desc(g) for g in names)})
+    for x, y in combinations(names, 2):
+        u, p = st.mannwhitneyu(groups[x], groups[y])
+        rows.append({"dataset": "all PAZy assays", "test": "Mann-Whitney U", "comparison": f"{x} vs {y}",
+                     "statistic": u, "p_value": p, "detail": f"{desc(x)}; {desc(y)}"})
+
+    acs = acs.rename(columns=lambda c: float(c))
+    lo, hi = min(acs.columns), max(acs.columns)
+    both = acs.dropna()
+    w, p = st.wilcoxon(both[lo], both[hi])
+    rows.append({"dataset": "standardised screen", "test": "Wilcoxon signed-rank", "comparison": f"{lo:g} vs {hi:g} °C",
+                 "statistic": w, "p_value": p,
+                 "detail": f"median conversion {both[lo].median():.2f}% vs {both[hi].median():.2f}% (n={len(both)} paired)"})
+    grp = assays.drop_duplicates("protein_id").set_index("protein_id").subcluster
+    for t in (lo, hi):
+        v = acs[t].dropna()
+        g = grp.reindex(v.index)
+        x, y = v[g == "G1a"], v[g == "G1b"]
+        u, p = st.mannwhitneyu(x, y)
+        rows.append({"dataset": "standardised screen", "test": "Mann-Whitney U", "comparison": f"G1a vs G1b at {t:g} °C",
+                     "statistic": u, "p_value": p,
+                     "detail": f"median {x.median():.2f}% (n={len(x)}) vs {y.median():.2f}% (n={len(y)})"})
+    g = grp.reindex(both.index)
+    det = both[hi] > 0
+    table = pd.crosstab(g, det).reindex(index=["G1a", "G1b"], columns=[True, False], fill_value=0)
+    odds, p = st.fisher_exact(table.to_numpy())
+    rows.append({"dataset": "standardised screen", "test": "Fisher exact", "comparison": f"G1a vs G1b, conversion detected at {hi:g} °C",
+                 "statistic": odds, "p_value": p,
+                 "detail": "; ".join(f"{k}: {table.loc[k, True]}/{table.loc[k].sum()} detected" for k in table.index)})
+
+    out = pd.DataFrame(rows)
+    out["q_value_bh"] = bh_fdr(out.p_value)
+    out["significant_q<0.05"] = out.q_value_bh < 0.05
+    for col in ["statistic", "p_value", "q_value_bh"]:
+        out[col] = out[col].map(lambda v: float(f"{v:.3g}"))
+    return out
+
+
 def run():
     C.ensure_dirs()
     proteins = preprocess.load_proteins()
@@ -302,8 +374,11 @@ def run():
                   .drop_duplicates(["protein_id", "temperature_c"])
                   .groupby("subcluster").temperature_c.describe()[["count", "min", "25%", "50%", "75%", "max"]])
     by_cluster.to_csv(C.TEMPERATURE / "active_temperature_by_cluster.csv")
+    tests = statistics(assays, acs)
+    tests.to_csv(C.TEMPERATURE / "statistical_tests.csv", index=False)
 
     print(f"[stage 3] {len(meas):,} measurements, {len(assays):,} assays, {len(series)} comparable series")
     print(summary.optimum_status_category.value_counts().to_string())
     print(by_cluster.round(1).to_string())
+    print(tests.drop(columns="detail").to_string(index=False))
     return summary
