@@ -3,9 +3,21 @@
 from functools import lru_cache
 
 from pet_explorer import config as C
+from pet_explorer import evidence as E
 from pet_explorer.sequence_matching import SequenceMatcher, parse_query
 
 from . import store
+
+
+def run_search(text: str, top_n: int):
+    """The one search used by single-sequence AND bulk analysis (same shuffles, same seed)."""
+    return matcher().search(text, top_n=top_n, n_shuffles=E.N_SHUFFLES, seed=E.SHUFFLE_SEED)
+
+
+def assess(hits, sequence: str) -> dict:
+    """Green / yellow / red / insufficient assessment from the top hit. Shared by every interface."""
+    top = hits[0] if hits else None
+    return E.assess(top, store.protein_card(top.protein_id) if top else None, sequence)
 
 
 @lru_cache
@@ -22,7 +34,7 @@ def method() -> dict:
         "ranking": "Length-normalised score: raw / sqrt(self(query) x self(reference)); 1.0 = identical",
         "identity_definition": "Identical residues / aligned columns (gaps included)",
         "coverage_definition": "Aligned span / full length of that sequence",
-        "shuffle_control": "z-score of raw score vs 25 composition-preserving shuffles of the query",
+        "shuffle_control": f"z-score of raw score vs {E.N_SHUFFLES} composition-preserving shuffles of the query",
         "reference_set_size": len(store.proteins()),
         "bands": [{"min_identity": i, "min_coverage": c, "label": l} for i, c, l in C.MATCH_BANDS],
         "no_match_label": C.NO_MATCH_BAND,
@@ -32,7 +44,7 @@ def method() -> dict:
 
 
 def search(text: str, top_n: int = 5) -> dict:
-    header, query, hits = matcher().search(text, top_n=top_n)
+    header, query, hits = run_search(text, top_n)
     out = []
     for rank, h in enumerate(hits, 1):
         out.append({
@@ -53,7 +65,8 @@ def search(text: str, top_n: int = 5) -> dict:
             "aligned_target": h.aligned_target,
             "reference": store.protein_card(h.protein_id),
         })
-    return {"header": header, "sequence": query, "length": len(query), "hits": out, "method": method()}
+    return {"header": header, "sequence": query, "length": len(query), "hits": out, "method": method(),
+            "assessment": assess(hits, query)}
 
 
 def validate(text: str) -> tuple:

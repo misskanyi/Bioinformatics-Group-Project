@@ -93,10 +93,12 @@ export interface ProteinDetail extends ProteinCard {
 }
 
 export interface Example {
-  protein_id: number;
+  protein_id: number | string;
   protein_name: string;
-  subcluster: string;
+  subcluster: string | null;
   length: number;
+  /** reference = curated PET-active protein; control = unrelated protein shipped as a sample */
+  kind: "reference" | "control";
   fasta: string;
 }
 
@@ -141,6 +143,7 @@ export interface MatchResult {
   length: number;
   hits: Hit[];
   method: MatchMethod;
+  assessment: Assessment;
 }
 
 export interface NetworkNode {
@@ -446,6 +449,62 @@ export interface ProfileResult extends SequenceProfile {
   prediction: PredictionBlock;
 }
 
+/* ------------------------------------------------- Evidence assessment (rule-based, not ML) */
+
+export type AssessmentCategory = "green" | "yellow" | "red" | "insufficient";
+
+export interface Assessment {
+  category: AssessmentCategory;
+  label: string;
+  rule: string;
+  rule_condition: string | null;
+  known_reference: boolean;
+  summary: string;
+  reasons: string[];
+  limitations: string[];
+  next_steps: string[];
+  motif_count: number;
+  tandem_repeat_period: number | null;
+  metrics: {
+    identity: number;
+    query_coverage: number;
+    target_coverage: number;
+    min_coverage: number;
+    shuffled_z: number;
+    band: string;
+    closest_reference: string;
+    closest_reference_id: number;
+  } | null;
+  rules_version: string;
+  disclaimer: string;
+}
+
+export interface EvidenceRules {
+  version: string;
+  n_shuffles: number;
+  z_chance: number;
+  z_strong: number;
+  bands: { min_identity: number; min_coverage: number; label: string }[];
+  rules: { id: string; category: AssessmentCategory; condition: string; meaning: string }[];
+  calibration: {
+    n_per_set: number;
+    shuffled_null: { z_quantiles: Record<string, number>; z_max: number; categories: Partial<Record<AssessmentCategory, number>> };
+    leave_one_out: { z_min: number; twilight_band_z_min: number | null; categories: Partial<Record<AssessmentCategory, number>> };
+  } | null;
+  notes: string[];
+}
+
+export interface SampleDataset {
+  id: string;
+  number: number;
+  title: string;
+  description: string;
+  filename: string;
+  n_proteins: number;
+  proteins: string[];
+  download_url: string;
+}
+
 export type EvidenceStatus = "experimental" | "similarity" | "unknown";
 export type RecordStatus = "valid" | "invalid" | "duplicate";
 
@@ -494,7 +553,10 @@ export interface BatchHit {
     label_confidence: string;
     n_pet_assays: number;
     n_positive_assays: number;
+    n_negative_assays: number;
     n_publications: number;
+    dois: string[];
+    substrate_forms: string[];
     temperatures_with_activity_c: number[];
     organism: string | null;
   };
@@ -512,6 +574,7 @@ export interface BatchResult extends Partial<Omit<SequenceProfile, "length">> {
   duplicate_of: number | null;
   hits?: BatchHit[];
   evidence_status?: EvidenceStatus;
+  assessment?: Assessment;
   prediction?: PredictionBlock;
 }
 

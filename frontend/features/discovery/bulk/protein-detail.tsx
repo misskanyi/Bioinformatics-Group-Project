@@ -3,16 +3,27 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/primitives";
 import { AlignmentViewer } from "@/features/sequence-lab/alignment-viewer";
 import { SequenceProfilePanel } from "@/features/sequence-lab/sequence-profile";
 import { networkHref } from "@/lib/nav";
-import { pct } from "@/lib/utils";
+import { doiUrl, pct } from "@/lib/utils";
 import type { BatchResult, SequenceProfile } from "@/types/api";
 
-import { EVIDENCE_STATUS, EvidenceBadge, PredictionBadge } from "../evidence";
+import { ASSESSMENT, AssessmentBadge, AssessmentDisclaimer, AssessmentPanel, categoryOf } from "../assessment";
+import { EVIDENCE_STATUS, PredictionBadge } from "../evidence";
 import { RESULT_STATUS } from "./status";
+
+function Info({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-muted">{label}</dt>
+      <dd className="mt-0.5 text-ink/90">{value}</dd>
+    </div>
+  );
+}
 
 export function ProteinDetail({ result, onClose }: { result: BatchResult | null; onClose: () => void }) {
   const r = result;
@@ -39,8 +50,8 @@ export function ProteinDetail({ result, onClose }: { result: BatchResult | null;
                   </div>
                   <Dialog.Title className="mt-1 break-all font-mono text-lg font-semibold">{r.protein_id}</Dialog.Title>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <AssessmentBadge category={categoryOf(r)} known={r.assessment?.known_reference} />
                     <Badge color={RESULT_STATUS[r.status].color}>{RESULT_STATUS[r.status].label}</Badge>
-                    <EvidenceBadge status={r.evidence_status} />
                     <PredictionBadge prediction={r.prediction} />
                     {r.organism && <span className="text-xs text-muted">Organism (as supplied): {r.organism}</span>}
                   </div>
@@ -66,8 +77,66 @@ export function ProteinDetail({ result, onClose }: { result: BatchResult | null;
                   </div>
                 )}
 
-                {r.evidence_status && (
-                  <p className="text-[13px] leading-relaxed text-muted">{EVIDENCE_STATUS[r.evidence_status].detail}</p>
+                {r.assessment ? (
+                  <AssessmentPanel assessment={r.assessment} />
+                ) : (
+                  <div className="rounded-xl border border-line/70 bg-void/40 p-4 text-[13px] text-muted">
+                    <AssessmentBadge category={categoryOf(r)} /> <span className="ml-1">{categoryOf(r) ? ASSESSMENT[categoryOf(r)!].blurb : ""}</span>
+                    <p className="mt-2">Fix the sequence (see the error above) and analyse it again; no evidence assessment is made for invalid input.</p>
+                  </div>
+                )}
+
+                <div className="rounded-xl border border-line/70 bg-void/40 p-4">
+                  <div className="eyebrow mb-3">Protein information</div>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:grid-cols-4">
+                    <Info label="Identifier" value={<span className="break-all font-mono">{r.protein_id}</span>} />
+                    <Info label="Source" value={`Record ${r.row} · ${r.source}`} />
+                    <Info label="Organism (as supplied)" value={r.organism ?? "—"} />
+                    <Info label="Length" value={r.length ? `${r.length} aa` : "—"} />
+                    <Info label="Molecular weight" value={r.physicochemical ? `${r.physicochemical.molecular_weight_kda} kDa` : "—"} />
+                    <Info label="Isoelectric point" value={r.physicochemical?.isoelectric_point ?? "—"} />
+                    <Info label="GRAVY" value={r.physicochemical?.gravy ?? "—"} />
+                    <Info label="Evidence label" value={r.evidence_status ? EVIDENCE_STATUS[r.evidence_status].short : "—"} />
+                  </dl>
+                </div>
+
+                {r.motifs && (
+                  <div className="rounded-xl border border-line/70 bg-void/40 p-4 text-[13px]">
+                    <div className="eyebrow mb-2">Catalytic motif findings</div>
+                    {r.motifs.count ? (
+                      <p className="text-ink/85">
+                        G-x-S-x-G found {r.motifs.count}× ({r.motifs.variants.join(", ")}) at position{r.motifs.positions.length === 1 ? "" : "s"}{" "}
+                        {r.motifs.positions.join(", ")}.
+                      </p>
+                    ) : (
+                      <p className="text-ink/85">No G-x-S-x-G motif found. 296 of the 298 curated PET-active proteins carry one.</p>
+                    )}
+                    <p className="mt-1 text-xs text-muted">
+                      The motif marks the catalytic serine of α/β-hydrolases in general (lipases, esterases, cutinases). Its presence is context, not proof of PET
+                      activity; its absence can only lower an assessment.
+                    </p>
+                  </div>
+                )}
+
+                {top && top.reference.dois.length > 0 && (
+                  <div className="rounded-xl border border-line/70 bg-void/40 p-4 text-[13px]">
+                    <div className="eyebrow mb-2">Published experimental evidence for {top.protein_name}</div>
+                    <p className="text-ink/85">
+                      {top.reference.n_positive_assays} positive, {top.reference.n_negative_assays} negative of {top.reference.n_pet_assays} curated PET assays ·{" "}
+                      {top.reference.pet_label} ({top.reference.label_confidence} confidence)
+                      {top.reference.substrate_forms.length > 0 && <> · substrates: {top.reference.substrate_forms.slice(0, 6).join(", ")}</>}
+                    </p>
+                    <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                      {top.reference.dois.map((d) => (
+                        <li key={d}>
+                          <a href={doiUrl(d)} target="_blank" rel="noreferrer" className="font-mono text-cyan hover:underline">
+                            {d}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-2 text-xs text-muted">These experiments were done on {top.protein_name}, not on this query sequence.</p>
+                  </div>
                 )}
 
                 {r.hits && r.hits.length > 0 && (
@@ -130,6 +199,7 @@ export function ProteinDetail({ result, onClose }: { result: BatchResult | null;
                 )}
 
                 {profile && r.prediction && <SequenceProfilePanel profile={profile} prediction={r.prediction} />}
+                <AssessmentDisclaimer />
               </div>
             </>
           )}

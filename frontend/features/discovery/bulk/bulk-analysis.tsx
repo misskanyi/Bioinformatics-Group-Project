@@ -7,13 +7,15 @@ import { Button } from "@/components/ui/button";
 import { DnaLoader } from "@/components/ui/dna-loader";
 import { ErrorState, Panel } from "@/components/ui/primitives";
 import { api, ApiError, useApi } from "@/lib/api";
-import type { BatchJob, BatchLimits, BatchParse, BatchResult, ColumnMapping } from "@/types/api";
+import type { BatchJob, BatchLimits, BatchParse, BatchResult, ColumnMapping, SampleDataset } from "@/types/api";
 
 import { PredictionNotice } from "../evidence";
+import { AssessmentSummary } from "./assessment-summary";
 import { BatchCharts } from "./batch-charts";
 import { PreviewStep } from "./preview-step";
 import { ResultsTable } from "./results-table";
-import { type Upload, UploadStep } from "./upload-step";
+import { SampleDatasets } from "./sample-datasets";
+import { readUpload, type Upload, UploadStep } from "./upload-step";
 
 const POLL_MS = 700;
 
@@ -75,7 +77,31 @@ export function BulkAnalysis() {
   const [results, setResults] = useState<BatchResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
+  const [category, setCategory] = useState("all");
+  const [sampleBusy, setSampleBusy] = useState<string | null>(null);
   const live = useRef<string | null>(null); // id of the job being polled
+
+  // A sample is fetched as a plain CSV file and submitted exactly like an upload (same parser, same job pipeline).
+  const analyseSample = async (s: SampleDataset) => {
+    setSampleBusy(s.id);
+    setError(undefined);
+    try {
+      let res: Response;
+      try {
+        res = await fetch(s.download_url);
+      } catch {
+        throw new Error("Cannot reach the analysis backend to load the sample dataset.");
+      }
+      if (!res.ok) throw new Error(`The sample dataset could not be loaded (${res.status}).`);
+      const blob = await res.blob();
+      const upload = await readUpload(new File([blob], s.filename, { type: "text/csv" }));
+      await start(upload, undefined);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setSampleBusy(null);
+    }
+  };
 
   const parse = useCallback(async (upload: Upload, mapping?: ColumnMapping) => {
     setBusy(true);
@@ -93,6 +119,7 @@ export function BulkAnalysis() {
   const start = async (upload: Upload, mapping: ColumnMapping | undefined, includeRows?: number[]) => {
     setBusy(true);
     setError(undefined);
+    setCategory("all");
     try {
       // results are fetched by the polling effect below
       const job = await api.post<BatchJob>("/batch/jobs", {
@@ -165,7 +192,12 @@ export function BulkAnalysis() {
 
   return (
     <div className="flex flex-col gap-6">
-      {stage.name === "upload" && <UploadStep limits={limits.data} busy={busy} error={error} onUpload={(u) => parse(u)} />}
+      {stage.name === "upload" && (
+        <>
+          <SampleDatasets busyId={sampleBusy} disabled={busy || !!sampleBusy} onAnalyse={analyseSample} />
+          <UploadStep limits={limits.data} busy={busy && !sampleBusy} error={error} onUpload={(u) => parse(u)} />
+        </>
+      )}
 
       {stage.name === "preview" && (
         <>
@@ -192,8 +224,9 @@ export function BulkAnalysis() {
           </div>
           <Progress job={stage.job} onCancel={cancel} />
           {error && <Panel><ErrorState message={error} /></Panel>}
+          <AssessmentSummary results={results} total={stage.job.total} filter={category} onFilter={setCategory} />
+          <ResultsTable results={results} jobId={stage.job.job_id} done={stage.job.state === "done"} category={category} onCategory={setCategory} />
           {results.length > 0 && <BatchCharts results={results} />}
-          <ResultsTable results={results} jobId={stage.job.job_id} done={stage.job.state === "done"} />
         </>
       )}
 

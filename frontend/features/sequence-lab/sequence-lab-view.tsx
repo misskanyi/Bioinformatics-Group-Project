@@ -9,6 +9,8 @@ import { EmptyState, InfoTip, Notice, Panel, PanelHeader } from "@/components/ui
 import { api, ApiError } from "@/lib/api";
 import type { MatchResult, ProfileResult, ProteinDetail } from "@/types/api";
 
+import { AssessmentDisclaimer, AssessmentPanel, RulesExplainer } from "../discovery/assessment";
+
 import { HitDetail } from "./hit-detail";
 import { HitList, MatchComparison } from "./hit-list";
 import { SequenceEditor } from "./sequence-editor";
@@ -114,6 +116,7 @@ export function SequenceLabView() {
                   Your query is identical to reference protein <b>{result.hits[0].protein_name}</b>, which is part of the characterised set.
                 </Notice>
               )}
+              {result.assessment && <AssessmentPanel assessment={result.assessment} />}
               <div className="grid gap-6 xl:grid-cols-[400px_1fr]">
                 <div className="flex flex-col gap-6">
                   <Panel>
@@ -179,6 +182,8 @@ export function SequenceLabView() {
                 </div>
               </Panel>
               {profile && <SequenceProfilePanel profile={profile} prediction={profile.prediction} />}
+              <AssessmentDisclaimer />
+              <RulesExplainer />
             </motion.div>
           ) : (
             <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

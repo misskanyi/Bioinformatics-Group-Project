@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 
 from pet_explorer import batch as B
 from pet_explorer import config as C
+from pet_explorer import evidence as E
 from pet_explorer.sequence_matching import SequenceInputError, parse_query
 
 from ..services import batch_jobs, matching, prediction, store
@@ -75,8 +76,8 @@ def _hit(h, full: bool) -> dict:
         "query_range": list(h.query_range), "target_range": list(h.target_range),
         # experimental evidence belongs to the reference protein, not to the query
         "reference": {k: card[k] for k in ("subcluster", "pet_label", "label_confidence", "n_pet_assays",
-                                           "n_positive_assays", "n_publications", "temperatures_with_activity_c",
-                                           "organism")},
+                                           "n_positive_assays", "n_negative_assays", "n_publications", "dois",
+                                           "substrate_forms", "temperatures_with_activity_c", "organism")},
     }
     if full:
         out.update(aligned_query=h.aligned_query, aligned_target=h.aligned_target)
@@ -84,9 +85,63 @@ def _hit(h, full: bool) -> dict:
 
 
 def _analyse(rec: B.Record) -> dict:
-    a = B.analyse(rec.sequence, matching.matcher())
-    hits = [_hit(h, i == 0) for i, h in enumerate(a.pop("hits"))]
-    return {**a, "status": "analysed", "hits": hits, "prediction": prediction.for_sequence()}
+    # same search (shuffles, seed) and same assessment function as /sequence/match
+    _, seq, raw_hits = matching.run_search(rec.sequence, 3)
+    hits = [_hit(h, i == 0) for i, h in enumerate(raw_hits)]
+    return {**B.profile(seq), "evidence_status": B.evidence_status(raw_hits[0] if raw_hits else None),
+            "status": "analysed", "hits": hits, "assessment": matching.assess(raw_hits, seq),
+            "prediction": prediction.for_sequence()}
+
+
+# ------------------------------------------------------------------ sample datasets
+
+SAMPLES_DIR = C.DATA / "samples"
+SAMPLES = [
+    {"id": "known-pet-enzymes", "file": "01_Known_PET_Enzymes.csv",
+     "title": "Known PET-Degrading Enzymes",
+     "description": "Analyse three experimentally characterised PET-degrading enzymes."},
+    {"id": "positive-vs-unrelated", "file": "02_Positive_vs_Unrelated.csv",
+     "title": "Compare PET Enzymes and Unrelated Proteins",
+     "description": "Compare known PET-degrading enzymes with an unrelated protein."},
+    {"id": "low-evidence-controls", "file": "03_Low_Evidence_Controls.csv",
+     "title": "Low-Evidence Controls",
+     "description": "Explore how the system handles proteins with little supporting PET-degradation evidence."},
+]
+
+
+def _sample(sample_id: str) -> dict:
+    s = next((s for s in SAMPLES if s["id"] == sample_id), None)
+    if s is None or not (SAMPLES_DIR / s["file"]).exists():
+        raise HTTPException(404, "Unknown sample dataset.")
+    return s
+
+
+@router.get("/batch/samples")
+def samples():
+    """Sample CSVs shipped in data/samples. Only file contents are listed; nothing is pre-analysed."""
+    out = []
+    for i, s in enumerate(SAMPLES, 1):
+        path = SAMPLES_DIR / s["file"]
+        if not path.exists():
+            continue
+        df = pd.read_csv(path, dtype=str)
+        out.append({"id": s["id"], "number": i, "title": s["title"], "description": s["description"],
+                    "filename": s["file"], "n_proteins": len(df),
+                    "proteins": df["protein_id"].fillna("").tolist() if "protein_id" in df else [],
+                    "download_url": f"/api/batch/samples/{s['id']}/download"})
+    return out
+
+
+@router.get("/batch/samples/{sample_id}/download")
+def sample_download(sample_id: str):
+    s = _sample(sample_id)
+    return StreamingResponse(io.BytesIO((SAMPLES_DIR / s["file"]).read_bytes()), media_type="text/csv",
+                             headers={"Content-Disposition": f'attachment; filename="{s["file"]}"'})
+
+
+@router.get("/evidence/rules")
+def evidence_rules():
+    return E.rules()
 
 
 @router.post("/sequence/profile")
@@ -155,9 +210,14 @@ def export_frame(results: List[dict]) -> pd.DataFrame:
         mot = r.get("motifs") or {}
         pred = r.get("prediction") or {}
         cond = pred.get("condition") or {}
+        ev = r.get("assessment") or {}
         rows.append({
             "record": r["row"], "source": r.get("source"), "protein_id": r.get("protein_id"),
             "organism": r.get("organism"), "status": r.get("status"),
+            "evidence_assessment": ev.get("category") or ("invalid" if r.get("status") in ("invalid", "error") else None),
+            "evidence_assessment_label": ev.get("label"),
+            "known_characterised_reference": ev.get("known_reference"),
+            "assessment_rule": ev.get("rule"), "assessment_summary": ev.get("summary"),
             "errors": "; ".join(r.get("errors") or []), "warnings": "; ".join(r.get("warnings") or []),
             "duplicate_of_record": r.get("duplicate_of"), "length_aa": r.get("length"),
             **{k: phys.get(k) for k in ("molecular_weight_kda", "isoelectric_point", "gravy", "aromaticity",
@@ -198,7 +258,10 @@ def export(job_id: str, format: str = Query("csv", pattern="^(csv|xlsx)$")):
                 "file": job.meta.get("filename"), "records": len(job.results),
                 "similarity method": matching.method()["algorithm"] + ", " + matching.method()["matrix"],
                 "prediction": prediction.status()["reason"],
-                "note": "Sequence similarity is not experimental evidence of PET activity.",
+                "evidence assessment": f"Rule set v{E.RULES_VERSION}; see /api/evidence/rules",
+                "note": "These indicators are based on sequence similarity and available experimental evidence. "
+                        "They are not validated predictions of PET-degrading activity. Laboratory testing is "
+                        "required to confirm activity.",
             }.items()]).to_excel(xw, index=False, sheet_name="about")
         body.seek(0)
         media, name = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", f"{stem}.xlsx"

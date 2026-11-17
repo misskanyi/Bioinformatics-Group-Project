@@ -50,6 +50,37 @@ Production build: `cd frontend && npm run build && npm run start` (stop `npm run
 - Port in use → `uvicorn ... --port 8001` and `BACKEND_URL=http://127.0.0.1:8001 npm run dev`, or `npm run dev -- -p 3001`
   (then add `http://localhost:3001` to `PET_EXPLORER_ORIGINS`).
 
+## Evidence indicators (green / yellow / red)
+
+Single Sequence and Bulk Analysis show a **sequence-based evidence assessment** for every analysed protein. It is
+not a machine-learning prediction and not a probability of PET activity; the ML panel stays unavailable until a
+model passes homology-aware validation.
+
+Both interfaces call the same code (`backend/services/matching.run_search` → `pet_explorer/evidence.assess`), with
+the same 25 composition-preserving shuffles and seed, so a sequence always gets the same result.
+
+| Colour | Meaning | Main rules (top hit vs. 298 curated PET-active proteins) |
+|---|---|---|
+| Green | Likely PET-degrading candidate | Identical to a reference (**known characterised reference**, rule K), or ≥ 40 % identity and ≥ 70 % coverage of both sequences, shuffle z ≥ 15, G-x-S-x-G present, reference has positive assays with high label confidence (H1) |
+| Yellow | Possible candidate | Homolog missing the motif or with a medium-confidence reference (H2); partial coverage (P); twilight zone with z ≥ 15 (T1); domain-level or remote similarity with z ≥ 15 (D1, D2) |
+| Red | Unlikely based on current evidence | No similarity band (or twilight band) **and** z ≤ 9, i.e. within the range of shuffled sequences (N2, T3). Never means "PET-inactive". |
+| Grey | Insufficient evidence | Signals disagree or are partial: homolog-level identity with z < 15 (H3), 9 < z < 15 (T2, N1), fragments (F), short local matches (L) |
+
+Thresholds come from `python -m pet_explorer.evidence` (writes `outputs/explorer/matching/evidence_calibration*.{csv,json}`):
+shuffled reference sequences reach at most z = 10.2 (99th percentile 9.0) and are assessed 294 red / 4 insufficient /
+0 yellow / 0 green; leave-one-out searches of the 298 known PET-active proteins give 249 green / 43 yellow /
+4 insufficient / 2 red. Identity alone never decides a colour, the catalytic motif can only lower one, and protein
+names are never read. The full rule table is served at `/api/evidence/rules` and shown under "How are the colours
+assigned?" in the app.
+
+**Sample datasets** (`data/samples/`, listed at `/api/batch/samples`): on *Enzyme Prediction & Discovery → Bulk
+Analysis*, each card's **Analyse Dataset** downloads the CSV and submits it through the normal upload pipeline;
+**Download CSV** saves the file.
+
+1. `01_Known_PET_Enzymes.csv` — IsPETase, LCC, TfCut2
+2. `02_Positive_vs_Unrelated.csv` — IsPETase, LCC, human haemoglobin β (HBB)
+3. `03_Low_Evidence_Controls.csv` — HBB and two synthetic repeat sequences
+
 ## Setup (analysis only)
 
 ```bash

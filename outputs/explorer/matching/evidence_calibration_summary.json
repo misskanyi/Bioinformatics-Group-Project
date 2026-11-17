@@ -1,0 +1,34 @@
+{
+  "n_per_set": 298,
+  "seed": 42,
+  "n_shuffles": 25,
+  "leave_one_out": {
+    "z_quantiles": {
+      "0.5": 185.7,
+      "0.9": 308.3,
+      "0.99": 464.9
+    },
+    "z_min": 3.3,
+    "z_max": 484.4,
+    "categories": {
+      "green": 249,
+      "yellow": 43,
+      "insufficient": 4,
+      "red": 2
+    },
+    "twilight_band_z_min": 16.9
+  },
+  "shuffled_null": {
+    "z_quantiles": {
+      "0.5": 3.5,
+      "0.9": 5.9,
+      "0.99": 9.0
+    },
+    "z_min": 0.6,
+    "z_max": 10.2,
+    "categories": {
+      "red": 294,
+      "insufficient": 4
+    }
+  }
+}

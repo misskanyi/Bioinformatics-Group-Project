@@ -108,3 +108,92 @@ def test_parse_preview_and_confirmation(client, proteins):
 ])
 def test_bad_uploads(client, payload, status):
     assert client.post("/api/batch/jobs", json=payload).status_code == status
+
+
+# ------------------------------------------------------------------ sample datasets & evidence assessment
+
+def _sample_run(client, s, filename=None, text=None):
+    raw = text if text is not None else client.get(s["download_url"]).content.decode("utf-8-sig")
+    _, v = run(client, body(filename or s["filename"], raw))
+    return v
+
+
+def test_samples_listed_and_downloadable(client):
+    s = client.get("/api/batch/samples").json()
+    assert [x["n_proteins"] for x in s] == [3, 3, 3]
+    assert s[0]["proteins"] == ["IsPETase", "LCC", "TfCut2"]
+    assert "Human_HBB" in s[1]["proteins"] and "Human_HBB" in s[2]["proteins"]
+    for x in s:
+        r = client.get(x["download_url"])
+        assert r.status_code == 200 and r.text.startswith("protein_id,sequence")
+    assert client.get("/api/batch/samples/nope/download").status_code == 404
+
+
+def test_samples_analyse_with_calculated_assessments(client):
+    s = {x["id"]: x for x in client.get("/api/batch/samples").json()}
+    for sid in s:
+        v = _sample_run(client, s[sid])
+        assert v["done"] == v["total"] == 3
+        for r in v["results"]:
+            assert r["status"] == "analysed"
+            a = r["assessment"]
+            assert a["category"] in ("green", "yellow", "red", "insufficient")
+            assert a["metrics"]["identity"] == r["hits"][0]["identity"]   # computed from this row's alignment
+    known = {r["protein_id"]: r["assessment"] for r in _sample_run(client, s["known-pet-enzymes"])["results"]}
+    assert all(a["category"] == "green" and a["known_reference"] for a in known.values())
+    low = {r["protein_id"]: r["assessment"] for r in _sample_run(client, s["low-evidence-controls"])["results"]}
+    assert all(a["category"] in ("red", "insufficient") and not a["known_reference"] for a in low.values())
+    assert low["Synthetic_Control_A"]["tandem_repeat_period"] == 10
+
+
+def test_names_do_not_drive_the_colour(client, proteins):
+    """Swap the labels: the assessment follows the sequence, not the name."""
+    s = client.get("/api/batch/samples").json()[1]
+    df = pd.read_csv(io.StringIO(client.get(s["download_url"]).text))
+    hbb, lcc = df.loc[df.protein_id == "Human_HBB", "sequence"].iloc[0], df.loc[df.protein_id == "LCC", "sequence"].iloc[0]
+    csv = f"protein_id,sequence\nLCC,{hbb}\nHuman_HBB,{lcc}\n"
+    rows = {r["protein_id"]: r["assessment"]["category"] for r in _sample_run(client, s, "swap.csv", csv)["results"]}
+    assert rows == {"LCC": "red", "Human_HBB": "green"}
+
+
+def test_single_and_bulk_agree(client, proteins):
+    s = client.get("/api/batch/samples").json()
+    seqs = {}
+    for x in s:
+        df = pd.read_csv(io.StringIO(client.get(x["download_url"]).text))
+        seqs.update(dict(zip(df.protein_id, df.sequence)))
+    isp = proteins.loc[proteins.protein_name == "ISPETase", "sequence"].iloc[0]
+    seqs["fragment"] = isp[30:230]
+    fasta = "".join(f">{k}\n{v}\n" for k, v in seqs.items())
+    bulk = {r["protein_id"]: r["assessment"] for r in run(client, body("all.fasta", fasta))[1]["results"]}
+    for k, v in seqs.items():
+        single = client.post("/api/sequence/match", json={"sequence": v}).json()["assessment"]
+        assert (single["category"], single["rule"], single["metrics"]) == (bulk[k]["category"], bulk[k]["rule"], bulk[k]["metrics"]), k
+
+
+def test_uploaded_csv_invalid_rows_and_export(client, proteins):
+    csv = ("protein_id,sequence\nok," + proteins.sequence[5] + "\nshort,MKVL\nbad,MKVLAXGGLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL\n"
+           "missing,\n")
+    jid, v = run(client, body("mine.csv", csv))
+    rows = {r["protein_id"]: r for r in v["results"]}
+    assert rows["ok"]["status"] == "analysed" and rows["ok"]["assessment"]["known_reference"]
+    assert "too short" in rows["short"]["errors"][0]
+    assert "Invalid characters" in rows["bad"]["errors"][0]
+    assert rows["missing"]["errors"] == ["Missing sequence."]
+    assert all("assessment" not in rows[k] for k in ("short", "bad", "missing"))
+    df = pd.read_csv(io.StringIO(client.get(f"/api/batch/jobs/{jid}/export?format=csv").content.decode("utf-8-sig")))
+    assert list(df.evidence_assessment) == ["green", "invalid", "invalid", "invalid"]
+    assert {"evidence_assessment_label", "known_characterised_reference", "assessment_rule"} <= set(df.columns)
+
+
+def test_examples_include_unrelated_control(client):
+    ex = client.get("/api/sequence/examples").json()
+    names = [e["protein_name"] for e in ex]
+    assert {"ISPETase", "LCC", "TfCut2"} <= set(names)
+    ctrl = [e for e in ex if e["kind"] == "control"]
+    assert len(ctrl) == 1 and "HBB" in ctrl[0]["protein_name"]
+
+
+def test_rules_endpoint(client):
+    r = client.get("/api/evidence/rules").json()
+    assert r["z_chance"] < r["z_strong"] and {x["category"] for x in r["rules"]} == {"green", "yellow", "red", "insufficient"}

@@ -21,7 +21,7 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 
-from . import config as C, features
+from . import config as C, evidence as E, features
 from .sequence_matching import SequenceInputError, SequenceMatcher, parse_query
 
 MAX_FILE_BYTES = 5 * 1024 * 1024
@@ -348,6 +348,7 @@ def evidence_status(top) -> str:
     return "unknown"
 
 
-def analyse(sequence: str, matcher: SequenceMatcher, top_n: int = 3, n_shuffles: int = 10) -> dict:
-    _, _, hits = matcher.search(sequence, top_n=top_n, n_shuffles=n_shuffles)
+def analyse(sequence: str, matcher: SequenceMatcher, top_n: int = 3, n_shuffles: int = E.N_SHUFFLES) -> dict:
+    # same shuffle count and seed as single-sequence matching, so z-scores (and assessments) agree
+    _, _, hits = matcher.search(sequence, top_n=top_n, n_shuffles=n_shuffles, seed=E.SHUFFLE_SEED)
     return {**profile(sequence), "hits": hits, "evidence_status": evidence_status(hits[0] if hits else None)}

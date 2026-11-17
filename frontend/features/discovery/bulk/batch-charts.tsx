@@ -7,7 +7,7 @@ import { axisProps, ChartTooltip, gridProps } from "@/components/viz/chart-kit";
 import { C } from "@/lib/palette";
 import type { BatchResult } from "@/types/api";
 
-import { EVIDENCE_STATUS } from "../evidence";
+import { ASSESSMENT } from "../assessment";
 
 type Datum = { label: string; n: number; color: string };
 
@@ -64,10 +64,10 @@ export function BatchCharts({ results }: { results: BatchResult[] }) {
     { label: "Invalid", n: results.filter((r) => r.status === "invalid").length, color: C.rose },
     { label: "Error", n: results.filter((r) => r.status === "error").length, color: C.violet },
   ];
-  const evidence: Datum[] = (["experimental", "similarity", "unknown"] as const).map((k) => ({
-    label: EVIDENCE_STATUS[k].label.replace(" (identical reference)", ""),
-    n: analysed.filter((r) => r.evidence_status === k).length,
-    color: EVIDENCE_STATUS[k].color,
+  const evidence: Datum[] = (["green", "yellow", "red", "insufficient"] as const).map((k) => ({
+    label: { green: "Likely", yellow: "Possible", red: "Unlikely", insufficient: "Insufficient" }[k],
+    n: analysed.filter((r) => r.assessment?.category === k).length,
+    color: ASSESSMENT[k].color,
   }));
   const identity = histogram(
     analysed.map((r) => 100 * (r.hits?.[0]?.identity ?? 0)),
@@ -85,7 +85,7 @@ export function BatchCharts({ results }: { results: BatchResult[] }) {
       <PanelHeader eyebrow="Batch summary" title="What this batch contains" description="Counts over the analysed records. These describe the input; they are not predictions." />
       <div className="stagger grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-4">
         <MiniBars title="Analysis status" note="Every record, including rejected ones." data={status} />
-        <MiniBars title="Evidence category" note="Kind of evidence the nearest characterised protein provides." data={evidence} />
+        <MiniBars title="Evidence assessment" note="Sequence-based assessment per analysed protein (not a prediction)." data={evidence} />
         <MiniBars title="Identity to nearest characterised protein" note="Below 25% there is no reliable homology; 25–40% is the twilight zone." data={identity} xLabel="% identity" />
         <MiniBars title="Sequence length" note="Lengths of the analysed sequences." data={lengthBins} xLabel="amino acids" />
       </div>
