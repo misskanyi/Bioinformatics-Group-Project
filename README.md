@@ -5,6 +5,8 @@
 
 [![CI](https://github.com/misskanyi/Bioinformatics-Group-Project/actions/workflows/ci.yml/badge.svg)](https://github.com/misskanyi/Bioinformatics-Group-Project/actions/workflows/ci.yml)
 
+**Live app:** <https://pet-enzyme-explorer-snowy.vercel.app/>  ·  see [Deployment](#deployment)
+
 ## Research question
 
 > **How can protein sequence analysis and machine learning help identify promising PET-degrading enzyme candidates
@@ -190,8 +192,15 @@ submits the CSV through the normal upload pipeline and **Download CSV** saves it
 Edges: ≥ 40 % identity over ≥ 70 % of both proteins. This is a **sequence-similarity network**, not a protein–protein
 interaction network.
 
-## Deployment status
+## Deployment
 
-**Implemented:** local development setup (FastAPI on port 8000, Next.js on port 3000) and GitHub Actions CI.
-**Not implemented:** currently no hosted deployment, no cloud resources, no authentication. Any AWS EC2 or other hosting in
-project proposals is **proposed infrastructure only**.
+**Live app: <https://pet-enzyme-explorer-snowy.vercel.app/>**
+
+- **Frontend:** Next.js on Vercel (free tier), deployed from `main`.
+- **Backend:** FastAPI on Render (free web service, defined in [`render.yaml`](render.yaml)), auto-deployed on every
+  commit to `main`. It serves the committed `outputs/` tables; the analysis pipeline is never run on the server.
+- **CI:** GitHub Actions runs on every push.
+
+The Render free tier sleeps after a period of inactivity, so the first request after a pause can take up to a minute while
+the backend wakes up. There is no authentication. The app can still be run locally (FastAPI on port 8000, Next.js on
+port 3000) as described above.
