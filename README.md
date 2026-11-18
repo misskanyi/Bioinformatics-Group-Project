@@ -19,17 +19,16 @@ It is answered through four supporting investigations:
 | Assay conditions | Tests whether those groups differ in the temperatures at which activity was observed | Notebook §5.5–5.6; *Assay Conditions* |
 | Supervised learning | Tests whether sequence features predict activity at one named condition well enough to rank candidates | Notebook §7.2; *Model Validation* |
 
-**Objectives** (wording used in the notebook; the web app's Overview page uses a different O1–O4 wording, and the
-two are to be aligned once the approved wording is confirmed):
+**Objectives** (the same wording is used in the notebook and the web app):
 
-1. **O1 — Data:** a clean, quality-controlled set of experimentally verified PET-active enzyme sequences, linked to
-   assay conditions and documented source organisms.
-2. **O2 — Sequence groups:** group the enzymes by sequence, test the groups against chance, and interpret them with
-   domain annotation and the literature.
-3. **O3 — Temperature:** test whether the groups differ in the temperatures at which PET degradation was detected,
-   with FDR correction, separating real differences from study design.
-4. **O4 — Machine learning:** evaluate the clustering against null baselines, and a supervised model of activity at
-   60 °C against proper baselines.
+1. **O1.** To collect, clean and assess the quality of protein sequence and experimental data related to PET
+   degradation.
+2. **O2.** To analyse protein sequences using alignment, motif detection and clustering to identify similarities and
+   biological patterns. *(The temperature analysis is a supporting investigation of the groups found here.)*
+3. **O3.** To develop and evaluate machine-learning models for PET-degradation activity under specified experimental
+   conditions.
+4. **O4.** To identify and prioritise promising enzyme candidates for further laboratory testing using available
+   sequence and experimental evidence.
 
 **Hypotheses:** H1 most verified PET hydrolases share one motif-bearing lineage (*supported*); H2 groups differ in the
 temperatures at which activity was detected (*not confirmed* once study design is controlled); H3 sequence features
@@ -42,8 +41,8 @@ predict detection at 60 °C better than baselines (*not supported*).
 | How similar a sequence is to characterised PET hydrolases (identity, coverage of both sequences, shuffle z-score) and whether it carries the G-x-S-x-G catalytic motif | Whether the sequence degrades PET. No probability of activity is given anywhere. |
 | What experimental evidence exists **for the matched reference enzyme** (assays, conditions, papers) | That the reference's evidence transfers to the query: that is a hypothesis, weaker at lower identity |
 | Which sequence group a protein most resembles, and which groups are real structure | That groups differ in temperature behaviour (H2 not confirmed) |
-| Which untested candidates have the strongest **sequence** case for laboratory testing (shortlist) | That any shortlisted candidate is active. Only an assay can confirm activity. |
-| That the supervised 60 °C model does **not** beat its shuffled-label null (ROC AUC 0.556, permutation p = 0.32) | Anything from that model's scores: it ranks nothing in this project |
+| Which candidates without a verified assay record in our sources have the strongest **sequence** case for laboratory testing (shortlist) | That any shortlisted candidate is active. Only an assay can confirm activity. |
+| That the supervised 60 °C model does **not** beat its shuffled-label null (mean fold ROC AUC 0.556, permutation p = 0.32) | Anything from that model's scores: it ranks nothing in this project |
 
 Red means "no convincing similarity", never "PET-inactive": the data contain no confirmed PET-inactive sequences.
 
@@ -54,10 +53,15 @@ Red means "no convincing similarity", never "PET-inactive": the data contain no 
 - **Clustering:** 7 alignment-based groups, silhouette 0.344 vs ≤ 0.03 for null models (p = 0.005); G1 (88%) is the
   PET hydrolase/cutinase family (Pfam PF12740).
 - **Temperature:** apparent group differences disappear under one standardised protocol (q ≥ 0.08).
-- **Supervised model (60 °C, 78 proteins, 19 identity groups):** best ROC AUC 0.556 ± 0.09 under 20 × grouped 5-fold
-  CV; per-fold, ROC-curve, confusion-matrix and F1 views agree; permutation p = 0.32. **Not a working predictor.**
-- **Shortlist:** of 254 untested annotation-only candidates, **8** have the strongest sequence case and **20** are
-  possible but weaker; 104 near-identical ones turned out to be already-characterised enzymes under another record.
+- **Supervised model (60 °C, 78 proteins, 19 identity groups):** best **mean fold ROC AUC** 0.556 ± 0.09 under
+  20 × grouped 5-fold CV (18 of 100 folds per model skipped because they held one class; they are tiny, median 1
+  protein). The **pooled out-of-fold ROC AUC** in the ROC figure is lower (0.52–0.53) because scores from different
+  folds are on different scales. Per-fold, ROC-curve, confusion-matrix and F1 views agree; permutation p = 0.32.
+  **Not a working predictor.**
+- **Shortlist:** 254 annotation-only candidates without a verified assay record in the project's sources were
+  assessed. **8** have the strongest sequence case and **20** are possible but weaker. Of the 121 near-identical to a
+  characterised enzyme, 104 are probably that enzyme under another name or form; the testing status of 133 cannot be
+  established from our sources. No candidate is called experimentally untested only because no assay appears locally.
 
 ## Repository layout
 

@@ -31,6 +31,11 @@
     "D1": 1,
     "F": 1
   },
+  "by_testing_status": {
+    "Testing status not established from the project's sources": 133,
+    "Probably a characterised enzyme recorded under another name or form": 104,
+    "Near-identical to a characterised enzyme": 17
+  },
   "candidates_citing_2025_screen_doi": 86,
   "probably_same_enzyme_as_a_reference": 104,
   "note": "Sequence-based evidence only; not a validated prediction of PET-degrading activity."

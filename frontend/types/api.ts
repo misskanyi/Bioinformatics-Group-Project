@@ -377,12 +377,37 @@ export interface Modelling {
     | null;
   limitations: { title: string; detail: string }[];
   candidates: { available: boolean; reason: string; pool: number | null; pool_source: string };
+  /** Held-out threshold metrics (0.5 cut-off) from the same grouped CV; null until generated. */
+  threshold_metrics:
+    | {
+        model: string;
+        kind: string;
+        evaluated_folds: number;
+        skipped_folds: number;
+        precision_mean: number;
+        precision_sd: number;
+        recall_mean: number;
+        recall_sd: number;
+        f1_mean: number;
+        f1_sd: number;
+      }[]
+    | null;
+  fold_summary: {
+    folds_per_model: number;
+    skipped_single_class: number;
+    repeats_with_skipped_folds: number;
+    test_size_min: number;
+    test_size_max: number;
+    skipped_size_median: number | null;
+    skipped_size_max: number | null;
+  } | null;
   /** Sequence-evidence shortlist (pet_explorer.shortlist); null until generated. Not a model score. */
   shortlist: {
     n_candidates: number;
     by_tier: Record<string, number>;
     invalid_sequences: number;
     probably_same_enzyme_as_a_reference: number;
+    by_testing_status: Record<string, number>;
     candidates_citing_2025_screen_doi: number;
     note: string;
   } | null;

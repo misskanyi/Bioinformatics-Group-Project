@@ -144,9 +144,11 @@ function Candidates() {
               ))}
             </div>
             <p className="text-muted">
-              {num(sl.n_candidates)} sequences had no PET testing evidence in the project&apos;s sources. Of the near-identical ones,{" "}
-              <b className="text-ink">{num(sl.probably_same_enzyme_as_a_reference)}</b> are almost certainly the same enzymes as characterised references
-              recorded under another name or form, so they are not discoveries. {sl.invalid_sequences > 0 && `${sl.invalid_sequences} sequence could not be assessed (non-standard residues). `}
+              {num(sl.n_candidates)} sequences have no verified PET assay record in the project&apos;s sources, which does not make them experimentally
+              untested. Of the near-identical ones, <b className="text-ink">{num(sl.probably_same_enzyme_as_a_reference)}</b> are probably characterised
+              enzymes recorded under another name or form, so they are not discoveries; for{" "}
+              {num(Object.entries(sl.by_testing_status ?? {}).find(([k]) => k.startsWith("Testing status not established"))?.[1] ?? 0)} the testing status
+              cannot be established from our sources. {sl.invalid_sequences > 0 && `${sl.invalid_sequences} sequence could not be assessed (non-standard residues). `}
               {sl.note}
             </p>
             <a className="text-teal hover:underline" href="/api/downloads/candidate_shortlist" download>

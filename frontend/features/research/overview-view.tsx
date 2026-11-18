@@ -38,23 +38,23 @@ const RESEARCH_QUESTION =
 const OBJECTIVES = [
   {
     n: "O1",
-    title: "Collect and clean experimentally tested PET-related sequences",
-    text: "Assemble protein sequences with published PET assay evidence, keeping positive results and below-detection observations apart, and record the provenance of every record.",
+    title: "To collect, clean and assess the quality of protein sequence and experimental data related to PET degradation.",
+    text: "Protein sequences with published PET assay evidence, positive and below-detection observations kept apart, every record traceable to its source and checked for validity and duplicates.",
   },
   {
     n: "O2",
-    title: "Analyse sequence features, motifs and similarity",
-    text: "Compare sequences by local alignment, group them, and test which composition, physicochemical and motif features track with reported PET activity.",
+    title: "To analyse protein sequences using alignment, motif detection and clustering to identify similarities and biological patterns.",
+    text: "Local alignment, catalytic-motif search and clustering tested against null models, interpreted with domain annotation and the literature. The temperature analysis is a supporting investigation of the groups found.",
   },
   {
     n: "O3",
-    title: "Develop supervised models for defined experimental conditions",
-    text: "Train classifiers on labels that name their assay condition, using homology-aware splits so near-identical sequences cannot appear on both sides of a split.",
+    title: "To develop and evaluate machine-learning models for PET-degradation activity under specified experimental conditions.",
+    text: "Classifiers trained on labels that name their assay condition, evaluated with homology-aware splits against baselines and a shuffled-label null.",
   },
   {
     n: "O4",
-    title: "Evaluate the models and identify candidates worth testing",
-    text: "Benchmark every model against baselines and a shuffled-label null, and only rank untested sequences if the evaluation supports it.",
+    title: "To identify and prioritise promising enzyme candidates for further laboratory testing using available sequence and experimental evidence.",
+    text: "Candidates ranked by their measured similarity to characterised enzymes and those enzymes' published assays, never by a model that has not beaten its null.",
   },
 ];
 
@@ -83,7 +83,7 @@ const METHODOLOGY = [
   { n: "04", title: "Feature engineering", icon: Binary, text: "Composition and physicochemical descriptors per sequence." },
   { n: "05", title: "Machine learning", icon: Boxes, text: "Condition-specific classifiers on a standardised screen." },
   { n: "06", title: "Model validation", icon: Microscope, text: "Homology-grouped cross-validation against baselines and a null." },
-  { n: "07", title: "Candidate discovery", icon: FlaskConical, text: "Ranking untested sequences — only where validation supports it." },
+  { n: "07", title: "Candidate discovery", icon: FlaskConical, text: "Prioritising candidates by sequence evidence for laboratory testing." },
 ];
 
 const SOURCES = [

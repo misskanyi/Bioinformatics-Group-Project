@@ -54,6 +54,22 @@ def _rows(df):
     return store.records(df) if df is not None else None
 
 
+def _fold_summary(folds):
+    """Fold counts of the grouped CV (identical for every model: same splits per repeat)."""
+    if folds is None or not len(folds):
+        return None
+    f = folds[folds.model == folds.model.iloc[0]]
+    skipped = f[f.skipped_single_class]
+    return {
+        "folds_per_model": int(len(f)),
+        "skipped_single_class": int(len(skipped)),
+        "repeats_with_skipped_folds": int(skipped["repeat"].nunique()),
+        "test_size_min": int(f.n_test.min()), "test_size_max": int(f.n_test.max()),
+        "skipped_size_median": float(skipped.n_test.median()) if len(skipped) else None,
+        "skipped_size_max": int(skipped.n_test.max()) if len(skipped) else None,
+    }
+
+
 @router.get("/modelling")
 def modelling():
     comparison = store.model_comparison()
@@ -95,12 +111,15 @@ def modelling():
             "available": False,
             "reason": "No trained model is persisted and no candidate scores have been produced. "
                       "The cross-validated model does not separate the classes better than chance "
-                      "(see the permutation test), so ranking untested sequences with it would not "
+                      "(see the permutation test), so ranking candidate sequences with it would not "
                       "be defensible. Candidate ranking is pending a model that clears its null.",
             "pool": (audit or {}).get("si_protein_labels", {}).get("library_never_assayed"),
             "pool_source": "Sequences in the 2025 screening library that were never assayed "
                            "(outputs/dataset_audit/audit_statistics.json).",
         },
+        # Held-out (out-of-fold) threshold metrics of the same CV run, at the 0.5 cut-off.
+        "threshold_metrics": _rows(store.threshold_metrics()),
+        "fold_summary": _fold_summary(store.cv_fold_metrics()),
         # Laboratory shortlist ranked by the sequence-evidence rules, never by the model above.
         "shortlist": store.shortlist_summary(),
         "notes": [
