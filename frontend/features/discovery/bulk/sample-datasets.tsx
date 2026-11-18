@@ -73,7 +73,15 @@ export function SampleDatasets({
                     ))}
                   </ul>
                   <div className="mt-auto flex flex-wrap gap-2 pt-4">
-                    <Button size="sm" variant="primary" disabled={disabled} onClick={() => onAnalyse(s)} aria-label={`Analyse dataset ${s.number}: ${s.title}`}>
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      className="pulse-glow"
+                      style={{ "--pulse-color": accent } as React.CSSProperties}
+                      disabled={disabled}
+                      onClick={() => onAnalyse(s)}
+                      aria-label={`Analyse dataset ${s.number}: ${s.title}`}
+                    >
                       {busy ? <Loader2 className="animate-spin" /> : <Play />}
                       {busy ? "Starting…" : "Analyse Dataset"}
                     </Button>

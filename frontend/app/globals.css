@@ -787,7 +787,51 @@ html[data-ready] .boot-screen {
   }
 }
 
+/* Example buttons: a soft glow behind the button that slowly fades in and out to draw attention.
+   Only the outer shadow is drawn, so the button face itself is unchanged. All buttons share
+   one timing, so they breathe together. Set --pulse-color on a button to recolour its glow. */
+.pulse-glow {
+  position: relative;
+  isolation: isolate;
+  box-shadow: inset 0 0 0 1px var(--glow-ring);
+}
+
+.pulse-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow:
+    0 0 10px 1px var(--pulse-color, var(--glow-cyan)),
+    0 0 26px 4px var(--pulse-color, var(--glow-cyan));
+  opacity: 0;
+  animation: pulse-glow 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+.pulse-glow:disabled::after {
+  animation: none;
+  opacity: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  /* No pulsing: a steady, gentle glow instead. */
+  .pulse-glow::after {
+    animation: none !important;
+    opacity: 0.4;
+  }
+
   *,
   *::before,
   *::after {

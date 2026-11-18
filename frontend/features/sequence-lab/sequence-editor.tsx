@@ -98,13 +98,21 @@ export function SequenceEditor({
                     key={e.protein_id}
                     size="sm"
                     variant="ghost"
+                    className="pulse-glow"
                     onClick={() => onChange(e.fasta)}
                     title={`Load ${e.protein_name}: an unrelated protein example, not a PET reference`}
                   >
                     <HeartPulse /> {e.protein_name}
                   </Button>
                 ) : (
-                  <Button key={e.protein_id} size="sm" variant="ghost" onClick={() => onChange(e.fasta)} title={`Load the PAZy reference sequence of ${e.protein_name}`}>
+                  <Button
+                    key={e.protein_id}
+                    size="sm"
+                    variant="ghost"
+                    className="pulse-glow"
+                    onClick={() => onChange(e.fasta)}
+                    title={`Load the PAZy reference sequence of ${e.protein_name}`}
+                  >
                     <FlaskConical /> {e.protein_name}
                   </Button>
                 ),
