@@ -103,6 +103,20 @@ def test_modelling_matches_prediction_outputs(client):
     assert m["candidates"]["available"] is False
 
 
+def test_shortlist_is_served_from_its_file_and_never_as_a_model_score(client):
+    import json
+    m = client.get("/api/modelling").json()
+    path = C.EXPLORER / "shortlist" / "shortlist_summary.json"
+    if not path.exists():
+        pytest.skip("shortlist has not been generated")
+    assert m["shortlist"] == json.loads(path.read_text())
+    assert "not a validated prediction" in m["shortlist"]["note"]
+    r = client.get("/api/downloads/candidate_shortlist")
+    assert r.status_code == 200
+    header = r.text.splitlines()[0].lower()
+    assert "evidence_category" in header and "prob" not in header
+
+
 def test_audit_reports_screen_labels(client):
     a = client.get("/api/audit").json()
     if not a["available"]:

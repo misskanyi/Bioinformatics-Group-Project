@@ -101,6 +101,8 @@ def modelling():
             "pool_source": "Sequences in the 2025 screening library that were never assayed "
                            "(outputs/dataset_audit/audit_statistics.json).",
         },
+        # Laboratory shortlist ranked by the sequence-evidence rules, never by the model above.
+        "shortlist": store.shortlist_summary(),
         "notes": [
             "Scores are out-of-fold cross-validation means over 20 repeats, not test-set scores from "
             "a single split.",
