@@ -1,0 +1,19 @@
+# Render Blueprint for the PET Enzyme Explorer API (free web service).
+# Serves the committed outputs/ tables; the analysis pipeline is never run here.
+services:
+  - type: web
+    name: pet-explorer-api
+    runtime: python
+    plan: free
+    branch: main
+    autoDeploy: false
+    buildCommand: pip install -r requirements.txt -r backend/requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"          # same minor version as CI; pinned numpy/scipy have no 3.13 wheels
+      - key: MPLBACKEND
+        value: Agg
+      - key: PET_EXPLORER_ORIGINS
+        sync: false              # set to the Vercel production URL, e.g. https://<project>.vercel.app

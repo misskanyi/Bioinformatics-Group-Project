@@ -28,9 +28,17 @@ async def lifespan(app):
 
 app = FastAPI(title="PET Enzyme Explorer API", version="1.0", lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Exact browser origins allowed to call the API directly (comma-separated, no wildcard).
+# In production set PET_EXPLORER_ORIGINS to the Vercel domain, e.g. https://pet-explorer.vercel.app
+ALLOWED_ORIGINS = [
+    o.strip().rstrip("/")
+    for o in os.environ.get("PET_EXPLORER_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+    if o.strip()
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.environ.get("PET_EXPLORER_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(","),
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
 )
