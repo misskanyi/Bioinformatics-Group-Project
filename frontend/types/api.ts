@@ -377,6 +377,15 @@ export interface Modelling {
     | null;
   limitations: { title: string; detail: string }[];
   candidates: { available: boolean; reason: string; pool: number | null; pool_source: string };
+  /** Sequence-evidence shortlist (pet_explorer.shortlist); null until generated. Not a model score. */
+  shortlist: {
+    n_candidates: number;
+    by_tier: Record<string, number>;
+    invalid_sequences: number;
+    probably_same_enzyme_as_a_reference: number;
+    candidates_citing_2025_screen_doi: number;
+    note: string;
+  } | null;
   notes: string[];
 }
 

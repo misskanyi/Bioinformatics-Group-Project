@@ -108,37 +108,51 @@ function Prediction() {
   );
 }
 
-/* ---------------------------------------------------------- candidates (pending) */
+/* ---------------------------------------------------------- candidates (sequence-evidence shortlist) */
 
 function Candidates() {
   const res = useApi<Modelling>("/modelling");
-  const c = res.data?.candidates;
+  const sl = res.data?.shortlist;
 
   return (
     <Panel>
       <PanelHeader
         eyebrow="Candidate discovery"
-        title="Ranked untested candidates"
-        description="Previously untested sequences, ordered by predicted activity, for laboratory follow-up."
-        action={<Badge color="var(--color-amber)">Pending model outputs</Badge>}
+        title="Laboratory shortlist"
+        description="Untested annotation-only sequences, ranked by the same sequence-evidence rules as the matcher above, not by a model score."
+        action={<Badge color="var(--color-sky)">Sequence evidence, not a prediction</Badge>}
       />
       <div className="p-5">
         {res.loading ? (
-          <LoadingState title="Loading candidate discovery results" />
-        ) : (
-          <EmptyState variant="unavailable" title="No candidate ranking is published" icon={<FlaskConical className="size-5" />}>
-            <p>{c?.reason}</p>
-            {c?.pool != null && (
-              <p className="mt-3">
-                The candidate pool is identified and ready: <b className="text-ink">{num(c.pool)}</b> sequences in the 2025 screening library that were never
-                assayed. {c.pool_source}
-              </p>
-            )}
-            <p className="mt-3">
-              Until a model clears its null, the defensible way to shortlist a protein is its measured relationship to characterised enzymes — alignment
-              identity, coverage and the assay evidence reported for the nearest matches.
+          <LoadingState title="Loading candidate shortlist" />
+        ) : !sl ? (
+          <EmptyState variant="unavailable" title="Shortlist not generated" icon={<FlaskConical className="size-5" />}>
+            <p>
+              Run <code>python -m pet_explorer.shortlist</code> to search the eligible candidates against the reference set. The supervised model is not used for
+              ranking because it does not beat its shuffled-label null.
             </p>
           </EmptyState>
+        ) : (
+          <div className="space-y-4 text-[13px] leading-relaxed">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {Object.entries(sl.by_tier).map(([label, n], i) => (
+                <div key={label} className="rounded-lg border border-line/70 bg-void/40 p-3">
+                  <div className="eyebrow text-muted">Tier {i + 1}</div>
+                  <div className="mt-1 font-mono text-lg">{num(n)}</div>
+                  <div className="text-xs text-muted">{label}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-muted">
+              {num(sl.n_candidates)} sequences had no PET testing evidence in the project&apos;s sources. Of the near-identical ones,{" "}
+              <b className="text-ink">{num(sl.probably_same_enzyme_as_a_reference)}</b> are almost certainly the same enzymes as characterised references
+              recorded under another name or form, so they are not discoveries. {sl.invalid_sequences > 0 && `${sl.invalid_sequences} sequence could not be assessed (non-standard residues). `}
+              {sl.note}
+            </p>
+            <a className="text-teal hover:underline" href="/api/downloads/candidate_shortlist" download>
+              Download the full shortlist (CSV): closest reference, identity, coverage, shuffle z, motif, reference assay evidence, tier and reason
+            </a>
+          </div>
         )}
       </div>
     </Panel>

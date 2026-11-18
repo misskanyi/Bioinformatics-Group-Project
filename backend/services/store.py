@@ -31,6 +31,8 @@ DOWNLOADS = {
     "protein_organisms": (C.ORGANISMS / "protein_organisms.csv", "Per-protein organism with evidence level"),
     "organism_links": (C.ORGANISMS / "organism_links.csv", "Every protein-organism source record"),
     "quality_summary": (C.FEASIBILITY / "pet_dataset_quality_summary.csv", "Dataset quality metrics"),
+    "candidate_shortlist": (C.EXPLORER / "shortlist" / "candidate_shortlist.csv",
+                            "Laboratory shortlist ranked by sequence evidence (not a model prediction)"),
 }
 
 
@@ -180,6 +182,13 @@ def null_baseline():
 @lru_cache
 def audit_statistics() -> Optional[dict]:
     path = AUDIT / "audit_statistics.json"
+    return json.loads(path.read_text()) if path.exists() else None
+
+
+@lru_cache
+def shortlist_summary() -> Optional[dict]:
+    """Counts from `python -m pet_explorer.shortlist` (sequence evidence, not a model score)."""
+    path = C.EXPLORER / "shortlist" / "shortlist_summary.json"
     return json.loads(path.read_text()) if path.exists() else None
 
 

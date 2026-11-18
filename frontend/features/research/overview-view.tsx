@@ -33,7 +33,7 @@ const fade = (i: number) => ({
 });
 
 const RESEARCH_QUESTION =
-  "How can protein sequence analysis and machine learning help identify promising enzyme candidates for PET plastic recycling?";
+  "How can protein sequence analysis and machine learning help identify promising PET-degrading enzyme candidates for further laboratory testing?";
 
 const OBJECTIVES = [
   {
