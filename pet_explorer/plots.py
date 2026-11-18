@@ -236,3 +236,87 @@ def model_comparison(table, n, n_pos):
     title(axes[0], f"Predicting PET conversion at 60 °C")
     title(axes[1], f"n={n} ({n_pos} detected). Grey = baseline")
     save(fig, "f10_prediction_models.png")
+
+
+EVAL_MODELS = ["logistic regression (features)", "random forest (features)", "5-NN on alignment identity"]
+
+
+def cv_evaluation(oof, folds, null, perm):
+    """Evaluation figures for the 60 °C model, all from held-out (out-of-fold) predictions of
+    the same 20 x grouped 5-fold CV that produced model_comparison.csv."""
+    from sklearn.metrics import roc_auc_score, roc_curve
+
+    # f12 - ROC curves: one thin line per repeat (pooled out-of-fold scores), bold = mean curve
+    grid = np.linspace(0, 1, 101)
+    fig, axes = plt.subplots(1, 3, figsize=(11.5, 4.3), sharey=True)
+    for ax, m, col in zip(axes, EVAL_MODELS, SERIES):
+        tprs, aucs = [], []
+        for _, g in oof[oof.model == m].groupby("repeat"):
+            fpr, tpr, _ = roc_curve(g.detected_at_60c, g.score)
+            ax.plot(fpr, tpr, color=col, alpha=0.18, lw=0.8)
+            tprs.append(np.interp(grid, fpr, tpr))
+            aucs.append(roc_auc_score(g.detected_at_60c, g.score))
+        ax.plot(grid, np.mean(tprs, axis=0), color=col, lw=2.2)
+        ax.plot([0, 1], [0, 1], color=INK2, lw=1, ls="--")
+        ax.text(0.97, 0.05, f"pooled AUC {np.mean(aucs):.2f} ± {np.std(aucs):.2f}\n(20 repeats)",
+                ha="right", fontsize=8.5, color=INK2)
+        ax.set_xlabel("False-positive rate", color=INK2, fontsize=9)
+        ax.set_xlim(-0.02, 1.02)
+        ax.set_ylim(-0.02, 1.02)
+        style(ax, grid="both")
+        title(ax, m.replace(" (features)", ""))
+    axes[0].set_ylabel("True-positive rate", color=INK2, fontsize=9)
+    save(fig, "f12_roc_curves.png")
+
+    # f13 - confusion matrices at the 0.5 cut-off, summed over held-out folds / 20 repeats
+    ok = folds[~folds.skipped_single_class]
+    fig, axes = plt.subplots(1, 3, figsize=(11, 3.8))
+    for ax, m in zip(axes, EVAL_MODELS):
+        g = ok[ok.model == m]
+        cm = np.array([[g.tn.sum(), g.fp.sum()], [g.fn.sum(), g.tp.sum()]]) / g.repeat.nunique()
+        ax.imshow(cm, cmap="Blues", vmin=0, vmax=max(cm.max(), 1))
+        for (i, j), v in np.ndenumerate(cm):
+            ax.text(j, i, f"{v:.1f}", ha="center", va="center", fontsize=11,
+                    color="white" if v > cm.max() * 0.6 else INK)
+        ax.set_xticks([0, 1], ["predicted\nnot detected", "predicted\ndetected"], fontsize=8.5)
+        ax.set_yticks([0, 1], ["not detected", "detected"], fontsize=8.5)
+        title(ax, m.replace(" (features)", ""))
+    fig.suptitle("Held-out predictions at score ≥ 0.5 (rows = measured outcome), "
+                 "average of 20 repeats of grouped 5-fold CV", fontsize=9.5, color=INK2)
+    save(fig, "f13_confusion_matrices.png")
+
+    # f14 - permutation null
+    fig, ax = plt.subplots(figsize=(7, 3.6))
+    ax.hist(null, bins=25, color=GREY, edgecolor="white")
+    obs = perm["observed_roc_auc"]
+    ax.axvline(obs, color=SERIES[1], lw=2)
+    ax.axvline(perm["null_95th_percentile"], color=INK2, lw=1, ls="--")
+    ax.text(obs, ax.get_ylim()[1] * 0.95, f"  observed {obs:.3f}\n  p = {perm['empirical_p']}",
+            color=SERIES[1], fontsize=9, va="top")
+    ax.text(perm["null_95th_percentile"], ax.get_ylim()[1] * 0.6, "  95th percentile\n  of null", color=INK2,
+            fontsize=8.5, va="top")
+    ax.set_xlabel(f"ROC AUC with shuffled labels ({perm['n_permutations']} permutations)", color=INK2, fontsize=9)
+    ax.set_ylabel("count", color=INK2, fontsize=9)
+    style(ax)
+    title(ax, f"Permutation test: {perm['model']}")
+    save(fig, "f14_permutation_null.png")
+
+    # f15 - per-fold ROC AUC for every model and baseline
+    order = list(dict.fromkeys(folds.model))
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    rng = np.random.default_rng(0)
+    for i, m in enumerate(order):
+        v = ok[ok.model == m].roc_auc.to_numpy()
+        base = folds[folds.model == m].kind.iloc[0] == "baseline"
+        ax.scatter(i + rng.uniform(-0.18, 0.18, len(v)), v, s=9, alpha=0.45,
+                   color=GREY if base else SERIES[0], edgecolors="none")
+        ax.hlines(np.mean(v), i - 0.3, i + 0.3, color=INK, lw=2)
+    ax.axhline(0.5, color=INK2, lw=1, ls="--")
+    ax.set_xticks(range(len(order)), [m.replace(" (features)", "").replace(" on alignment identity", "")
+                                      for m in order], fontsize=8.5)
+    ax.set_ylim(0, 1.02)
+    ax.set_ylabel("ROC AUC of one held-out fold", color=INK2, fontsize=9)
+    style(ax)
+    n_eval = int((ok.model == order[0]).sum())
+    title(ax, f"Every evaluated held-out fold ({n_eval} per model; bar = mean). Grey = baseline")
+    save(fig, "f15_cv_folds.png")

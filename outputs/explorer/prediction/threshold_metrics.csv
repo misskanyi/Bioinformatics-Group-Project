@@ -1,0 +1,7 @@
+model,kind,evaluated_folds,skipped_folds,precision_mean,precision_sd,recall_mean,recall_sd,f1_mean,f1_sd,tp_per_repeat,fp_per_repeat,tn_per_repeat,fn_per_repeat
+majority class,baseline,82,18,0.177,0.199,0.476,0.499,0.254,0.279,20.3,28.55,9.7,17.6
+random scores,baseline,82,18,0.495,0.256,0.478,0.243,0.463,0.212,18.8,19.4,18.85,19.1
+cluster label only,baseline,82,18,0.559,0.244,0.627,0.386,0.53,0.268,21.15,17.75,20.5,16.75
+logistic regression (features),model,82,18,0.498,0.256,0.464,0.305,0.436,0.235,15.4,14.45,23.8,22.5
+random forest (features),model,82,18,0.58,0.24,0.593,0.293,0.55,0.224,19.5,16.35,21.9,18.4
+5-NN on alignment identity,model,82,18,0.538,0.214,0.82,0.216,0.601,0.173,28.0,28.95,9.3,9.9
