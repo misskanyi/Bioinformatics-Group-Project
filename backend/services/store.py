@@ -185,6 +185,14 @@ def audit_statistics() -> Optional[dict]:
     return json.loads(path.read_text()) if path.exists() else None
 
 
+def threshold_metrics():
+    return optional(C.PREDICTION / "threshold_metrics.csv")
+
+
+def cv_fold_metrics():
+    return optional(C.PREDICTION / "cv_fold_metrics.csv")
+
+
 @lru_cache
 def shortlist_summary() -> Optional[dict]:
     """Counts from `python -m pet_explorer.shortlist` (sequence evidence, not a model score)."""

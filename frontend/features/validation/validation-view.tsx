@@ -248,18 +248,27 @@ function Metrics({ m }: { m: Modelling }) {
   const perm = m.permutation_test;
   const beatsNull = perm ? perm.empirical_p < 0.05 : null;
 
+  const thr = best ? m.threshold_metrics?.find((t) => t.model === best.model) : undefined;
+  const fs = m.fold_summary;
+
   const AVAILABLE = best
     ? [
-        { label: "ROC AUC", value: best.roc_auc_mean.toFixed(3), sd: best.roc_auc_sd.toFixed(3), color: "var(--color-aqua)" },
+        { label: "Mean fold ROC AUC", value: best.roc_auc_mean.toFixed(3), sd: best.roc_auc_sd.toFixed(3), color: "var(--color-aqua)" },
         { label: "Balanced accuracy", value: best.balanced_accuracy_mean.toFixed(3), sd: best.balanced_accuracy_sd.toFixed(3), color: "var(--color-sky)" },
+      ]
+    : [];
+  // precision / recall / F1 are per held-out fold at the 0.5 cut-off; their sd is across folds
+  const THRESHOLD = thr
+    ? [
+        { label: "Precision", value: thr.precision_mean.toFixed(3), sd: thr.precision_sd.toFixed(3) },
+        { label: "Recall", value: thr.recall_mean.toFixed(3), sd: thr.recall_sd.toFixed(3) },
+        { label: "F1", value: thr.f1_mean.toFixed(3), sd: thr.f1_sd.toFixed(3) },
       ]
     : [];
 
   const NOT_COMPUTED = [
     ["Accuracy", "Not reported: with balanced classes and a near-chance model, raw accuracy would restate the balanced accuracy without adding information."],
-    ["Precision, recall, F1", "Not computed. These need a chosen decision threshold, and no threshold is defensible for a model that does not beat its null."],
     ["PR-AUC", "Not computed by the evaluation script."],
-    ["Confusion matrix, ROC and PR curves", "Not exported: the pipeline stores per-fold summary scores, not the out-of-fold predictions these plots need."],
     ["Calibration plot", "Not applicable. Calibration describes how well predicted probabilities match observed rates, which is only meaningful once a model discriminates."],
   ];
 
@@ -275,10 +284,35 @@ function Metrics({ m }: { m: Modelling }) {
                 <div className="tabular mt-1 text-3xl font-semibold tracking-tight" style={{ color: a.color }}>
                   {a.value}
                 </div>
-                <div className="text-xs text-muted">± {a.sd} across folds</div>
+                <div className="text-xs text-muted">± {a.sd} across 20 repeats</div>
               </div>
             ))}
           </div>
+
+          {THRESHOLD.length > 0 && (
+            <div className="border-t border-line/60 pt-4">
+              <div className="eyebrow mb-2">Held-out folds, score ≥ 0.5</div>
+              <div className="grid grid-cols-3 gap-4">
+                {THRESHOLD.map((t) => (
+                  <div key={t.label}>
+                    <div className="text-xs text-muted">{t.label}</div>
+                    <div className="tabular mt-0.5 text-xl font-semibold tracking-tight">{t.value}</div>
+                    <div className="text-xs text-muted">± {t.sd} across folds</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {fs && (
+            <p className="text-xs leading-relaxed text-muted">
+              Mean fold ROC AUC is computed inside each held-out fold and averaged. {fs.skipped_single_class} of {fs.folds_per_model} folds per model (in{" "}
+              {fs.repeats_with_skipped_folds} repeats) held only one class, so AUC is undefined there and they were left out; they are tiny (median{" "}
+              {fs.skipped_size_median} protein, at most {fs.skipped_size_max}). Pooling all held-out scores of a repeat into one ROC curve gives a lower
+              pooled AUC, because each fold&apos;s model scores on its own scale; the notebook (section 7.2.1) shows both, plus ROC curves and confusion
+              matrices. Neither summary shows useful signal.
+            </p>
+          )}
 
           <div className="border-t border-line/60 pt-4">
             <div className="eyebrow mb-2">Not available</div>

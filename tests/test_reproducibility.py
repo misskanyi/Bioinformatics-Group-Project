@@ -198,6 +198,20 @@ def test_shortlist_tiers_follow_the_evidence(short):
     assert (s[s.priority_tier == 5].evidence_category == E.RED).all()
 
 
+def test_testing_status_is_consistent_with_the_alignment(short):
+    s = short[short.evidence_category != "invalid"]
+    near = s.similarity_band == shortlist.NEAR_IDENTICAL
+    same = near & (s.identity >= shortlist.SAME_ENZYME_IDENTITY) & (s.reference_coverage >= shortlist.SAME_ENZYME_REF_COVERAGE)
+    assert (s[same].testing_status == shortlist.SAME_ENZYME).all()
+    assert (s[near & ~same].testing_status == shortlist.NEAR_IDENTICAL_STATUS).all()
+    assert (s[~near].testing_status == shortlist.NOT_ESTABLISHED).all()
+    # tier 2 (near-identical) and the near-identical statuses are the same set of candidates
+    assert set(s[s.priority_tier == 2].sequence_sha1) == set(s[near].sequence_sha1)
+    assert (short.cites_2025_screen_study == short.source_dois.fillna("").str.contains("5c03460")).all()
+    # absence of a local assay record is never presented as proof that a candidate is untested
+    assert short.limitations.str.contains("does not show it is experimentally untested").all()
+
+
 def test_shortlist_never_claims_activity_or_inactivity(short):
     text = " ".join(short.prioritisation_reason.fillna("")).lower()
     for phrase in ("is pet-inactive", "will degrade", "probability", "predicted active"):

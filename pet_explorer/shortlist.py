@@ -4,8 +4,9 @@
 
 Input: the sequences that `pet_explorer.curation` marked `eligible_for_ranking`
 (outputs/curation/candidate_eligibility.csv): annotation-only records from
-PlasticDB / degraders_list with no PET testing evidence identified in any of our
-sources. Every one of them is searched against the 298 curated PET-active
+PlasticDB / degraders_list without a verified PET assay record in the project's
+sources (which does not make them experimentally untested; see `testing_status`
+and outputs/curation/curation_report.md section 5.1). Every one of them is searched against the 298 curated PET-active
 reference proteins with exactly the search and rules the web app uses
 (Smith-Waterman / BLOSUM62, 25 composition-preserving shuffles, seed 0,
 `evidence.assess`). Nothing here uses the supervised 60 °C model, which did not
@@ -48,6 +49,27 @@ F_MASTER = C.ROOT / "outputs" / "curation" / "proteins_master.csv"
 NEAR_IDENTICAL = C.MATCH_BANDS[0][2]
 # A candidate this close to a reference is treated as a second record of the same enzyme.
 SAME_ENZYME_IDENTITY, SAME_ENZYME_REF_COVERAGE = 0.99, 0.98
+SCREEN_2025_DOI = "10.1021/acscatal.5c03460"
+
+# Testing status of a candidate, as far as the project's own sources can establish it. Every candidate
+# lacks an assay record in those sources; that alone never makes it "experimentally untested".
+SAME_ENZYME = "probably_characterised_under_another_record"   # >= 99% identity over >= 98% of a reference
+NEAR_IDENTICAL_STATUS = "near_identical_to_characterised_enzyme"  # near-identical band, but not the above
+NOT_ESTABLISHED = "not_established_in_project_sources"         # no assay record here; literature not checked
+TESTING_STATUS = {
+    SAME_ENZYME: "Probably a characterised enzyme recorded under another name or form",
+    NEAR_IDENTICAL_STATUS: "Near-identical to a characterised enzyme",
+    NOT_ESTABLISHED: "Testing status not established from the project's sources",
+}
+
+
+def testing_status(h):
+    if h.identity >= SAME_ENZYME_IDENTITY and h.target_coverage >= SAME_ENZYME_REF_COVERAGE \
+            and h.interpretation == NEAR_IDENTICAL:
+        return SAME_ENZYME
+    if h.interpretation == NEAR_IDENTICAL:
+        return NEAR_IDENTICAL_STATUS
+    return NOT_ESTABLISHED
 TIERS = {
     1: "Priority: strong homolog of a characterised PET hydrolase",
     2: "Confirmatory: near-identical to a characterised PET hydrolase",
@@ -58,8 +80,8 @@ TIERS = {
 LIMITATIONS = (
     "Sequence evidence only, not a validated prediction of PET-degrading activity. "
     "Evidence belongs to the matched reference enzyme, not to this candidate. "
-    "'Eligible' means no PET testing evidence was found in the project's sources; check the cited literature "
-    "before ordering genes. Activity depends on substrate form, temperature and pH, and single active-site "
+    "No PET assay record was found for this sequence in the project's sources; that does not show it is "
+    "experimentally untested, so check the cited literature before ordering genes. Activity depends on substrate form, temperature and pH, and single active-site "
     "substitutions can abolish it."
 )
 
@@ -84,9 +106,9 @@ def reason_text(t, a):
                 "motif and a well-supported reference: strongest sequence case for a new PET hydrolase.")
     if t == 2:
         if m["identity"] >= SAME_ENZYME_IDENTITY and m["target_coverage"] >= SAME_ENZYME_REF_COVERAGE:
-            return (f"Probably the same enzyme as {m['closest_reference']} under another record "
+            return (f"Probably the same enzyme as {m['closest_reference']} recorded under another name or form "
                     f"({100 * m['identity']:.1f}% identity over {100 * m['target_coverage']:.0f}% of the reference; "
-                    "precursor, tagged or single-variant form). Treat as already characterised.")
+                    "precursor, tagged or single-variant form). Probably already characterised, not a new candidate.")
         return (f"Near-identical to {m['closest_reference']} ({100 * m['identity']:.0f}% identity): likely to behave "
                 "like a known enzyme; testing would mainly confirm, not discover.")
     if t == 3:
@@ -128,12 +150,13 @@ def build():
             "candidate_id": r.sequence_sha1[:12], "sequence_sha1": r.sequence_sha1, "name": r.primary_name,
             "accessions": r.accessions, "organism": r.organism, "length": int(r.sequence_length),
             "source_records": r.source_record_ids, "source_dois": r.dois,
+            "cites_2025_screen_study": SCREEN_2025_DOI in str(r.dois),
             "plasticdb_plastics_annotation": "; ".join(sorted({pdb[i] for i in pdb_ids if i in pdb})) or None,
         }
         try:
             _, seq = parse_query(r.sequence)
         except SequenceInputError as exc:
-            rows.append({**base, "evidence_category": "invalid", "priority_tier": None,
+            rows.append({**base, "testing_status": NOT_ESTABLISHED, "evidence_category": "invalid", "priority_tier": None,
                          "priority_label": "Not assessed: invalid sequence", "prioritisation_reason": str(exc),
                          "limitations": LIMITATIONS})
             continue
@@ -145,6 +168,7 @@ def build():
         motifs = sorted({m.group(1) for m in GXSXG.finditer(seq)})
         rows.append({
             **base,
+            "testing_status": testing_status(h),
             "closest_reference": h.protein_name, "closest_reference_id": h.protein_id,
             "identity": round(h.identity, 4), "candidate_coverage": round(h.query_coverage, 4),
             "reference_coverage": round(h.target_coverage, 4), "aligned_columns": h.aligned_columns,
@@ -175,7 +199,8 @@ def summarise(df):
         "invalid_sequences": int((df.evidence_category == "invalid").sum()),
         "by_category": {k: int(v) for k, v in df.evidence_category.value_counts().items()},
         "by_rule": {k: int(v) for k, v in df.rule.dropna().value_counts().items()},
-        "candidates_citing_2025_screen_doi": int(df.source_dois.fillna("").str.contains("5c03460").sum()),
+        "by_testing_status": {TESTING_STATUS[k]: int(v) for k, v in df.testing_status.value_counts().items()},
+        "candidates_citing_2025_screen_doi": int(df.cites_2025_screen_study.sum()),
         "probably_same_enzyme_as_a_reference": int(df.prioritisation_reason.fillna("")
                                                    .str.startswith("Probably the same enzyme").sum()),
         "note": "Sequence-based evidence only; not a validated prediction of PET-degrading activity.",
