@@ -23,7 +23,11 @@ FastAPI service behind the web app in `../frontend`. It serves the cached output
 | `GET /api/conditions` | PET assay records, per-protein temperature summary, comparable series |
 | `GET /api/organisms` | Organisms with evidence level; unknowns with context-only relatives |
 | `GET /api/datasets` | Provenance pipeline, quality metrics, coverage, limitations, references |
-| `GET /api/downloads/{key}` | Whitelisted processed files (Cytoscape node/edge CSV, FASTA, tables) |
+| `GET /api/modelling` | Model Validation page: 60 °C model vs baselines, permutation test, limitations, shortlist summary |
+| `GET /api/audit` | Dataset-audit facts for the data preparation page |
+| `POST /api/sequence/profile`, `GET /api/evidence/rules` | Composition/motif profile; the evidence-colour rule table |
+| `/api/batch/*` | Bulk analysis: parse/preview, jobs (in memory), CSV/XLSX export, sample datasets |
+| `GET /api/downloads/{key}` | Whitelisted processed files (Cytoscape node/edge CSV, FASTA, tables, candidate shortlist) |
 
 Layout:
 
