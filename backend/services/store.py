@@ -95,9 +95,36 @@ def sensitivity() -> pd.DataFrame:
 
 
 @lru_cache
+def all_pet_assays() -> pd.DataFrame:
+    """Every PAZy PET assay row, including proteins outside the 298-protein reference set."""
+    return _read(C.TEMPERATURE / "pet_temperature_assays.csv")
+
+
+@lru_cache
 def temperature_assays() -> pd.DataFrame:
-    a = _read(C.TEMPERATURE / "pet_temperature_assays.csv")
+    a = all_pet_assays()
     return a[a.in_pet_active_set].reset_index(drop=True)
+
+
+@lru_cache
+def assay_coverage() -> dict:
+    """How the PET-active subset relates to all PAZy PET assay rows, and why rows fall outside it."""
+    a = all_pet_assays()
+    out = a[~a.in_pet_active_set]
+    has_seq = out.protein_id.isin(set(_read(C.F_CSV).protein_id))
+    return {
+        "all_rows": int(len(a)),
+        "all_proteins": int(a.protein_id.nunique()),
+        "kept_rows": int(a.in_pet_active_set.sum()),
+        "kept_proteins": int(a.loc[a.in_pet_active_set, "protein_id"].nunique()),
+        "excluded_rows": int(len(out)),
+        "excluded_proteins": int(out.protein_id.nunique()),
+        "no_sequence_rows": int((~has_seq).sum()),
+        "no_sequence_proteins": int(out.loc[~has_seq, "protein_id"].nunique()),
+        "not_active_label_rows": int(has_seq.sum()),
+        "not_active_label_proteins": int(out.loc[has_seq, "protein_id"].nunique()),
+        "not_active_label_names": sorted(out.loc[has_seq, "protein_name"].unique().tolist()),
+    }
 
 
 @lru_cache

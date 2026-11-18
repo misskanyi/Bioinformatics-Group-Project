@@ -267,7 +267,22 @@ export interface TemperatureSeries {
   context: string;
 }
 
+export interface AssayCoverage {
+  all_rows: number;
+  all_proteins: number;
+  kept_rows: number;
+  kept_proteins: number;
+  excluded_rows: number;
+  excluded_proteins: number;
+  no_sequence_rows: number;
+  no_sequence_proteins: number;
+  not_active_label_rows: number;
+  not_active_label_proteins: number;
+  not_active_label_names: string[];
+}
+
 export interface Conditions {
+  coverage: AssayCoverage;
   assays: AssayTuple[];
   assay_fields: string[];
   proteins: ProteinTemperature[];

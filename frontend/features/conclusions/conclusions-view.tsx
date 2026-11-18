@@ -155,7 +155,7 @@ function KeyFindings() {
       area: "Candidate discovery",
       headline: "Candidates are shortlisted by measured similarity, not by a model score",
       detail: sl
-        ? `${num(sl.n_candidates)} annotation-only candidates without a verified assay record in the project's sources were searched against the reference set with the same evidence rules as the matcher: ${tierCount(sl, "Priority")} have the strongest sequence case and ${tierCount(sl, "Possible")} are possible but weaker. ${num(sl.probably_same_enzyme_as_a_reference)} are probably characterised enzymes recorded under another name or form. The classifier is not used for ranking because it does not clear its null; none of these is a validated PET degrader.`
+        ? `Annotation-only candidates without a verified assay record in the project's sources were searched against the reference set with the same evidence rules as the matcher. ${candidatePool(sl)} The classifier is not used for ranking because it does not clear its null; none of these is a validated PET degrader.`
         : "The classifier does not clear its null, so no model-based ranking is published. Sequence matching against characterised enzymes is the usable shortlisting tool.",
       tone: "var(--color-violet)",
     },
@@ -249,6 +249,21 @@ function tierCount(sl: NonNullable<Modelling["shortlist"]>, prefix: string) {
   return num(Object.entries(sl.by_tier).find(([k]) => k.startsWith(prefix))?.[1] ?? 0);
 }
 
+function statusCount(sl: NonNullable<Modelling["shortlist"]>, prefix: string) {
+  return num(Object.entries(sl.by_testing_status ?? {}).find(([k]) => k.startsWith(prefix))?.[1] ?? 0);
+}
+
+/** How the candidate pool splits by testing status, so no reader takes all candidates as untested. */
+function candidatePool(sl: NonNullable<Modelling["shortlist"]>) {
+  return (
+    `Of ${num(sl.n_candidates)} annotation-only candidates, ${tierCount(sl, "Confirmatory")} are near-identical to a characterised enzyme ` +
+    `(${statusCount(sl, "Probably")} probably the same enzyme recorded under another name or form, ${statusCount(sl, "Near-identical")} close variants; ` +
+    `all ${num(sl.candidates_citing_2025_screen_doi)} that cite the 2025 screening paper fall here), so they are not discoveries. ` +
+    `For the other ${statusCount(sl, "Testing status not established")}, the project's sources cannot establish whether they have been tested; ` +
+    `among these, ${tierCount(sl, "Priority")} have the strongest sequence case and ${tierCount(sl, "Possible")} are possible but weaker.`
+  );
+}
+
 function Answer() {
   const model = useApi<Modelling>("/modelling");
   const best = model.data?.best_model;
@@ -283,7 +298,7 @@ function Answer() {
           <p>
             <b className="text-ink">Candidates that need laboratory testing.</b>{" "}
             {sl
-              ? `Of ${num(sl.n_candidates)} annotation-only candidates, ${tierCount(sl, "Priority")} have the strongest sequence case and ${tierCount(sl, "Possible")} are possible but weaker, ranked by the same evidence rules as the matcher. None is a validated PET degrader; only an assay can confirm activity.`
+              ? `${candidatePool(sl)} Candidates are ranked by the same evidence rules as the matcher. None is a validated PET degrader; only an assay can confirm activity.`
               : "Candidates are ranked by the evidence rules of the sequence matcher once the shortlist has been generated; none is a validated PET degrader."}
           </p>
           <p>

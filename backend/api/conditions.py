@@ -25,7 +25,9 @@ def conditions():
                "best_tested_temperature_c": float(r.best_tested_temperature_c), "best_at_edge": r.best_at_edge,
                "context": r.experiment_context if isinstance(r.experiment_context, str) else ""}
               for r in s.itertuples()]
+    cov = store.assay_coverage()
     return {
+        "coverage": cov,
         "assays": [list(r.values()) for r in store.records(a)],
         "assay_fields": ASSAY_FIELDS,
         "proteins": store.records(t[["protein_id", "protein_name", "subcluster", "optimum_status_category",
@@ -34,6 +36,13 @@ def conditions():
                                      "temperature_optimum_status", "ph_values_tested", "n_comparable_series"]]),
         "series": series,
         "notes": [
+            f"This page shows the {cov['kept_rows']:,} PET assay records for the {cov['kept_proteins']} curated "
+            f"PET-active proteins, out of {cov['all_rows']:,} PAZy PET assay records ({cov['all_proteins']} proteins) "
+            f"counted on the Overview. The other {cov['excluded_rows']} records belong to {cov['excluded_proteins']} "
+            f"proteins outside the reference set: {cov['no_sequence_rows']} records from "
+            f"{cov['no_sequence_proteins']} proteins with no sequence in any provided file, and "
+            f"{cov['not_active_label_rows']} records from {cov['not_active_label_proteins']} proteins not labelled "
+            f"PET-active ({', '.join(cov['not_active_label_names'])}: conflicting or unclear evidence).",
             "Each row is one reported assay. Several assays of the same protein are repeated measurements, "
             "not independent proteins.",
             "'Detected' means any direct product/mass-loss metric > 0 or a categorical positive result in that assay.",

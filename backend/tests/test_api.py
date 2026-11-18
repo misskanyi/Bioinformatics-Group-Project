@@ -82,6 +82,11 @@ def test_conditions_rows_belong_to_reference_set(client, proteins):
     ids = {row[0] for row in r["assays"]}
     assert ids <= set(proteins.protein_id)
     assert all(len(s["temperatures"]) >= 3 for s in r["series"])
+    c = r["coverage"]
+    assert c["kept_rows"] == len(r["assays"])
+    assert c["kept_proteins"] == len(proteins)
+    assert c["kept_rows"] + c["excluded_rows"] == c["all_rows"]
+    assert c["no_sequence_rows"] + c["not_active_label_rows"] == c["excluded_rows"]
 
 
 def test_downloads_are_whitelisted(client):

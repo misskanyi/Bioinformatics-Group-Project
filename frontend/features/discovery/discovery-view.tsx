@@ -119,7 +119,7 @@ function Candidates() {
       <PanelHeader
         eyebrow="Candidate discovery"
         title="Laboratory shortlist"
-        description="Untested annotation-only sequences, ranked by the same sequence-evidence rules as the matcher above, not by a model score."
+        description="Annotation-only sequences with no verified PET assay in the project's sources, ranked by the same sequence-evidence rules as the matcher above, not by a model score."
         action={<Badge color="var(--color-sky)">Sequence evidence, not a prediction</Badge>}
       />
       <div className="p-5">
@@ -146,9 +146,13 @@ function Candidates() {
             <p className="text-muted">
               {num(sl.n_candidates)} sequences have no verified PET assay record in the project&apos;s sources, which does not make them experimentally
               untested. Of the near-identical ones, <b className="text-ink">{num(sl.probably_same_enzyme_as_a_reference)}</b> are probably characterised
-              enzymes recorded under another name or form, so they are not discoveries; for{" "}
-              {num(Object.entries(sl.by_testing_status ?? {}).find(([k]) => k.startsWith("Testing status not established"))?.[1] ?? 0)} the testing status
-              cannot be established from our sources. {sl.invalid_sequences > 0 && `${sl.invalid_sequences} sequence could not be assessed (non-standard residues). `}
+              enzymes recorded under another name or form and{" "}
+              <b className="text-ink">{num(Object.entries(sl.by_testing_status ?? {}).find(([k]) => k.startsWith("Near-identical"))?.[1] ?? 0)}</b> are
+              close variants of one, so they are not discoveries; all{" "}
+              <b className="text-ink">{num(sl.candidates_citing_2025_screen_doi)}</b> candidates that cite the 2025 screening paper are among them. For the
+              other{" "}
+              <b className="text-ink">{num(Object.entries(sl.by_testing_status ?? {}).find(([k]) => k.startsWith("Testing status not established"))?.[1] ?? 0)}</b>{" "}
+              the testing status cannot be established from our sources; every Priority and Possible candidate comes from this group.{sl.invalid_sequences > 0 && `${sl.invalid_sequences} sequence could not be assessed (non-standard residues). `}
               {sl.note}
             </p>
             <a className="text-teal hover:underline" href="/api/downloads/candidate_shortlist" download>

@@ -349,10 +349,10 @@ function DatasetSummary() {
           color: "var(--color-aqua)",
         },
         {
-          label: "Experimental observations",
+          label: a?.pazy ? "PAZy PET assay records" : "PET assay records (PET-active set)",
           value: a?.pazy ? count("assay-rows", a.pazy.assay_rows) : count("pet-assays", s.pet_assays),
           sub: a?.pazy ? `${num(a.pazy.rows_with_positive_measurement)} positive · ${num(a.pazy.rows_all_zero_or_nondetect)} below detection` : `${num(s.assays_detected)} with breakdown detected`,
-          hint: "One row per reported PET assay measurement. Below-detection rows are condition-level zeroes for otherwise active enzymes, never proof of inactivity.",
+          hint: "One row per reported PET assay measurement. Below-detection rows are condition-level zeroes for otherwise active enzymes, never proof of inactivity. The Assay Conditions page shows the subset for the curated PET-active proteins and explains the excluded records.",
           color: "var(--color-sky)",
         },
         {
@@ -392,7 +392,7 @@ function DatasetSummary() {
             ))}
       </div>
       <p className="text-center text-xs text-muted">
-        Every figure above is read from the analysis outputs in <span className="font-mono">outputs/</span>. Nothing on this site is estimated or illustrative.
+        Every figure above is read from the analysis outputs in <span className="font-mono">outputs/</span>. Decorative visualisations are illustrative and are not presented as experimental evidence.
       </p>
     </div>
   );

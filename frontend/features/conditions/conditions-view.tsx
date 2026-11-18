@@ -170,7 +170,11 @@ export function ConditionsView() {
           </Button>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4 border-t border-line/60 pt-4 sm:grid-cols-4">
-          <Metric label="Assay records" value={num(filtered.length)} hint={`of ${num(all.length)}`} />
+          <Metric
+            label="Assay records (PET-active set)"
+            value={num(filtered.length)}
+            hint={`of ${num(all.length)} for ${res.data.coverage.kept_proteins} PET-active proteins; ${num(res.data.coverage.all_rows)} PAZy PET records in total`}
+          />
           <Metric label="Distinct proteins" value={num(stats.proteins)} accent="var(--color-sky)" />
           <Metric label="Breakdown detected" value={filtered.length ? `${Math.round((100 * stats.detected) / filtered.length)}%` : "—"} accent="var(--color-mint)" hint="of assay records" />
           <Metric label="Publications" value={num(stats.papers)} accent="var(--color-violet)" />
