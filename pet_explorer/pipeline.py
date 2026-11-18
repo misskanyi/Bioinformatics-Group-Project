@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import adjusted_rand_score
 
-from . import clustering, config as C, features, network, plots, preprocess, similarity
+from . import clustering, config as C, features, network, plots, preprocess, sequence_matching, similarity
 
 
 # --------------------------------------------------------------------------- #
@@ -29,6 +29,7 @@ def stage2(recompute=False):
     ids = proteins.protein_id.tolist()
     pairs = similarity.compute_pairs(proteins, reuse=not recompute)
     sim = similarity.square_matrix(pairs, ids)
+    sequence_matching.leave_one_out(proteins, pairs).to_csv(C.F_LOO, index=False)
 
     feats = features.feature_table(proteins)
     feats.to_csv(C.CLUSTERING / "sequence_features.csv", index=False)

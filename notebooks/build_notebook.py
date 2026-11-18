@@ -24,37 +24,48 @@ PET-Degrading Enzymes* (Computing for Bioinformatics, year 4).
 
 **Why it matters.** PET (polyethylene terephthalate) is the plastic of drinks bottles and polyester fibre. A small number
 of enzymes, mostly bacterial and fungal cutinases, can break it back into its building blocks, which makes enzymatic
-recycling possible. This notebook asks what the experimentally verified PET-degrading enzymes have in common at the
-sequence level, and whether that relates to the temperatures at which they work.
+recycling possible. Testing an enzyme in the laboratory is slow and expensive, so this notebook asks how far protein
+sequence analysis and machine learning can narrow down which enzymes are worth testing.
 
-**How to run.** *Runtime → Run all* in Google Colab, or locally from the repository root. In Colab the first cell clones
-the repository ({REPO}), which contains the raw data and cached results. Expensive steps (44,253 pairwise alignments,
-clustering grids, cross-validation) are cached in `outputs/explorer/`; set `RECOMPUTE = True` to regenerate everything
-from the raw files (~5 min).
+**How to run.** *Runtime → Run all* in Google Colab, or locally from the repository root. In Colab the first code cell
+clones the repository ({REPO}), which contains the raw data and cached results, and installs Biopython. Expensive
+steps (44,253 pairwise alignments, clustering grids, cross-validation, the candidate search) are cached in
+`outputs/explorer/`. Set `RECOMPUTE = True` (or the environment variable `PET_RECOMPUTE=1`) to regenerate every
+analysis output from the raw files; this takes about 1 minute on 10 CPU cores and longer on Colab's 2 cores.
+Preprocessing, quality control and the exploratory plots are always computed live.
 
-**Convention:** *experimentally established* = taken from PAZy assay records. *Computational* = derived here
-(similarity, clusters, predictions).
+**Convention:** *experimentally established* = taken from published assay records (PAZy, the 2025 screen).
+*Computational* = derived here (similarity, clusters, evidence categories, model scores).
 """)
 
 md("""
 ## 1. Research question, objectives and hypotheses
 
-A feasibility analysis (`outputs/pet_dataset_feasibility_report.md`) showed that the data contain
-**298 PET-active proteins with sequences but 0 usable PET-inactive ones**, so "PET-active vs PET-inactive"
-classification is not possible. The question is therefore about structure *within* the known PET degraders:
+> **Research question.** How can protein sequence analysis and machine learning help identify promising
+> PET-degrading enzyme candidates for further laboratory testing?
 
-> **Research question.** Do experimentally verified PET-hydrolysing enzymes form distinct groups based on their
-> amino-acid sequence features, and do these groups relate to the temperatures at which PET degradation was observed?
+A feasibility analysis (`outputs/pet_dataset_feasibility_report.md`) showed that the data contain
+**298 PET-active proteins with sequences but 0 usable PET-inactive ones**, so a direct "PET-active vs PET-inactive"
+classifier cannot be trained. The question is therefore answered through supporting investigations:
+
+* **Sequence analysis** (alignment, motifs, similarity to characterised enzymes): what does a promising candidate
+  look like, and how close is a new sequence to an enzyme with published PET activity? (Sections 5, 7.3, 7.4)
+* **Clustering** (unsupervised learning): do the verified PET hydrolases form real sequence groups, and which group
+  would a candidate belong to? (Sections 5.2–5.4, 6, 7.1)
+* **Assay conditions** (temperature): do those groups differ in the conditions at which activity was observed?
+  (Sections 5.5–5.6)
+* **Supervised learning** under one standardised protocol: can sequence features predict activity at a named
+  condition well enough to rank candidates? (Section 7.2)
 
 **Objectives**
-1. **O1 — Data:** build a clean, quality-controlled set of experimentally verified PET-active enzyme sequences from
-   PAZy, linked to their assay conditions and (where documented) source organisms.
-2. **O2 — Sequence groups:** group the enzymes by sequence (pairwise alignment, clustering, motifs, similarity
-   network), test the groups against chance, and interpret them with domain annotation and the literature.
-3. **O3 — Temperature:** test whether the groups differ in the temperatures at which PET degradation was detected,
-   with statistical tests and false-discovery-rate (FDR) correction, separating real differences from study design.
-4. **O4 — Machine learning:** evaluate the unsupervised grouping against null baselines, and build a supervised model
-   that predicts PET activity at 60 °C from sequence, compared with proper baselines.
+1. **O1.** To collect, clean and assess the quality of protein sequence and experimental data related to PET
+   degradation. *(Sections 2–4)*
+2. **O2.** To analyse protein sequences using alignment, motif detection and clustering to identify similarities and
+   biological patterns. *(Sections 5–6, 7.1; the temperature analysis in 5.5–5.6 is a supporting investigation)*
+3. **O3.** To develop and evaluate machine-learning models for PET-degradation activity under specified experimental
+   conditions. *(Section 7.2)*
+4. **O4.** To identify and prioritise promising enzyme candidates for further laboratory testing using available
+   sequence and experimental evidence. *(Sections 7.3–7.4)*
 
 **Hypotheses**
 * **H1** — Most verified PET-active enzymes belong to a small number of sequence-similarity groups that share the
@@ -63,50 +74,86 @@ classification is not possible. The question is therefore about structure *withi
 * **H3** — Sequence features predict whether PET conversion is still detected at 60 °C better than baselines.
 """)
 
+md("""
+**Setup.** The next cell only acts in Google Colab: it clones the public repository (branch `REPO_BRANCH`) and
+installs the one package Colab lacks. Locally it does nothing. The cell after it records the library versions used,
+so a reader can tell whether a different environment could explain small numerical differences.
+""")
+
 code(f"""
 # Google Colab only: fetch the repository (code + raw data + cached outputs) and the one missing package.
 import os, subprocess, sys
 from pathlib import Path
+REPO_BRANCH = "main"
 if "google.colab" in sys.modules and not Path("pet_explorer").exists():
     if not Path("Bioinformatics-Group-Project").exists():
-        subprocess.run(["git", "clone", "-q", "{REPO}"], check=True)
+        subprocess.run(["git", "clone", "-q", "--depth", "1", "-b", REPO_BRANCH, "{REPO}"], check=True)
     os.chdir("Bioinformatics-Group-Project")
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "biopython==1.85"], check=True)
 print("working directory:", Path.cwd())
 """)
 
 code("""
-import json, warnings
+import json, platform, warnings
 warnings.filterwarnings("ignore")
 ROOT = Path.cwd().parent if Path.cwd().name == "notebooks" else Path.cwd()
 sys.path.insert(0, str(ROOT))
 
-import numpy as np, pandas as pd
+import numpy as np, pandas as pd, matplotlib, matplotlib.pyplot as plt, sklearn, scipy, Bio
 from IPython.display import Image, display, Markdown
-from pet_explorer import config as C, pipeline
+from pet_explorer import config as C, pipeline, shortlist
 pd.set_option("display.max_colwidth", 80, "display.width", 200)
 
-RECOMPUTE = False   # True = rebuild all cached outputs from data/ (~5 min on 10 cores)
+print("python", platform.python_version(), "| numpy", np.__version__, "| pandas", pd.__version__,
+      "| scikit-learn", sklearn.__version__, "| scipy", scipy.__version__, "| matplotlib", matplotlib.__version__,
+      "| biopython", Bio.__version__)
+print("versions used to produce the cached outputs: see requirements.txt")
+
+RECOMPUTE = os.environ.get("PET_RECOMPUTE") == "1"   # True = rebuild every cached output from data/
 if RECOMPUTE or not (C.PREDICTION / "model_comparison.csv").exists():
     C.ensure_dirs(); pipeline.stage1(); pipeline.stage2()
     from pet_explorer import temperature, organisms
     temperature.run(); organisms.run(); pipeline.export_network(); pipeline.stage5()
-fig = lambda name, w=700: display(Image(filename=str(C.FIGURES / name), width=w))
-print("outputs ready in", C.EXPLORER.relative_to(ROOT))
+if RECOMPUTE or not shortlist.F_SHORTLIST.exists():
+    shortlist.run()
+fig = lambda name, w=700: display(Image(filename=str(C.FIGURES / name), width=w))   # show a pipeline figure
+
+
+def show(f):
+    # Render a figure drawn in this notebook as PNG (works whatever matplotlib backend is active).
+    import io
+    buf = io.BytesIO()
+    f.savefig(buf, format="png", dpi=110, bbox_inches="tight")
+    plt.close(f)
+    display(Image(data=buf.getvalue()))
+
+
+print("RECOMPUTE =", RECOMPUTE, "| outputs in", C.EXPLORER.relative_to(ROOT))
 """)
 
 md("""
 ## 2. Data acquisition and provenance
 
-Six files were downloaded by the project team into `data/` and are **never modified**:
+All raw files were downloaded by the project team into `data/` and are **never modified**. Six core files feed the
+reference set and the analyses in Sections 3–7.3:
 
 | Source | File | Role here |
 |---|---|---|
 | PAZy (Plastics-Active enZymes database, pazy.eu) | `pazy_proteins_sequences.csv`, `pazy_proteins.fasta` | Protein sequences (301) |
-| PAZy | `pazy_polymer_assays.json.gz` (schema 4.2) | Experimental assays (7,195; 5,058 on PET) |
-| PlasticDB (plasticdb.org) | `PlasticDB.fasta`, `degraders_list.tsv` | Organism links, Tax IDs, isolation data |
+| PAZy | `pazy_polymer_assays.json.gz` (schema 4.2) | Experimental assays (7,195; 5,058 on PET), including the two standardised screens |
+| PlasticDB (plasticdb.org) | `PlasticDB.fasta`, `degraders_list.tsv` | Organism links, Tax IDs, isolation data; annotation-only candidate sequences (Section 7.4) |
 | UniProt (downloaded 2026-10-27, from file name) | `uniprotkb_…fasta.gz` | Reference cutinases (3) |
 | UniParc (rest.uniprot.org, queried by sequence checksum) | cached in `outputs/explorer/annotation/` | Pfam / InterPro domains (Section 6) |
+
+Further sources were used by the dataset curation step (`python -m pet_explorer.curation`, report in
+`outputs/curation/curation_report.md`), which built the candidate registry used in Section 7.4 and the labelled
+dataset summarised in Section 7.2:
+
+| Source | File(s) | Role |
+|---|---|---|
+| ACS Catalysis 2025 standardised screen, supplementary data (DOI 10.1021/acscatal.5c03460) | `cs5c03460_si_002.xlsx` | 477 library sequences, 3,856 assay rows; condition-specific labels |
+| PETML study workbooks and variant library | 33 `*.xlsx` workbooks, `sequences.fasta` (501 sequences) | Literature activity tables without units: provenance only, never labels |
+| Bulk-analysis demo files | `data/samples/*.csv` | Three small CSVs for the web app (two include unrelated or synthetic control sequences) |
 
 Download dates of the non-UniProt files were not recorded. Licences and versions should be noted from the source websites.
 
@@ -160,6 +207,22 @@ print(json.dumps({k: a[k] for k in ["substrate", "conditions"]}, indent=1)[:600]
 code("""
 pd.read_csv(C.FEASIBILITY / "tables/dataset_inventory.csv")[["file", "format", "records", "unique_ids", "duplicate_sequences", "notes"]]
 """)
+code("""
+# Everything in data/ (checked live, so nothing hidden is relied on)
+files = sorted(p for p in C.DATA.rglob("*") if p.is_file() and not p.name.startswith("."))
+inv = pd.DataFrame({"file": [str(p.relative_to(C.DATA)) for p in files],
+                    "size_kb": [round(p.stat().st_size / 1024, 1) for p in files]})
+inv["group"] = np.select([inv.file.str.startswith("samples/"), inv.file.str.contains(r" et al", regex=True)],
+                         ["web-app demo", "PETML study workbook"], "core / screen / registry source")
+print(len(inv), "files in data/")
+inv.groupby("group").agg(files=("file", "size"), total_kb=("size_kb", "sum"))
+""")
+md("""
+**Interpretation.** The core PAZy files are internally consistent (CSV and FASTA identical, one key for sequences
+and assays). Two facts shape everything that follows: PAZy has **no "active / inactive" field**, so activity has to be
+derived from measurements, and the PlasticDB files contain **positive reports only**, so they can supply candidates
+and organisms but never negatives.
+""")
 
 md("""
 ## 3. Pre-processing and quality control
@@ -173,11 +236,30 @@ measurements:
 
 Assay results are aggregated per protein. We keep the proteins that are **PET-active (high/medium confidence) and have a
 valid sequence**. Every sequence is re-checked against the raw CSV.
+
+The next two cells **run** these steps on the raw JSON (about 2 s) rather than loading their results, and check that
+the live result is identical to the cached clean set used by the rest of the notebook.
 """)
 code("""
-display(pd.read_csv(C.CLEAN / "qc_checks.csv"))
-proteins = pd.read_csv(C.F_PROTEINS)
-print(f"Before: {len(csv)} sequences in PAZy  ->  after: {len(proteins)} PET-active proteins with valid sequences")
+import analyze_pet_dataset as feas            # assay classification and protein labelling (no files written here)
+from pet_explorer import preprocess
+
+assays = feas.build_assay_table(assay_json)   # one row per PET assay, classified from its measurements
+labels = feas.label_proteins(assays)          # one evidence label per protein
+print(f"{len(assays):,} PET assays classified:")
+display(assays.assay_outcome.value_counts().rename("assays").to_frame())
+display(labels.groupby(["pet_label", "label_confidence"]).size().rename("proteins").to_frame())
+""")
+code("""
+clean, qc = preprocess.build_clean_set()      # selection + six QC checks against the raw CSV
+display(qc)
+proteins = pd.read_csv(C.F_PROTEINS)          # cached clean set used by later sections
+assert qc.passed.all(), "QC failed"
+assert clean.protein_id.tolist() == proteins.protein_id.tolist() and clean.sequence.tolist() == proteins.sequence.tolist()
+live = labels.set_index("protein_id").loc[proteins.protein_id]
+assert (live.pet_label.values == proteins.pet_label.values).all(), "live labels differ from the cached clean set"
+print(f"Before: {len(csv)} sequences in PAZy  ->  after: {len(proteins)} PET-active proteins with valid sequences "
+      "(live run identical to the cached set)")
 proteins.pet_label.value_counts()
 """)
 md("""
@@ -193,17 +275,48 @@ md("""
   vs PET-inactive classifier and shapes the whole project.
 """)
 
-md("## 4. Exploratory data analysis")
+md("""
+## 4. Exploratory data analysis
+
+Sequence features are computed live with Biopython's ProtParam (amino-acid composition, length, isoelectric point,
+hydropathy (GRAVY), aromaticity, instability index, secondary-structure propensities) and the G-x-S-x-G motif search.
+The three plots below are drawn here from those features.
+""")
 code("""
-feats = pd.read_csv(C.CLUSTERING / "sequence_features.csv")
+from pet_explorer import features
+feats = features.feature_table(proteins)                       # computed now, ~1 s
+cached = pd.read_csv(C.CLUSTERING / "sequence_features.csv")
+num = feats.select_dtypes("number").columns
+assert np.allclose(feats[num].to_numpy(), cached[num].to_numpy(), atol=1e-6), "features differ from the cached table"
 display(feats[["length", "isoelectric_point", "gravy", "aromaticity", "instability_index"]].describe().round(2))
-fig("f01_length_distribution.png"); fig("f02_aa_composition.png")
+""")
+code("""
+# EDA plot 1: sequence length distribution
+f, ax = plt.subplots(figsize=(7, 3.4))
+ax.hist(feats.length, bins=np.arange(170, 500, 10), color="#2a78d6", edgecolor="white")
+ax.axvline(feats.length.median(), color="#52514e", ls="--", lw=1)
+ax.set_xlabel("sequence length (amino acids)"); ax.set_ylabel("proteins")
+ax.set_title(f"Length of the {len(feats)} verified PET-active enzymes (median {feats.length.median():.0f} aa)", loc="left")
+show(f)
+print("range", feats.length.min(), "-", feats.length.max(), "aa; proteins > 400 aa:", int((feats.length > 400).sum()))
+""")
+code("""
+# EDA plot 2: mean amino-acid composition (bars) and its spread between proteins (error bars = 1 sd)
+aa = [c for c in feats.columns if c.startswith("aa_")]
+comp = feats[aa].agg(["mean", "std"]).T.sort_values("mean", ascending=False)
+f, ax = plt.subplots(figsize=(8, 3.4))
+ax.bar([c[3:] for c in comp.index], comp["mean"], yerr=comp["std"], color="#1baf7a", capsize=2)
+ax.set_ylabel("% of residues"); ax.set_title("Amino-acid composition across the 298 enzymes", loc="left")
+show(f)
+print("most frequent:", ", ".join(f"{c[3:]} {v:.1f}%" for c, v in comp["mean"].head(3).items()),
+      "| median coefficient of variation across residues:", round(float((comp["std"] / comp["mean"]).median()), 2))
 """)
 md("""
 **Interpretation.** Lengths range from 178 to 491 aa (median 297). This is consistent with single-domain α/β-hydrolases,
-though several proteins are around 400–490 aa. Alanine (11.0%) and glycine (9.8%) are the most frequent residues on
-average. Composition varies little between proteins, which already suggests composition alone will separate families
-poorly (confirmed in Section 5.2).
+though several proteins are around 400–490 aa (explained by extra binding domains in Section 6.1). Alanine (11.0%) and
+glycine (9.8%) are the most frequent residues on average. Composition varies little between proteins, which already
+suggests composition alone will separate families poorly (confirmed in Section 5.2) and is a first warning for the
+composition-based supervised model in Section 7.2.
 """)
 
 md("""
@@ -213,8 +326,14 @@ Serine hydrolases (lipases, esterases, cutinases) usually carry their catalytic 
 We search for it in every sequence (a hypothesis-driven check, not an assumption).
 """)
 code("""
+# EDA plot 3: which G-x-S-x-G variants occur, and in how many proteins
 print("Proteins with >=1 G-x-S-x-G:", int((feats.gxsxg_count > 0).sum()), "/", len(feats))
-fig("f09_gxsxg_motif_variants.png")
+variants = (feats.gxsxg_variants.fillna("").str.split("; ").explode().loc[lambda s: s != ""]
+            .value_counts().head(12))
+f, ax = plt.subplots(figsize=(7, 3.6))
+ax.barh(variants.index[::-1], variants.values[::-1], color="#eb6834")
+ax.set_xlabel("proteins carrying the variant"); ax.set_title("Most common G-x-S-x-G catalytic-motif variants", loc="left")
+show(f)
 """)
 md("""
 **Interpretation.** 296 of 298 proteins carry the motif, so almost every verified PET degrader is a serine hydrolase.
@@ -557,7 +676,11 @@ md("""
 Two models, each judged against baselines rather than on its own:
 * **7.1** the unsupervised clustering of Section 5.2 against two **null models**;
 * **7.2** a **supervised classifier** that predicts PET activity at 60 °C (H3);
-* **7.3** the nearest-neighbour **sequence matcher** behind the dashboard, validated by leave-one-out.
+* **7.3** the nearest-neighbour **sequence matcher** behind the dashboard, validated by leave-one-out;
+* **7.4** the candidate **shortlist** for laboratory testing, built from the matcher's evidence rules (not from 7.2).
+
+Clustering (7.1) describes structure *among known PET degraders*; it does not predict activity. Only 7.2 attempts
+activity prediction, and only 7.4 ranks candidate sequences.
 
 ### 7.1 Are the clusters better than chance?
 
@@ -605,7 +728,7 @@ pd.read_csv(C.PREDICTION / "feature_importance.csv").head(8)
 """)
 md("""
 **Interpretation (H3).**
-* **No model clearly beats the baselines.** The best models reach ROC AUC ≈ 0.56 (sd ≈ 0.09), against 0.50 for the
+* **No model clearly beats the baselines.** The best models reach a mean fold ROC AUC ≈ 0.56 (sd ≈ 0.09 across repeats), against 0.50 for the
   majority class and 0.53 for "cluster label only".
 * **The permutation test confirms this:** with shuffled labels the same model averages 0.49, and 0.556 lies well
   inside the null distribution (95th percentile 0.69, p ≈ 0.32).
@@ -614,6 +737,95 @@ md("""
 * **H3 is not supported.** With 78 proteins and simple sequence features, activity at 60 °C cannot be predicted.
   Thermostability depends on specific residues, disulfide bonds and calcium binding sites, which global composition
   features do not capture. This is an honest negative result, not a failed analysis.
+""")
+
+md("""
+#### 7.2.1 A closer look at the same validation run
+
+Everything below comes from the **held-out (out-of-fold) predictions of the same 20 × grouped 5-fold
+cross-validation** that produced the table above: no model was retrained, no training-set predictions are used, and
+no other validation run is mixed in. A test fold that happens to contain only one class is skipped, because ROC AUC
+is undefined there; the number of skipped folds is reported.
+
+* **Per-fold results:** one ROC AUC per held-out fold, to show how much a single split can mislead.
+* **ROC curves:** out-of-fold scores of each repeat pooled into one curve (thin lines), and their mean (bold).
+* **Confusion matrix, precision, recall, F1:** at the same 0.5 cut-off used for balanced accuracy.
+* **Permutation histogram:** the 200 ROC AUCs obtained with shuffled labels, against the observed value.
+""")
+code("""
+folds = pd.read_csv(C.PREDICTION / "cv_fold_metrics.csv")
+ok = folds[~folds.skipped_single_class]
+first = folds[folds.model == folds.model.iloc[0]]
+print(f"{len(first)} folds per model; {int(first.skipped_single_class.sum())} skipped (one class only); "
+      f"held-out fold size {first.n_test.min()}-{first.n_test.max()} proteins")
+display(ok.groupby("model", sort=False).roc_auc.describe()[["count", "mean", "std", "min", "max"]].round(3))
+fig("f15_cv_folds.png", 850)
+""")
+code("""
+fig("f12_roc_curves.png", 900)
+display(pd.read_csv(C.PREDICTION / "threshold_metrics.csv")[
+    ["model", "kind", "precision_mean", "precision_sd", "recall_mean", "recall_sd", "f1_mean", "f1_sd",
+     "tp_per_repeat", "fp_per_repeat", "tn_per_repeat", "fn_per_repeat"]])
+fig("f13_confusion_matrices.png", 900)
+""")
+code("""
+null = pd.read_csv(C.PREDICTION / "permutation_null.csv").null_roc_auc
+perm = pd.read_csv(C.PREDICTION / "permutation_test.csv").iloc[0]
+print(f"observed ROC AUC {perm.observed_roc_auc}; shuffled-label AUCs >= observed: {(null >= perm.observed_roc_auc).sum()} "
+      f"of {len(null)} -> p = {perm.empirical_p}")
+fig("f14_permutation_null.png", 650)
+""")
+md("""
+**Interpretation.**
+* **Single folds are unreliable.** The 78 proteins fall into only 19 identity groups, one of them with 33 proteins, so
+  held-out folds range from 1 to 53 proteins and single-fold ROC AUCs span from 0 to 1 for every model. Only the
+  average over many repeats means anything, and that average is close to 0.5.
+* **Skipped single-class folds.** 18 of the 100 folds per model (in 14 of the 20 repeats) held only one class, so
+  ROC AUC is undefined there and they were left out. They are small (median 1 protein, at most 7; about 2.6 proteins
+  per affected repeat), so the reported means rest on 82 folds that together cover almost every protein in every
+  repeat. Leaving them out cannot hide a real signal: the AUCs of the folds that were evaluated are already centred
+  on chance. It does mean the proteins in those folds received no held-out score in that repeat.
+* **Two different ROC AUC summaries, kept apart.**
+  * **Mean fold ROC AUC** (the headline number, 0.556 for both feature models): AUC computed inside each evaluated
+    held-out fold, averaged over folds and then over the 20 repeats. This is what `model_comparison.csv`, the
+    Model Validation page and the permutation test report.
+  * **Pooled out-of-fold ROC AUC** (in the ROC figure, about 0.52–0.53 for the feature models and 0.44 for 5-NN):
+    all held-out scores of one repeat are pooled into a single curve, then averaged over repeats. It is lower because
+    each fold's model produces scores on its own scale, so pooling mixes scales.
+  * Neither summary shows useful signal, and the two are never mixed in one comparison.
+* **The ROC curves hug the diagonal** for every model.
+* **Precision, recall and F1 tell the same story.** Logistic regression and random forest reach F1 ≈ 0.44–0.55,
+  in the range of the "cluster label only" baseline (≈ 0.53). The 5-NN model's higher recall (≈ 0.82) is not skill:
+  its confusion matrix shows it calls most proteins "detected", so it also has the most false positives.
+* **The permutation histogram shows the observed AUC sitting inside the shuffled-label distribution** (p ≈ 0.32).
+* **Biological reading.** Whether an enzyme still works at 60 °C depends on a few specific features (stabilising
+  disulfide bonds, calcium-binding sites, surface salt bridges, individual active-site residues). Whole-protein
+  averages such as amino-acid percentages or isoelectric point blur exactly these details, which is the most likely
+  reason the models cannot separate the classes.
+* **Conclusion for the research question:** the existing supervised model has **not demonstrated reliable
+  predictive performance** and is **not used to rank candidates** anywhere in this project.
+
+#### 7.2.2 Data prepared for a future condition-specific model (not trained)
+
+The curation step (`pet_explorer/curation.py`) assembled a larger labelled dataset from the 2025 standardised screen
+at one named condition. No model has been trained on it; it is summarised here because it defines what a future
+model could learn, and how it would have to be validated.
+""")
+code("""
+lab = pd.read_csv(ROOT / "outputs/curation/condition_specific_labels.csv")
+diag = json.loads((ROOT / "outputs/curation/split_diagnostics.json").read_text())
+print("condition:", lab.condition.iloc[0])
+display(lab.label.value_counts().rename("enzymes").to_frame())
+print(f"grouped split: {diag['n_train']} train / {diag['n_test']} test, {diag['groups_spanning_both_sides']} identity "
+      f"groups on both sides, {diag['n_cross_split_pairs_above_70pct']} cross-split pairs >= 70% identity "
+      f"(max {diag['max_cross_split_identity']})")
+pd.DataFrame(diag["cv_folds"]).T
+""")
+md("""
+**Interpretation.** 208 enzymes have a usable binary label at this condition (the uncertain ones are excluded), and a homology-aware split with no
+near-duplicate leakage is possible. But one family makes up fold 0 on its own, and most identity groups contain only
+one label, so a model could score well simply by recognising family membership. Any future model on these data must
+beat a family-membership baseline, not just 50%.
 """)
 
 md("""
@@ -655,25 +867,124 @@ md("""
 """)
 
 md("""
+### 7.4 From sequence evidence to a laboratory shortlist (not a machine-learning prediction)
+
+The research question asks which enzymes are worth testing in the laboratory. Because the supervised model did not
+beat its null (7.2), candidates are **not** ranked with it. They are ranked with the **validated sequence matcher and
+the evidence rules** that the web app uses for every query (`pet_explorer/evidence.py`; thresholds calibrated against
+shuffled sequences and a leave-one-out search of the 298 references).
+
+**Candidates.** The curation step marked 254 registry sequences as *eligible*: annotation-only records (PlasticDB,
+degraders list) without a verified PET assay record in the project's sources. That does **not** make them
+experimentally untested: our sources may simply not hold their assays (see the testing status below and
+`outputs/curation/curation_report.md`, section 5.1). Each was searched against the 298
+references (Smith–Waterman, BLOSUM62, 25 shuffles, seed 0) and assigned an evidence category, then a priority tier:
+
+| Tier | Meaning |
+|---|---|
+| 1 | Strong homolog (40–90% identity over ≥ 70% of both sequences, shuffle z ≥ 15, catalytic motif present, well-supported reference) |
+| 2 | Near-identical (≥ 90% identity) to a characterised enzyme: most likely to behave like it, least novel |
+| 3 | Possible: motif missing, weaker reference, partial, remote or domain-level similarity |
+| 4 | Not prioritised: signals disagree, fragment or short match |
+| 5 | Not prioritised: no convincing similarity (not evidence of inactivity) |
+
+Rebuild with `python -m pet_explorer.shortlist`; the table is `outputs/explorer/shortlist/candidate_shortlist.csv`.
+""")
+code("""
+sl = pd.read_csv(shortlist.F_SHORTLIST)
+summary = json.loads(shortlist.F_SUMMARY.read_text())
+display(pd.Series(summary["by_tier"], name="candidates").to_frame())
+print("Testing status, as far as the project's sources can establish it:")
+display(pd.crosstab(sl.testing_status, sl.cites_2025_screen_study, margins=True)
+          .rename(columns={True: "cites 2025 screen", False: "does not"}))
+print("invalid sequences:", summary["invalid_sequences"])
+cols = ["rank", "name", "organism", "closest_reference", "identity", "candidate_coverage", "reference_coverage",
+        "shuffled_z", "gxsxg_variants", "reference_positive_assays", "reference_publications", "evidence_category",
+        "plasticdb_plastics_annotation"]
+print("Tier 1: strongest sequence case for a new PET hydrolase")
+display(sl[sl.priority_tier == 1][cols])
+""")
+code("""
+print("Tier 3: possible candidates (weaker or partial evidence)")
+display(sl[sl.priority_tier == 3][cols + ["rule"]])
+with pd.option_context("display.max_colwidth", 300):
+    display(sl[sl.priority_tier.isin([1, 3])][["rank", "name", "prioritisation_reason"]].head(4))
+""")
+md("""
+**Interpretation.**
+* **Eight candidates have the strongest sequence case** (tier 1). They are clear homologs (about 45–89% identity over
+  almost their whole length, shuffle z far above the null range) of enzymes with published PET activity, and carry
+  the catalytic motif: for example two *Aequorivita* esterases related to PET27, a *Halopseudomonas* lipase related to
+  PpCutA, fungal cutinases related to HiC, and two bacterial hydrolases related to Lip4_120 and TA29. Several are
+  annotated in PlasticDB for other polyesters (PCL, PLA, PBSA), which fits: these hydrolase families often act on
+  several polyesters.
+* **Most "near-identical" candidates are not really new** (tier 2, 121 candidates: ≥ 90% identity over ≥ 80% of
+  both sequences). Within them, **104** pass a stricter test (≥ 99% identity over ≥ 98% of the reference) and are
+  probably characterised enzymes recorded under another name or form (precursor, tag, single variant); the other
+  **17** are close variants. All **86** candidates that cite the 2025 screening study are among these 121. The
+  curation step deduplicated by exact sequence, so it could not catch them.
+* **133 candidates have a testing status our sources cannot establish.** They are not near-identical to any
+  characterised enzyme and have no assay record here, but the literature they cite has not been checked, so they
+  are not called "untested".
+* **Twenty candidates are possible but weaker** (tier 3), mostly distant homologs in the twilight zone whose
+  similarity is still far above shuffled controls. A profile-HMM or structure comparison should come before lab work.
+* **86 candidates show no convincing similarity** (tier 5): a mix of PHB/PHA depolymerases (26), proteases,
+  laccases and other oxidases, nylon- and rubber-degrading enzymes, mostly annotated for other plastics. This says the sequence evidence does not point to PET activity; it does not
+  show they are inactive.
+* **This shortlist is sequence evidence, not a validated activity prediction.** Activity depends on substrate form,
+  temperature and pH, and a single active-site substitution can abolish it. The cited literature should be checked
+  before any gene is ordered.
+""")
+
+md("""
 ## 8. Conclusions, limitations and future work
 
-**Answer to the research question.** Yes for the first half, no for the second: verified PET-hydrolysing enzymes form
-clear, non-random sequence groups — dominated by one PET hydrolase/cutinase family — but with current data these groups
-are **not** shown to differ in the temperatures at which they degrade PET.
+**Answer to the research question** — *How can protein sequence analysis and machine learning help identify
+promising PET-degrading enzyme candidates for further laboratory testing?*
+
+**Sequence analysis helps directly; unsupervised learning explains the landscape; supervised learning, on the data
+available, does not yet help.** In detail:
+
+1. **Supported by sequence analysis.** Alignment against the 298 verified PET hydrolases, with a shuffled-sequence
+   control and the catalytic-motif check, places a new sequence relative to enzymes with published PET activity.
+   The matcher retrieves every reference and mutated variants of it, rejects shuffled sequences, and its evidence
+   rules were calibrated so that shuffled sequences are never green or yellow (Sections 7.3–7.4). 296 of 298 verified
+   enzymes carry the G-x-S-x-G motif, so a candidate without it needs a strong reason to be tested.
+2. **Supported by clustering.** Verified PET hydrolases form real, stable sequence groups (silhouette 0.34 against
+   at most 0.03 for null models, p = 0.005), dominated by one PET hydrolase/cutinase family (G1, 88%, Pfam PF12740)
+   with an extended G-x-S-M-G-G-G motif, plus a separate fungal-cutinase family (G3). A candidate's group therefore
+   says which known enzymes it most resembles. These groups are **not** shown to differ in the temperatures at which
+   they degrade PET once study design is controlled (H2 not confirmed).
+3. **Inconclusive supervised machine learning.** Under homology-aware cross-validation, sequence features did not
+   predict whether PET conversion is still detected at 60 °C (mean fold ROC AUC ≈ 0.56, permutation p ≈ 0.32; per-fold,
+   ROC-curve, confusion-matrix and F1 views agree). The model is therefore **not used to rank candidates**. The
+   limiting factors are data, not method: no confirmed PET-inactive sequences, and 78 proteins in only 19 independent
+   groups. A larger condition-specific dataset (208 labelled enzymes) is prepared but not yet modelled.
+4. **Candidates that require laboratory testing.** Of 254 annotation-only candidates, **8** have the strongest
+   sequence case (tier 1) and **20** are possible but weaker (tier 3). Of the 121 near-identical candidates, 104 are
+   probably characterised enzymes recorded under another name or form. No candidate is called experimentally
+   untested only because our sources hold no assay for it. **None of these is a validated PET
+   degrader**: the shortlist says where laboratory effort is best spent first, and only an assay can confirm activity.
 
 **One point per objective**
-1. **O1 — Data.** 298 experimentally verified PET-active proteins with valid sequences (from 301), 5,058 PET assays and
-   8,439 measurements, with organism evidence for 159 proteins. No usable PET-inactive sequences exist in these sources.
-2. **O2 — Sequence groups (H1 supported).** Alignment-based hierarchical clustering gives 7 groups that are stable
-   (ARI 0.99) and far better than chance (p = 0.005). 88% of proteins form G1, the PET hydrolase/cutinase family
-   (Pfam PF12740) sharing an extended G-x-S-M-G-G-G motif. G1 splits into G1a (all GWSMG / "type II"-like enzymes
-   plus classic cutinases, including IsPETase and LCC) and G1b (multi-domain proteins with lectin and
+1. **O1 — Data collection and quality (achieved).** 298 experimentally verified PET-active proteins with valid
+   sequences (from 301), 5,058 PET assays and 8,439 measurements, with organism evidence for 159 proteins; six QC
+   checks pass and are re-run live in Section 3. No usable PET-inactive sequences exist in these sources.
+2. **O2 — Sequence analysis (achieved; H1 supported).** Alignment-based hierarchical clustering gives 7 groups that
+   are stable (ARI 0.99) and far better than chance (p = 0.005). 88% of proteins form G1, the PET hydrolase/cutinase
+   family (Pfam PF12740) sharing an extended G-x-S-M-G-G-G motif. G1 splits into G1a (all GWSMG / "type II"-like
+   enzymes plus classic cutinases, including IsPETase and LCC) and G1b (multi-domain proteins with lectin and
    carbohydrate-binding modules). G3 is a separate fungal-cutinase family (GYSQG, PF01083).
-3. **O3 — Temperature (H2 not confirmed).** A naive test finds group differences (q ≈ 0.0005), but under one standardised
-   protocol G1a and G1b do not differ after FDR correction (q ≥ 0.08). The apparent differences reflect study design.
-   Most proteins were tested at too few temperatures to define an optimum.
-4. **O4 — Machine learning.** The clustering beats both null baselines. The supervised model for activity at 60 °C does
-   **not** beat its baselines (AUC ≈ 0.56, permutation p ≈ 0.32), so H3 is not supported.
+   *Supporting temperature investigation (H2 not confirmed):* a naive test finds group differences (q ≈ 0.0005),
+   but under one standardised protocol G1a and G1b do not differ after FDR correction (q ≥ 0.08); the apparent
+   differences reflect study design, and most proteins were tested at too few temperatures to define an optimum.
+3. **O3 — Machine-learning models (developed and evaluated; no reliable model; H3 not supported).** Models were
+   built for one specified condition (detection at 60 °C in one standardised screen) and evaluated with
+   homology-grouped cross-validation against three baselines and a permutation test. None beats chance (mean
+   fold ROC AUC ≈ 0.56, permutation p ≈ 0.32). The objective's method is complete; its outcome is negative.
+4. **O4 — Candidate prioritisation (achieved with sequence evidence; not laboratory-validated).** 254 candidates
+   were assessed with the matcher's evidence rules; 8 are prioritised and 20 more are possible. Prioritisation
+   rests on sequence evidence and the reference enzymes' published assays, not on a model score.
 
 **Limitations**
 * **No PET-inactive sequences**, so the system cannot predict PET degradation, only similarity to known degraders.
@@ -682,8 +993,16 @@ are **not** shown to differ in the temperatures at which they degrade PET.
 * **Small supervised dataset** (78 proteins, 19 identity groups), so model estimates are noisy.
 * **Domain annotation covers 167 / 298 sequences** (those in UniParc); organism known for only 53%.
 * **Silhouette values are moderate (≤ 0.35).** Clusters are a useful summary, not sharp biological categories.
+* **The shortlist is sequence evidence only.** Evidence belongs to the matched reference enzyme; "eligible" means no
+  verified PET assay record was found in our sources, not that none exists. Near-duplicate records were detected
+  only after the search (same enzyme under another name), which shows the candidate registry needs similarity-based,
+  not only exact-sequence, deduplication.
+* **Evidence colours are not activity predictions.** Green, yellow, red and grey summarise sequence similarity to
+  characterised enzymes; they were calibrated against shuffled sequences, not against measured activity.
 
 **Future work**
+* Express and assay the tier-1 candidates under one named condition (e.g. crystalline PET powder, 40 °C, pH 6.5,
+  HPLC quantification of TPA/MHET) with a known PET hydrolase as positive control.
 * Add experimentally confirmed inactive enzymes (with sequences) to enable PET-active vs inactive prediction.
 * Use structure-aware features (AlphaFold models, disulfide bonds, Ca²⁺ sites) or protein language-model embeddings
   for the 60 °C model; add melting temperatures (Tm) as a direct thermostability target.

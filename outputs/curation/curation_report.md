@@ -225,9 +225,46 @@ and they can never appear as a `below_detection` label.
 The remaining 9 unassayed members have adequate yield but no recorded assay, so they are
 `uncertain_experimental_status` rather than either category — an honest third answer.
 
-**254 sequences remain genuinely eligible** for later computational ranking: annotation-only records,
-mostly from PlasticDB and `degraders_list.tsv`, with no identified PET testing evidence. Each must be
-reported with its nearest characterised relative and that relative's identity alongside any score.
+**254 sequences are eligible** for later computational ranking: annotation-only records, mostly from
+PlasticDB and `degraders_list.tsv`, **without a verified PET assay record in the project's sources**.
+Each must be reported with its nearest characterised relative and that relative's identity alongside
+any score. "Eligible" is a statement about our local data, not a finding that a sequence is
+experimentally untested: see the correction below.
+
+### 5.1 Correction (2026-11-18): what "eligible" does and does not mean
+
+An earlier version of this report called the 254 eligible sequences "genuinely untested". That
+overstated what the curation can establish. Eligibility was decided by **exact** sequence identity
+(SHA-1 of the normalised sequence), so a characterised enzyme stored under a different name, with a
+signal peptide or tag, or as a single-residue variant gets a new hash and looks untested. The
+candidate search (`python -m pet_explorer.shortlist`, `outputs/explorer/shortlist/`) aligned every
+eligible sequence against the 298 characterised PET hydrolases and shows the 254 fall into these
+groups:
+
+| Testing status (as far as the project's sources can establish it) | n | of which cite the 2025 screening study |
+|---|---|---|
+| Sequences without a verified assay record in the project's sources (all eligible sequences) | **254** | 86 |
+| — Probably a characterised enzyme recorded under another name or form (≥ 99% identity over ≥ 98% of the reference) | 104 | 81 |
+| — Near-identical to a characterised enzyme (≥ 90% identity over ≥ 80% of both sequences), but not the above | 17 | 5 |
+| — Testing status not established from the project's sources | 133 | 0 |
+
+The **86 sequences associated with the 2025 screening study** (DOI 10.1021/acscatal.5c03460 in their
+PlasticDB / degraders-list record) are all among the 121 near-identical ones. They are most likely
+the screen's own enzymes or their precursor forms, recorded in PlasticDB with a sequence that differs
+slightly from the screen's assayed construct.
+
+**Why 104 and 121 differ.** They are two thresholds, not two counts of the same thing. **121** is the
+number of candidates in the near-identical similarity band used throughout the project (≥ 90%
+identity over ≥ 80% of both sequences; shortlist tier 2). **104** is the stricter subset at ≥ 99%
+identity over ≥ 98% of the reference, which is close enough to treat as the same enzyme. The other
+17 are close variants that may behave like their reference but are not demonstrably the same protein.
+
+**What this means.** Absence of an assay record in our local dataset is never treated as proof that a
+sequence is experimentally untested. The 133 sequences in the last row are the ones whose status our
+sources cannot establish either way; the literature cited in each record should be checked before any
+of them is described as untested or ordered for testing. The `status` and `eligible_for_ranking`
+columns of `candidate_eligibility.csv` are unchanged; the shortlist's `testing_status` and
+`cites_2025_screen_study` columns carry the classification above.
 
 ---
 
@@ -245,8 +282,11 @@ reported with its nearest characterised relative and that relative's identity al
 5. **Which datasets for training and validation?** Train on the 2025 standardised screen at
    cryPow / 40 °C / pH 6.5. Validate by grouped CV within it, with a secondary external check on the
    **17** usable PETML wild types. Everything else is provenance, annotation or biological context.
-6. **Any genuinely untested candidates left?** **254** — annotation-only records with no identified
-   testing evidence. Not the 263 unassayed library members: 254 of those failed expression.
+6. **Any candidates left to rank?** **254** annotation-only records without a verified assay record
+   in the project's sources (not the 263 unassayed library members: 254 of those failed expression).
+   *Corrected 2026-11-18:* these are not all genuinely untested. 104 are probably characterised enzymes
+   under another record, 17 more are near-identical to one, and the status of the remaining 133 cannot
+   be established from our sources (section 5.1).
 7. **Next modelling step?** Feature extraction on the curated training set, then a condition-specific
    logistic regression under grouped 5-fold CV, benchmarked against three baselines.
 

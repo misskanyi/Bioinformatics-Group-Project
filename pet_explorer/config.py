@@ -29,6 +29,7 @@ F_ASSAY_RECORDS = FEASIBILITY / "tables" / "pet_assay_records.csv"
 F_PROTEINS = CLEAN / "pet_active_proteins.csv"
 F_FASTA = CLEAN / "pet_active_proteins.fasta"
 F_PAIRS = CLUSTERING / "pairwise_alignment.csv"
+F_LOO = MATCHING / "leave_one_out_nearest_neighbour.csv"
 
 STANDARD_AA = "ACDEFGHIKLMNPQRSTVWY"
 

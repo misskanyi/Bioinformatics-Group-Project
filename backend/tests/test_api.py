@@ -103,6 +103,31 @@ def test_modelling_matches_prediction_outputs(client):
     assert m["candidates"]["available"] is False
 
 
+def test_threshold_metrics_and_fold_summary_come_from_the_cv_files(client):
+    m = client.get("/api/modelling").json()
+    f = pd.read_csv(C.PREDICTION / "cv_fold_metrics.csv")
+    one = f[f.model == f.model.iloc[0]]
+    fs = m["fold_summary"]
+    assert fs["folds_per_model"] == len(one)
+    assert fs["skipped_single_class"] == int(one.skipped_single_class.sum())
+    thr = pd.read_csv(C.PREDICTION / "threshold_metrics.csv")
+    assert [r["model"] for r in m["threshold_metrics"]] == thr.model.tolist()
+
+
+def test_shortlist_is_served_from_its_file_and_never_as_a_model_score(client):
+    import json
+    m = client.get("/api/modelling").json()
+    path = C.EXPLORER / "shortlist" / "shortlist_summary.json"
+    if not path.exists():
+        pytest.skip("shortlist has not been generated")
+    assert m["shortlist"] == json.loads(path.read_text())
+    assert "not a validated prediction" in m["shortlist"]["note"]
+    r = client.get("/api/downloads/candidate_shortlist")
+    assert r.status_code == 200
+    header = r.text.splitlines()[0].lower()
+    assert "evidence_category" in header and "prob" not in header
+
+
 def test_audit_reports_screen_labels(client):
     a = client.get("/api/audit").json()
     if not a["available"]:

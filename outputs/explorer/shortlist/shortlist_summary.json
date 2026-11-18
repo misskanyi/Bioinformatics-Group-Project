@@ -1,0 +1,42 @@
+{
+  "n_candidates": 254,
+  "rules_version": "1.0",
+  "n_shuffles": 25,
+  "shuffle_seed": 0,
+  "by_tier": {
+    "Priority: strong homolog of a characterised PET hydrolase": 8,
+    "Confirmatory: near-identical to a characterised PET hydrolase": 121,
+    "Possible: weaker or partial sequence evidence": 20,
+    "Not prioritised: insufficient sequence evidence": 18,
+    "Not prioritised: no convincing similarity": 86
+  },
+  "invalid_sequences": 1,
+  "by_category": {
+    "green": 127,
+    "red": 86,
+    "yellow": 22,
+    "insufficient": 18,
+    "invalid": 1
+  },
+  "by_rule": {
+    "H1": 127,
+    "N2": 83,
+    "N1": 15,
+    "T1": 11,
+    "H2": 6,
+    "D2": 3,
+    "T3": 3,
+    "L": 2,
+    "P": 1,
+    "D1": 1,
+    "F": 1
+  },
+  "by_testing_status": {
+    "Testing status not established from the project's sources": 133,
+    "Probably a characterised enzyme recorded under another name or form": 104,
+    "Near-identical to a characterised enzyme": 17
+  },
+  "candidates_citing_2025_screen_doi": 86,
+  "probably_same_enzyme_as_a_reference": 104,
+  "note": "Sequence-based evidence only; not a validated prediction of PET-degrading activity."
+}

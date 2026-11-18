@@ -1,0 +1,83 @@
+# Full scientific verification: deletes every regenerable output, rebuilds it from the raw
+# files in data/ (feasibility labelling, curation, all pipeline stages, shortlist, executed
+# inside the notebook with PET_RECOMPUTE=1), then compares the results with the committed
+# outputs using per-file tolerances (scripts/compare_outputs.py) and runs the test suites
+# against the rebuilt files. Run manually from the Actions tab, or weekly.
+#
+# The UniParc domain annotation (outputs/explorer/annotation/) is kept: rebuilding it would
+# query an external web service, which a reproducibility check should not depend on.
+name: Full scientific verification
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"   # Mondays 03:00 UTC
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  PYTHONDONTWRITEBYTECODE: "1"
+  MPLBACKEND: Agg
+
+jobs:
+  rebuild:
+    name: Rebuild from raw data and compare
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            backend/requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r backend/requirements.txt
+      - name: Keep the committed outputs as the reference
+        run: cp -r outputs "$RUNNER_TEMP/reference-outputs"
+      - name: Delete every regenerable output
+        run: |
+          find outputs/explorer -mindepth 1 -maxdepth 1 ! -name annotation -exec rm -rf {} +
+          rm -rf outputs/curation outputs/tables outputs/figures \
+                 outputs/pet_protein_activity_summary.csv outputs/pet_dataset_quality_summary.csv
+          mkdir -p reports
+      - name: 1. Feasibility analysis and assay labelling
+        run: python analyze_pet_dataset.py 2>&1 | tee reports/1-feasibility.log
+      - name: 2. Dataset curation (registry, labels, grouped splits)
+        run: python -m pet_explorer.curation 2>&1 | tee reports/2-curation.log
+      - name: 3. Notebook with full recomputation (pipeline + shortlist)
+        env:
+          PET_RECOMPUTE: "1"
+        run: |
+          jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=5400 --ExecutePreprocessor.kernel_name=python3 \
+            --output-dir reports --output executed-recompute.ipynb \
+            notebooks/pet_enzyme_explorer.ipynb 2>&1 | tee reports/3-notebook.log
+          test "${PIPESTATUS[0]}" -eq 0
+      - name: 4. Evidence-rule calibration
+        run: python -m pet_explorer.evidence > reports/4-calibration.json
+      - name: Validate the executed notebook
+        run: python scripts/check_notebook.py reports/executed-recompute.ipynb --report reports/notebook-check.md
+      - name: Compare rebuilt outputs with the committed reference
+        run: python scripts/compare_outputs.py "$RUNNER_TEMP/reference-outputs" outputs --report reports/rebuild-comparison.md
+      - name: Test suites against the rebuilt outputs
+        if: always()
+        run: python -m pytest tests backend/tests -q -p no:cacheprovider --junitxml=reports/tests.xml
+      - name: Summary
+        if: always()
+        run: |
+          for f in reports/rebuild-comparison.md reports/notebook-check.md; do
+            test -f "$f" && cat "$f" >> "$GITHUB_STEP_SUMMARY"
+          done
+          true
+      - name: Upload reports, logs and the executed notebook
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-verification
+          path: reports/
+          retention-days: 30

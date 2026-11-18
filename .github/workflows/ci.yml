@@ -1,0 +1,125 @@
+# Fast CI: runs on every push to main / feature branches and on every pull request into main.
+#   python-tests  scientific + API test suites
+#   frontend      type check, lint and production build of the Next.js app
+#   notebook      executes the submission notebook on the cached outputs and validates it
+# The full rebuild of every analysis output lives in full-verification.yml (manual / weekly).
+name: CI
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"   # the Python of current Google Colab runtimes
+  NODE_VERSION: "22"
+  PYTHONDONTWRITEBYTECODE: "1"
+  MPLBACKEND: Agg
+
+jobs:
+  python-tests:
+    name: Python tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            backend/requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r backend/requirements.txt
+      - name: Scientific tests
+        run: python -m pytest tests -q -p no:cacheprovider --junitxml=reports/scientific-tests.xml
+      - name: API tests
+        if: always()
+        run: python -m pytest backend/tests -q -p no:cacheprovider --junitxml=reports/api-tests.xml
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-test-reports
+          path: reports/
+          retention-days: 14
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies (lockfile)
+        run: npm ci --no-audit --no-fund
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: Lint
+        run: npm run lint
+      - name: Production build
+        run: npm run build
+
+  notebook:
+    name: Notebook (cached outputs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Execute notebook (fails on any cell error)
+        run: |
+          mkdir -p reports
+          jupyter nbconvert --to notebook --execute \
+            --ExecutePreprocessor.timeout=1200 --ExecutePreprocessor.kernel_name=python3 \
+            --output-dir reports --output executed.ipynb \
+            notebooks/pet_enzyme_explorer.ipynb 2>&1 | tee reports/notebook-execution.log
+          test "${PIPESTATUS[0]}" -eq 0
+      - name: Validate stages, outputs and EDA plots
+        run: python scripts/check_notebook.py reports/executed.ipynb --report reports/notebook-check.md
+      - name: Committed notebook is also valid (saved outputs)
+        run: python scripts/check_notebook.py notebooks/pet_enzyme_explorer.ipynb --report reports/committed-notebook-check.md
+      - name: Notebook generator is in sync with the committed notebook
+        run: |
+          cp notebooks/pet_enzyme_explorer.ipynb /tmp/committed.ipynb
+          python notebooks/build_notebook.py
+          python - <<'EOF'
+          import json
+          src = lambda p: [(c["cell_type"], "".join(c["source"])) for c in json.load(open(p))["cells"]]
+          assert src("/tmp/committed.ipynb") == src("notebooks/pet_enzyme_explorer.ipynb"), \
+              "notebooks/build_notebook.py and the committed notebook differ: rebuild and re-execute the notebook"
+          print("generator and notebook in sync")
+          EOF
+      - name: Summary
+        if: always()
+        run: test -f reports/notebook-check.md && cat reports/notebook-check.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Upload notebook artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-cached-run
+          path: reports/
+          retention-days: 14

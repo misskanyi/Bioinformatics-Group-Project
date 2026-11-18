@@ -9,6 +9,8 @@ import { doiUrl, num } from "@/lib/utils";
 import type { Audit, Datasets, Modelling, Overview } from "@/types/api";
 
 const REPO = "https://github.com/misskanyi/Bioinformatics-Group-Project";
+const RESEARCH_QUESTION =
+  "How can protein sequence analysis and machine learning help identify promising PET-degrading enzyme candidates for further laboratory testing?";
 
 type Status = "achieved" | "partial" | "not";
 
@@ -66,7 +68,7 @@ const REFERENCES = [
 const FUTURE = [
   {
     title: "Test the shortlisted candidates in the laboratory",
-    text: "The highest-value next step is wet-lab work: express a handful of untested library sequences that are close relatives of characterised enzymes and assay them under one named condition. Every computational claim here ends at a hypothesis an experiment can settle.",
+    text: "The highest-value next step is wet-lab work: check the cited literature for the priority candidates on the shortlist, then express those still without assay data and assay them under one named condition with a known PET hydrolase as control. Every computational claim here ends at a hypothesis an experiment can settle.",
     icon: FlaskConical,
   },
   {
@@ -114,6 +116,7 @@ function KeyFindings() {
   const a = audit.data?.available ? audit.data : undefined;
   const perm = m?.permutation_test;
   const best = m?.best_model;
+  const sl = m?.shortlist;
 
   const findings = [
     {
@@ -150,8 +153,10 @@ function KeyFindings() {
     },
     {
       area: "Candidate discovery",
-      headline: "Candidates are identified by measured similarity, not by a model score",
-      detail: `${m?.candidates.pool != null ? `${num(m.candidates.pool)} untested library sequences are available as a candidate pool, but ` : ""}no ranking is published, because the classifier does not clear its null. Sequence matching against characterised enzymes remains the usable shortlisting tool.`,
+      headline: "Candidates are shortlisted by measured similarity, not by a model score",
+      detail: sl
+        ? `${num(sl.n_candidates)} annotation-only candidates without a verified assay record in the project's sources were searched against the reference set with the same evidence rules as the matcher: ${tierCount(sl, "Priority")} have the strongest sequence case and ${tierCount(sl, "Possible")} are possible but weaker. ${num(sl.probably_same_enzyme_as_a_reference)} are probably characterised enzymes recorded under another name or form. The classifier is not used for ranking because it does not clear its null; none of these is a validated PET degrader.`
+        : "The classifier does not clear its null, so no model-based ranking is published. Sequence matching against characterised enzymes is the usable shortlisting tool.",
       tone: "var(--color-violet)",
     },
   ];
@@ -179,35 +184,37 @@ function ObjectiveAssessment() {
   const m = model.data;
   const best = m?.best_model;
 
+  const sl = m?.shortlist;
   const rows: { n: string; title: string; status: Status; evidence: string }[] = [
     {
       n: "O1",
-      title: "Collect and clean experimentally tested PET-related sequences",
+      title: "To collect, clean and assess the quality of protein sequence and experimental data related to PET degradation.",
       status: "achieved",
       evidence:
-        "298 curated PET-active proteins with validated sequences, every one identical to the raw PAZy record, with assay-level outcome classification and a published audit of all four sources. Positive and below-detection observations are stored separately.",
+        "298 curated PET-active proteins with validated sequences, every one identical to the raw PAZy record, with assay-level outcome classification and a published audit of all sources. Positive and below-detection observations are stored separately.",
     },
     {
       n: "O2",
-      title: "Analyse sequence features, motifs and similarity",
+      title: "To analyse protein sequences using alignment, motif detection and clustering to identify similarities and biological patterns.",
       status: "achieved",
       evidence:
-        "44,253 pairwise alignments, a validated clustering solution tested against two null models, motif and domain analysis, and a sequence-similarity network exported in Cytoscape format.",
+        "44,253 pairwise alignments, catalytic-motif analysis, a clustering solution tested against two null models, domain annotation and a sequence-similarity network exported in Cytoscape format. The supporting temperature analysis found no group difference once study design is controlled.",
     },
     {
       n: "O3",
-      title: "Develop supervised models for defined experimental conditions",
+      title: "To develop and evaluate machine-learning models for PET-degradation activity under specified experimental conditions.",
       status: "partial",
       evidence: best
-        ? `Models were built and evaluated correctly — condition-specific target, homology-grouped splits, baselines and a permutation test — but none reached usable performance (best ROC AUC ${best.roc_auc_mean.toFixed(3)}). The method is in place; the result is negative.`
+        ? `Models were built for one specified condition and evaluated correctly — homology-grouped splits, baselines and a permutation test — but none reached usable performance (best mean fold ROC AUC ${best.roc_auc_mean.toFixed(3)}). The method is in place; the result is negative.`
         : "Model outputs have not been generated.",
     },
     {
       n: "O4",
-      title: "Evaluate models and identify promising untested candidates",
-      status: "partial",
-      evidence:
-        "Evaluation was completed thoroughly and reported in full, including the negative outcome. Candidate ranking by predicted activity was deliberately not published, because the model does not beat its null; the untested candidate pool is identified and documented for future work.",
+      title: "To identify and prioritise promising enzyme candidates for further laboratory testing using available sequence and experimental evidence.",
+      status: sl ? "achieved" : "partial",
+      evidence: sl
+        ? `${num(sl.n_candidates)} candidates without a verified assay record in the project's sources were assessed with the matcher's evidence rules and the reference enzymes' published assays; ${tierCount(sl, "Priority")} are prioritised and ${tierCount(sl, "Possible")} more are possible. The ranking uses sequence evidence, not the supervised model, and no candidate is laboratory-validated.`
+        : "Candidates are not yet prioritised: run python -m pet_explorer.shortlist.",
     },
   ];
 
@@ -238,28 +245,46 @@ function ObjectiveAssessment() {
   );
 }
 
+function tierCount(sl: NonNullable<Modelling["shortlist"]>, prefix: string) {
+  return num(Object.entries(sl.by_tier).find(([k]) => k.startsWith(prefix))?.[1] ?? 0);
+}
+
 function Answer() {
   const model = useApi<Modelling>("/modelling");
   const best = model.data?.best_model;
+  const sl = model.data?.shortlist;
   return (
     <Panel glow className="overflow-hidden">
       <div className="grid-bg absolute inset-0 opacity-25" />
       <div className="relative p-6 sm:p-9">
         <div className="eyebrow text-teal">Answer to the research question</div>
         <p className="mt-3 max-w-4xl text-lg font-medium leading-snug tracking-tight sm:text-xl">
-          How can protein sequence analysis and machine learning help identify promising enzyme candidates for PET plastic recycling?
+          {RESEARCH_QUESTION}
         </p>
         <div className="mt-5 max-w-4xl space-y-3 text-sm leading-relaxed text-muted">
           <p>
-            <b className="text-ink">Sequence analysis helps; machine learning, on this data, does not yet.</b> Alignment-based analysis reliably places an
-            unknown protein among experimentally characterised PET hydrolases, recovers a motif-sharing lineage that no null model reproduces, and gives a
-            defensible shortlist: proteins whose closest characterised relatives have published PET activity are worth testing first.
+            <b className="text-ink">Sequence analysis helps directly; clustering explains the landscape; supervised learning, on this data, does not yet.</b>
           </p>
           <p>
-            The supervised component returns a clear negative. Trained on the only condition-comparable labels available and evaluated with homology-grouped
-            cross-validation, composition and physicochemical features did not predict whether PET conversion is still detected at 60 °C
+            <b className="text-ink">Supported by sequence analysis.</b> Alignment against the curated PET hydrolases, with a shuffled-sequence control and the
+            catalytic-motif check, reliably places an unknown protein relative to enzymes with published PET activity.
+          </p>
+          <p>
+            <b className="text-ink">Supported by clustering.</b> Verified PET hydrolases form a motif-sharing lineage that no null model reproduces, so a
+            candidate&apos;s group tells you which characterised enzymes it most resembles. The groups are not shown to differ in assay temperature once study
+            design is controlled.
+          </p>
+          <p>
+            <b className="text-ink">Inconclusive supervised learning.</b> Trained on the only condition-comparable labels available and evaluated with
+            homology-grouped cross-validation, composition and physicochemical features did not predict whether PET conversion is still detected at 60 °C
             {best ? ` (ROC AUC ${best.roc_auc_mean.toFixed(3)} against a 0.50 baseline)` : ""}, and the score falls inside a shuffled-label null. Reporting
-            that model as a predictor would be wrong.
+            that model as a predictor would be wrong, so it ranks nothing.
+          </p>
+          <p>
+            <b className="text-ink">Candidates that need laboratory testing.</b>{" "}
+            {sl
+              ? `Of ${num(sl.n_candidates)} annotation-only candidates, ${tierCount(sl, "Priority")} have the strongest sequence case and ${tierCount(sl, "Possible")} are possible but weaker, ranked by the same evidence rules as the matcher. None is a validated PET degrader; only an assay can confirm activity.`
+              : "Candidates are ranked by the evidence rules of the sequence matcher once the shortlist has been generated; none is a validated PET degrader."}
           </p>
           <p>
             The limiting factor is the data, not the algorithm. No protein-level negatives exist outside one screen; 88% of verified enzymes sit in a single
