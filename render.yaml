@@ -6,7 +6,7 @@ services:
     runtime: python
     plan: free
     branch: main
-    autoDeploy: false
+    autoDeployTrigger: commit    # deploy every new commit on main (replaces deprecated autoDeploy)
     buildCommand: pip install -r requirements.txt -r backend/requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
