@@ -44,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* stays mounted across navigation; only its intensity changes */}
         <AmbientBackground intensity={pathname.startsWith("/overview") ? "full" : "calm"} />
         <Sidebar collapsed={collapsed} onToggle={toggle} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
-        <div className={cn("min-h-screen transition-[padding] duration-300", collapsed ? "lg:pl-[72px]" : "lg:pl-64")}>
+        <div className={cn("min-h-screen transition-[padding] duration-300", collapsed ? "lg:pl-[72px]" : "lg:pl-72")}>
           <Topbar onOpenMobile={() => setMobileOpen(true)} />
           {/* keyed per route: only the page content remounts, so its staggered entrance (globals.css) plays once per visit */}
           <main key={pathname} className="page-stage mx-auto w-full max-w-[1600px] px-4 pb-16 pt-6 sm:px-6 lg:px-8">

@@ -32,7 +32,7 @@ function NavLink({
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex h-10 items-center gap-3 rounded-lg px-3 text-sm transition-colors duration-200",
+        "group relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/50",
         active ? "text-ink" : "text-muted hover:bg-elevated/60 hover:text-ink",
         collapsed && "justify-center px-0",
@@ -54,7 +54,7 @@ function NavLink({
           active ? "text-cyan" : "group-hover:text-ink motion-safe:group-hover:scale-110",
         )}
       />
-      {!collapsed && <span className="relative truncate">{item.label}</span>}
+      {!collapsed && <span className="relative min-w-0 leading-snug [overflow-wrap:anywhere]">{item.label}</span>}
     </Link>
   );
   return collapsed ? (
@@ -81,7 +81,7 @@ function SubLinks({ item, sections, current, onNavigate }: { item: NavItem; sect
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "block truncate rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-200",
+                "block rounded-md px-2.5 py-1.5 text-[13px] leading-snug transition-colors duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan/50",
                 active ? "bg-electric/[0.12] text-cyan" : "text-muted hover:bg-elevated/60 hover:text-ink",
               )}
@@ -241,7 +241,7 @@ export function Sidebar({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-30 hidden border-r border-line/70 bg-gradient-to-b from-surface via-surface/95 to-surface-2/95 shadow-[1px_0_0_0_var(--edge-glow)] transition-[width] duration-300 lg:block",
-          collapsed ? "w-[72px]" : "w-64",
+          collapsed ? "w-[72px]" : "w-72",
         )}
       >
         {body(false)}
