@@ -36,6 +36,18 @@ It is answered through four supporting investigations:
 temperatures at which activity was detected (*not confirmed* once study design is controlled); H3 sequence features
 predict detection at 60 °C better than baselines (*not supported*).
 
+## Authors and contributions
+
+This project was built by a team of five students. Each member led one area of the work:
+
+| # | Author | Student ID | Role | What they did |
+|---|---|---|---|---|
+| 1 | Wambaire Ian Nganga | 159799 | Data Collection and Preprocessing | Researched PAZy, PlasticDB, UniProt and PETML; organised the protein sequences, checked for duplicates, cleaned the data and documented the data sources. |
+| 2 | Denzel Sam Omondi | 156089 | Biological Sequence Analysis | Carried out the amino-acid sequence comparisons, Smith–Waterman alignment, catalytic motif identification and protein similarity networks, and interpreted the biological patterns. |
+| 3 | Kamau Edwin Kamau | 152803 | Machine Learning and Model Evaluation | Engineered the sequence features, ran the clustering and classification experiments, evaluated the models against baselines and explained why the supervised predictions were inconclusive. |
+| 4 | Kanyi Sharon Wambui | 153486 | Dashboard Development and System Integration | Integrated the Python analysis with the FastAPI backend and the Next.js dashboard, presented the results, tested the sequence-analysis features and supported the GitHub integration. |
+| 5 | Kariuki Rurigi Maina | 163912 | Research Documentation and Quality Assurance | Organised the Google Colab notebook, documented the methodology and limitations, checked reproducibility, supported testing and prepared the research findings for presentation. |
+
 ## What the system can and cannot conclude
 
 | It can say | It cannot say |
