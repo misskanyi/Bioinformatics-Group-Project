@@ -79,23 +79,36 @@ def _models(x, sim, cluster, seed):
     }
 
 
-def _cv(fn, y, groups, seed):
+def _cv(fn, y, groups, seed, record=None):
     """Per-fold (ROC AUC, balanced accuracy), so a constant predictor scores exactly 0.5.
-    A fold whose test set holds one class only (possible with large identity groups) is skipped."""
+    A fold whose test set holds one class only (possible with large identity groups) is skipped.
+
+    If `record` is a list, one dict per fold is appended to it: the held-out indices, their
+    out-of-fold scores and whether the fold was skipped. Recording reads the same scores and
+    does not change the computation or the random-number stream."""
     out = []
-    for tr, te in StratifiedGroupKFold(N_SPLITS, shuffle=True, random_state=seed).split(y, y, groups):
+    for k, (tr, te) in enumerate(StratifiedGroupKFold(N_SPLITS, shuffle=True, random_state=seed).split(y, y, groups)):
         if len(set(y[te])) < 2:
+            if record is not None:
+                record.append({"fold": k, "test": te, "scores": None, "skipped": True})
             continue
         s = fn(tr, te, y)
         out.append((roc_auc_score(y[te], s), balanced_accuracy_score(y[te], s >= 0.5)))
+        if record is not None:
+            record.append({"fold": k, "test": te, "scores": np.asarray(s, dtype=float), "skipped": False})
     return np.mean(out, axis=0)
 
 
-def evaluate(y, x, sim, cluster, groups):
+def evaluate(y, x, sim, cluster, groups, details=None):
+    """Mean +/- sd over repeats of the per-repeat fold means. If `details` is a dict, it is
+    filled with {(model, repeat): [fold records]} from the same runs (see _cv)."""
     res = {}
     for r in range(N_REPEATS):
         for name, fn in _models(x, sim, cluster, SEED + r).items():
-            res.setdefault(name, []).append(_cv(fn, y, groups, SEED + r))
+            rec = [] if details is not None else None
+            res.setdefault(name, []).append(_cv(fn, y, groups, SEED + r, rec))
+            if details is not None:
+                details[(name, r)] = rec
     rows = [{"model": m, "kind": "baseline" if m in BASELINES else "model",
              "roc_auc_mean": round(v[:, 0].mean(), 3), "roc_auc_sd": round(v[:, 0].std(), 3),
              "balanced_accuracy_mean": round(v[:, 1].mean(), 3), "balanced_accuracy_sd": round(v[:, 1].std(), 3)}
@@ -111,9 +124,66 @@ def permutation_test(name, y, x, sim, cluster, groups, observed):
         fn = _models(x, sim, cluster, SEED + i)[name]
         null.append(_cv(fn, yp, groups, SEED + i)[0])
     null = np.array(null)
-    return {"model": name, "observed_roc_auc": observed, "null_mean": round(null.mean(), 3),
-            "null_95th_percentile": round(np.percentile(null, 95), 3), "n_permutations": N_PERM,
-            "empirical_p": round((1 + (null >= observed).sum()) / (N_PERM + 1), 4)}
+    summary = {"model": name, "observed_roc_auc": observed, "null_mean": round(null.mean(), 3),
+               "null_95th_percentile": round(np.percentile(null, 95), 3), "n_permutations": N_PERM,
+               "empirical_p": round((1 + (null >= observed).sum()) / (N_PERM + 1), 4)}
+    return summary, null
+
+
+def fold_metrics(details, y):
+    """One row per (model, repeat, fold) from the grouped-CV out-of-fold scores.
+
+    Threshold metrics use the same 0.5 cut-off as the balanced accuracy in model_comparison.csv.
+    Every number comes from held-out folds only; nothing is computed on training predictions."""
+    from sklearn.metrics import f1_score, precision_score, recall_score
+    rows = []
+    for (model, r), recs in details.items():
+        for f in recs:
+            row = {"model": model, "kind": "baseline" if model in BASELINES else "model",
+                   "repeat": r, "fold": f["fold"], "n_test": len(f["test"]),
+                   "n_test_positive": int(y[f["test"]].sum()), "skipped_single_class": f["skipped"]}
+            if not f["skipped"]:
+                yt, s = y[f["test"]], f["scores"]
+                p = (s >= 0.5).astype(int)
+                row.update({
+                    "roc_auc": roc_auc_score(yt, s), "balanced_accuracy": balanced_accuracy_score(yt, p),
+                    "precision": precision_score(yt, p, zero_division=0),
+                    "recall": recall_score(yt, p, zero_division=0),
+                    "f1": f1_score(yt, p, zero_division=0),
+                    "tp": int(((p == 1) & (yt == 1)).sum()), "fp": int(((p == 1) & (yt == 0)).sum()),
+                    "tn": int(((p == 0) & (yt == 0)).sum()), "fn": int(((p == 0) & (yt == 1)).sum()),
+                })
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def threshold_summary(folds):
+    """Mean +/- sd of the per-fold threshold metrics, plus the confusion matrix summed over all
+    evaluated folds and divided by the number of repeats (= an average single 5-fold run)."""
+    ok = folds[~folds.skipped_single_class]
+    rows = []
+    for m, g in ok.groupby("model", sort=False):
+        row = {"model": m, "kind": g.kind.iloc[0], "evaluated_folds": len(g),
+               "skipped_folds": int(folds[(folds.model == m)].skipped_single_class.sum())}
+        for k in ("precision", "recall", "f1"):
+            row[f"{k}_mean"], row[f"{k}_sd"] = round(g[k].mean(), 3), round(g[k].std(ddof=0), 3)
+        for k in ("tp", "fp", "tn", "fn"):
+            row[f"{k}_per_repeat"] = round(g[k].sum() / N_REPEATS, 2)
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def out_of_fold(details, y, ids):
+    """Out-of-fold score of every protein in every repeat (proteins in skipped folds get no score)."""
+    rows = []
+    for (model, r), recs in details.items():
+        for f in recs:
+            if f["skipped"]:
+                continue
+            for i, s in zip(f["test"], f["scores"]):
+                rows.append({"model": model, "repeat": r, "fold": f["fold"], "protein_id": int(ids[i]),
+                             "detected_at_60c": int(y[i]), "score": float(s)})
+    return pd.DataFrame(rows)
 
 
 def feature_importance(y, x, names):
@@ -129,11 +199,21 @@ def run():
     C.ensure_dirs()
     y, feats, assign, sim = dataset()
     yv, x, cluster, groups = y.to_numpy(), feats.to_numpy(), assign.subcluster.to_numpy(), assign.identity_group_70.to_numpy()
-    table = evaluate(yv, x, sim, cluster, groups)
+    details = {}
+    table = evaluate(yv, x, sim, cluster, groups, details)
     table.to_csv(C.PREDICTION / "model_comparison.csv", index=False)
     best = table[table.kind == "model"].sort_values("roc_auc_mean", ascending=False).iloc[0]
-    perm = permutation_test(best.model, yv, x, sim, cluster, groups, best.roc_auc_mean)
+    perm, null = permutation_test(best.model, yv, x, sim, cluster, groups, best.roc_auc_mean)
     pd.DataFrame([perm]).to_csv(C.PREDICTION / "permutation_test.csv", index=False)
+    pd.DataFrame({"permutation": np.arange(len(null)), "null_roc_auc": null}).to_csv(
+        C.PREDICTION / "permutation_null.csv", index=False)
+    folds = fold_metrics(details, yv)
+    folds.to_csv(C.PREDICTION / "cv_fold_metrics.csv", index=False)
+    thr = threshold_summary(folds)
+    thr.to_csv(C.PREDICTION / "threshold_metrics.csv", index=False)
+    oof = out_of_fold(details, yv, y.index.to_numpy())
+    oof.to_csv(C.PREDICTION / "oof_predictions.csv.gz", index=False)
+    plots.cv_evaluation(oof, folds, null, perm)
     feature_importance(yv, x, feats.columns).to_csv(C.PREDICTION / "feature_importance.csv", index=False)
     pd.DataFrame({"protein_id": y.index, "detected_at_60c": yv, "subcluster": cluster,
                   "identity_group_70": groups}).to_csv(C.PREDICTION / "prediction_dataset.csv", index=False)

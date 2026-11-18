@@ -156,6 +156,35 @@ class SequenceMatcher:
         return header, query, hits
 
 
+def leave_one_out(proteins, pairs):
+    """Nearest OTHER reference protein for every reference protein.
+
+    The neighbour is the protein with the highest length-normalised score in the
+    cached all-vs-all table (the same ranking the matcher uses); the pair is then
+    re-aligned query-first to report identity over aligned columns and the
+    similarity band (identity + coverage of the shorter side). Columns:
+    q (query protein_id), nn (nearest neighbour protein_id), id (identity), band.
+    """
+    both = pd.concat([
+        pairs.rename(columns={"protein_id_a": "q", "protein_id_b": "nn"}),
+        pairs.rename(columns={"protein_id_b": "q", "protein_id_a": "nn"}),
+    ])
+    best = (both.sort_values(["normalised_score", "nn"], ascending=[False, True])
+                .groupby("q").head(1).set_index("q"))
+    seq = dict(zip(proteins.protein_id, proteins.sequence))
+    aligner = make_aligner("local")
+    rows = []
+    for q in proteins.protein_id:
+        nn = int(best.nn[q])
+        a, b = seq[q], seq[nn]
+        aln = aligner.align(a, b)[0]
+        ident = aln.counts().identities / aln.length
+        cov_a = (aln.coordinates[0][-1] - aln.coordinates[0][0]) / len(a)
+        cov_b = (aln.coordinates[1][-1] - aln.coordinates[1][0]) / len(b)
+        rows.append({"q": int(q), "nn": nn, "id": float(ident), "band": interpret(ident, min(cov_a, cov_b))})
+    return pd.DataFrame(rows)
+
+
 def hits_to_frame(hits, proteins):
     rows = []
     info = proteins.set_index("protein_id")
