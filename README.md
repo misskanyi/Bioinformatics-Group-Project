@@ -193,5 +193,5 @@ interaction network.
 ## Deployment status
 
 **Implemented:** local development setup (FastAPI on port 8000, Next.js on port 3000) and GitHub Actions CI.
-**Not implemented:** no hosted deployment, no cloud resources, no authentication. Any AWS EC2 or other hosting in
+**Not implemented:** currently no hosted deployment, no cloud resources, no authentication. Any AWS EC2 or other hosting in
 project proposals is **proposed infrastructure only**.
