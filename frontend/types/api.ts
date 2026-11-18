@@ -282,7 +282,8 @@ export interface AssayCoverage {
 }
 
 export interface Conditions {
-  coverage: AssayCoverage;
+  /** Absent from an older backend; the page must render without it. */
+  coverage?: AssayCoverage;
   assays: AssayTuple[];
   assay_fields: string[];
   proteins: ProteinTemperature[];

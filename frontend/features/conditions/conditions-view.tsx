@@ -173,7 +173,11 @@ export function ConditionsView() {
           <Metric
             label="Assay records (PET-active set)"
             value={num(filtered.length)}
-            hint={`of ${num(all.length)} for ${res.data.coverage.kept_proteins} PET-active proteins; ${num(res.data.coverage.all_rows)} PAZy PET records in total`}
+            hint={
+              res.data.coverage
+                ? `of ${num(all.length)} for ${res.data.coverage.kept_proteins} PET-active proteins; ${num(res.data.coverage.all_rows)} PAZy PET records in total`
+                : `of ${num(all.length)}`
+            }
           />
           <Metric label="Distinct proteins" value={num(stats.proteins)} accent="var(--color-sky)" />
           <Metric label="Breakdown detected" value={filtered.length ? `${Math.round((100 * stats.detected) / filtered.length)}%` : "—"} accent="var(--color-mint)" hint="of assay records" />
