@@ -1,0 +1,116 @@
+
+=================================== ERRORS ====================================
+____________________ ERROR collecting tests/test_batch.py _____________________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\tests\test_batch.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_batch.py:13: in <module>
+    from pet_explorer import batch as B, config as C  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pet_explorer\batch.py:24: in <module>
+    from . import config as C, evidence as E, features
+pet_explorer\features.py:14: in <module>
+    from Bio.SeqUtils.ProtParam import ProteinAnalysis
+E   ModuleNotFoundError: No module named 'Bio'
+___________________ ERROR collecting tests/test_curation.py ___________________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\tests\test_curation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_curation.py:17: in <module>
+    from pet_explorer import curation as K  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pet_explorer\curation.py:49: in <module>
+    from .sequence_matching import make_aligner
+pet_explorer\sequence_matching.py:25: in <module>
+    from Bio.Align import PairwiseAligner, substitution_matrices
+E   ModuleNotFoundError: No module named 'Bio'
+___________________ ERROR collecting tests/test_evidence.py ___________________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\tests\test_evidence.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_evidence.py:14: in <module>
+    from pet_explorer.sequence_matching import Hit, SequenceMatcher, interpret  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pet_explorer\sequence_matching.py:25: in <module>
+    from Bio.Align import PairwiseAligner, substitution_matrices
+E   ModuleNotFoundError: No module named 'Bio'
+___________________ ERROR collecting tests/test_outputs.py ____________________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\tests\test_outputs.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_outputs.py:12: in <module>
+    from pet_explorer.organisms import UNKNOWN  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pet_explorer\organisms.py:33: in <module>
+    from Bio import SeqIO
+E   ModuleNotFoundError: No module named 'Bio'
+_______________ ERROR collecting tests/test_reproducibility.py ________________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\tests\test_reproducibility.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_reproducibility.py:18: in <module>
+    from Bio import SeqIO
+E   ModuleNotFoundError: No module named 'Bio'
+______________ ERROR collecting tests/test_sequence_matching.py _______________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\tests\test_sequence_matching.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_sequence_matching.py:11: in <module>
+    from pet_explorer.sequence_matching import SequenceInputError, SequenceMatcher, parse_query  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pet_explorer\sequence_matching.py:25: in <module>
+    from Bio.Align import PairwiseAligner, substitution_matrices
+E   ModuleNotFoundError: No module named 'Bio'
+_________________ ERROR collecting backend/tests/test_api.py __________________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\backend\tests\test_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\tests\test_api.py:8: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+______________ ERROR collecting backend/tests/test_batch_api.py _______________
+ImportError while importing test module 'D:\Projects\Bioinformatics-Group-Project\backend\tests\test_batch_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend\tests\test_batch_api.py:12: in <module>
+    from fastapi.testclient import TestClient
+E   ModuleNotFoundError: No module named 'fastapi'
+=========================== short test summary info ===========================
+ERROR tests/test_batch.py
+ERROR tests/test_curation.py
+ERROR tests/test_evidence.py
+ERROR tests/test_outputs.py
+ERROR tests/test_reproducibility.py
+ERROR tests/test_sequence_matching.py
+ERROR backend/tests/test_api.py
+ERROR backend/tests/test_batch_api.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 8 errors during collection !!!!!!!!!!!!!!!!!!!
+8 errors in 6.06s
+Exception ignored in: <function Console.__del__ at 0x000001F80A399620>
+Traceback (most recent call last):
+  File "C:\Users\snatc\AppData\Roaming\Python\Python313\site-packages\pyreadline3\console\console.py", line 255, in __del__
+OSError: [WinError -1073741816] Windows Error 0xc0000008
