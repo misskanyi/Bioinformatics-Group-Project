@@ -1,0 +1,18 @@
+System test run summary
+Date: 2026-11-19 (Africa/Nairobi)
+Branch: edwin
+Scope: Read-only checks; no analysis outputs or application/web source files written.
+
+Passed:
+- python -m pytest tests/test_system_health.py -q — 6 passed.
+
+Blocked:
+- python -m pytest tests backend/tests -q — collection stopped with 8 import errors because Biopython (Bio) and FastAPI are not installed.
+- Frontend production build — could not start; Next.js executable unavailable.
+- Frontend lint — could not start; ESLint executable unavailable.
+
+Dependency installation:
+- Python requirements installation could not reach pypi.org due unavailable network/DNS.
+- npm dependency installation did not complete; package executables are still unavailable.
+
+No model training, pipeline rebuild, API server, or web deployment was run. The passing system-health checks read committed artifacts and validate assay, organism, model, and web-entrypoint integrity.
