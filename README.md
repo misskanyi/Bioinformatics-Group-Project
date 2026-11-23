@@ -1,7 +1,7 @@
 # PET Enzyme Explorer
 
-*A bioinformatics and machine-learning system for identifying and characterising PET-degrading enzymes*
-(Computing for Bioinformatics, year-4 semester project).
+*A bioinformatics and machine-learning system for identifying and characterising PET degrading enzymes*
+(Computing for Bioinformatics, year 4 semester project).
 
 [![CI](https://github.com/misskanyi/Bioinformatics-Group-Project/actions/workflows/ci.yml/badge.svg)](https://github.com/misskanyi/Bioinformatics-Group-Project/actions/workflows/ci.yml)
 
@@ -71,7 +71,7 @@ Red means "no convincing similarity", never "PET-inactive": the data contain no 
   20 × grouped 5-fold CV (18 of 100 folds per model skipped because they held one class; they are tiny, median 1
   protein). The **pooled out-of-fold ROC AUC** in the ROC figure is lower (0.52–0.53) because scores from different
   folds are on different scales. Per-fold, ROC-curve, confusion-matrix and F1 views agree; permutation p = 0.32.
-  **Not a working predictor.**
+  **Not working predictor.**
 - **Shortlist:** 254 annotation-only candidates without a verified assay record in the project's sources were
   assessed. **8** have the strongest sequence case and **20** are possible but weaker. Of the 121 near-identical to a
   characterised enzyme, 104 are probably that enzyme under another name or form; the testing status of 133 cannot be
@@ -216,3 +216,4 @@ interaction network.
 The Render free tier sleeps after a period of inactivity, so the first request after a pause can take up to a minute while
 the backend wakes up. There is no authentication. The app can still be run locally (FastAPI on port 8000, Next.js on
 port 3000) as described above.
+<!-- README maintenance update -->
