@@ -7,7 +7,7 @@ rebuild, and `outputs/` after deleting and regenerating it). Text columns must m
 numeric columns must agree within the tolerance listed per file. PCA/MDS coordinates may flip
 sign between linear-algebra libraries, so they are compared up to sign. Exit 1 on any mismatch.
 """
-
+#imports
 import argparse
 import json
 import sys
@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# path relative to outputs/ -> absolute tolerance for numeric columns
+# path relative to the outputs/ -> absolute tolerance for numeric columns
 FILES = {
     "pet_protein_activity_summary.csv": 1e-9,
     "tables/pet_assay_records.csv": 1e-9,
@@ -76,7 +76,7 @@ def compare_csv(ref, new, tol, name):
                 out.append(f"{name}: text column '{c}' differs in {bad} rows")
     return out
 
-
+#comparison function
 def compare_json(a, b, tol, where):
     if isinstance(a, dict) and isinstance(b, dict):
         if set(a) != set(b):
